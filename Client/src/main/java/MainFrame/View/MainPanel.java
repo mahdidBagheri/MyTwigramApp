@@ -52,13 +52,16 @@ public class MainPanel extends JPanel {
             if (panels.get(i) != null){
                 this.remove(panels.get(i));
                 panels.remove(panels.get(i));
+                this.repaint();
                 i--;
             }
         }
+
     }
 
     public void add(JPanel jPanel){
         super.add(jPanel);
+        this.repaint();
         panels.add(jPanel);
     }
 
