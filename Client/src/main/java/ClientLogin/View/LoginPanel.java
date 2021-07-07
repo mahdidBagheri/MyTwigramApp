@@ -2,6 +2,7 @@ package ClientLogin.View;
 
 import Config.ColorConfig.ColorConfig;
 import Config.FrameConfig.FrameConfig;
+import MainFrame.View.MainPanel;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -20,7 +21,7 @@ public class LoginPanel extends JPanel implements ActionListener {
     JButton exitBtn;
 
 
-    public LoginPanel() throws IOException {
+    public LoginPanel(MainPanel mainPanel) throws IOException {
         ColorConfig colorConfig = new ColorConfig();
         FrameConfig frameConfig = new FrameConfig();
 

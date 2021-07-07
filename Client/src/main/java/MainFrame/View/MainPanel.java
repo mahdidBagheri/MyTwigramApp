@@ -38,13 +38,13 @@ public class MainPanel extends JPanel {
     public void addLoginPanel() throws IOException {
         this.clear();
         this.add(new TopPanel(mainPanel));
-        this.add(new LoginPanel());
+        this.add(new LoginPanel(mainPanel));
     }
 
     public void addSignupPanel() throws IOException {
         this.clear();
         this.add(new TopPanel(mainPanel));
-        this.add(new SignupPanel());
+        this.add(new SignupPanel(mainPanel));
     }
 
     private void clear() {

@@ -2,6 +2,7 @@ package ClientSingup.View;
 
 import Config.ColorConfig.ColorConfig;
 import Config.FrameConfig.FrameConfig;
+import MainFrame.View.MainPanel;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -48,7 +49,7 @@ public class SignupPanel extends JPanel implements ActionListener {
 
     JButton SingUpBotton;
 
-    public SignupPanel() throws IOException {
+    public SignupPanel(MainPanel mainPanel) throws IOException {
         ColorConfig colorConfig = new ColorConfig();
         FrameConfig frameConfig = new FrameConfig();
 
@@ -117,12 +118,9 @@ public class SignupPanel extends JPanel implements ActionListener {
         MonthCombo = new JComboBox<Integer>(MonthArray);
         MonthCombo.setBounds(125+250,270,40,20);
 
-
         Integer[] YearArray = CreateSeqArrayOfIntegers(Date.getYear()-1,Date.getYear()-100);
         YearCombo = new JComboBox<Integer>(YearArray);
         YearCombo.setBounds(50+250,270,70,20);
-
-
 
         UserNameLable = new JLabel();
         UserNameLable.setBounds(50,240,150,20);
