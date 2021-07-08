@@ -3,7 +3,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 import Connection.Client.ClientThread;
-import Constants.*;
+import ServerConstants.Constants;
 
 public class ServerMain {
     public static void main(String[] args) throws IOException {

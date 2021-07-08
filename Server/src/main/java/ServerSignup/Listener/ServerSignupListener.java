@@ -3,11 +3,9 @@ package ServerSignup.Listener;
 import Connection.Client.ClientRequest;
 import Connection.Server.ServerConnection;
 import Connection.Server.ServerRequest;
-import Connection.Utils.DataBaseUtils;
 import ServerSignup.Controller.ServerSignupController;
 
 import java.io.IOException;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class ServerSignupListener {

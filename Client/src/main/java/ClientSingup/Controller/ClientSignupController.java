@@ -1,11 +1,11 @@
 package ClientSingup.Controller;
 
-import ClientConnection.Client.ClientPayLoad;
-import ClientConnection.Client.ClientRequest;
-import ClientConnection.ClientConnection;
-import ClientConnection.Exceptions.CouldNotConnectToServerException;
-import ClientConnection.Exceptions.EmailExistException;
-import ClientConnection.Exceptions.UsernameExistsException;
+import Connection.Client.ClientPayLoad;
+import Connection.Client.ClientRequest;
+import Connection.ClientConnection;
+import Connection.Exceptions.CouldNotConnectToServerException;
+import Connection.Exceptions.EmailExistException;
+import Connection.Exceptions.UsernameExistsException;
 import ClientSingup.Events.SignupEvent;
 import ClientSingup.Exceptions.EmptyFieldException;
 import ClientSingup.Exceptions.PasswordsNotMatchException;
@@ -22,7 +22,8 @@ public class ClientSignupController {
     }
 
     public void validateSignup(SignupEvent signupEvent) throws PasswordsNotMatchException,
-            EmptyFieldException, UserNameStartsWithDigitException, UsernameExistsException, IOException, EmailExistException, ClassNotFoundException, CouldNotConnectToServerException {
+            EmptyFieldException, UserNameStartsWithDigitException, UsernameExistsException,
+            IOException, EmailExistException, ClassNotFoundException, CouldNotConnectToServerException {
 
         if(!signupEvent.getPassword1().equals(signupEvent.getPassword2())){
             throw new PasswordsNotMatchException("Passwords do not match");

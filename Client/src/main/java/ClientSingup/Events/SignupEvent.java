@@ -18,7 +18,9 @@ public class SignupEvent {
                        String password1,
                        String password2,
                        String email,
-                       String birthDate,
+                       String birthDay,
+                       String birthMonth,
+                       String birthYear,
                        String phone,
                        String bio ){
         this.firstName = firstName;

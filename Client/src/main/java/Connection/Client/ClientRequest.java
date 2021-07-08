@@ -1,7 +1,4 @@
-package ClientConnection.Client;
-
-import ClientConnection.Client.ClientPayLoad;
-import ClientConnection.ClientConnection;
+package Connection.Client;
 
 import java.io.Serializable;
 

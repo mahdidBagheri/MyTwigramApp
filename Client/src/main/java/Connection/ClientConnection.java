@@ -1,9 +1,9 @@
-package ClientConnection;
+package Connection;
 
-import ClientConnection.Client.ClientRequest;
-import ClientConnection.Client.ClientWaitForInput;
-import ClientConnection.Exceptions.CouldNotConnectToServerException;
-import ClientConnection.Server.ServerRequest;
+import Connection.Client.ClientRequest;
+import Connection.Client.ClientWaitForInput;
+import Connection.Exceptions.CouldNotConnectToServerException;
+import Connection.Server.ServerRequest;
 import Config.NetworkConfig.NetworkConfig;
 
 import java.io.IOException;

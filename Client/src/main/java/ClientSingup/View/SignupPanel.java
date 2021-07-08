@@ -1,5 +1,13 @@
 package ClientSingup.View;
 
+import Connection.Exceptions.CouldNotConnectToServerException;
+import Connection.Exceptions.EmailExistException;
+import Connection.Exceptions.UsernameExistsException;
+import ClientSingup.Events.SignupEvent;
+import ClientSingup.Exceptions.EmptyFieldException;
+import ClientSingup.Exceptions.PasswordsNotMatchException;
+import ClientSingup.Exceptions.UserNameStartsWithDigitException;
+import ClientSingup.Listener.SignupListener;
 import Config.ColorConfig.ColorConfig;
 import Config.FrameConfig.FrameConfig;
 import MainFrame.View.MainPanel;
@@ -12,44 +20,48 @@ import java.time.LocalDate;
 
 public class SignupPanel extends JPanel implements ActionListener {
 
-    LocalDate Date = LocalDate.now();
+    LocalDate date = LocalDate.now();
 
-    JLabel TitleLable;
+    JLabel titleLable;
 
-    JLabel FirstNameField ;
-    JTextArea FirstNameText;
+    JLabel firstNameField ;
+    JTextArea firstNameText;
 
-    JLabel LastNameField ;
-    JTextArea LastNameText;
+    JLabel lastNameField ;
+    JTextArea lastNameText;
 
-    JLabel EmailLable ;
-    JTextArea EmailText;
+    JLabel emailLable ;
+    JTextArea emailText;
 
-    JLabel PhoneLable ;
-    JTextArea PhoneText;
+    JLabel phoneLable ;
+    JTextArea phoneText;
 
-    JLabel UserNameLable ;
-    JTextArea UserNameText;
+    JLabel userNameLable ;
+    JTextArea userNameText;
 
-    JLabel Password1Lable ;
-    JTextArea Password1Text;
+    JLabel password1Lable ;
+    JTextArea password1Text;
 
-    JLabel Password2Lable ;
-    JTextArea Password2Text;
+    JLabel password2Lable ;
+    JTextArea password2Text;
 
-    JLabel BioLable ;
-    JTextArea BioText;
+    JLabel bioLable ;
+    JTextArea bioText;
 
-    JLabel BirthDateLable ;
-    JComboBox<Integer> YearCombo;
-    JComboBox<Integer> MonthCombo;
-    JComboBox<Integer> DayCombo;
+    JLabel birthDateLable ;
+    JComboBox<Integer> yearCombo;
+    JComboBox<Integer> monthCombo;
+    JComboBox<Integer> dayCombo;
 
-    JCheckBox BirthDateCheck;
+    JCheckBox birthDateCheck;
 
-    JButton SingUpBotton;
+    JButton singUpBotton;
+
+    SignupListener signupListener;
 
     public SignupPanel(MainPanel mainPanel) throws IOException {
+        signupListener = new SignupListener(mainPanel);
+
         ColorConfig colorConfig = new ColorConfig();
         FrameConfig frameConfig = new FrameConfig();
 
@@ -57,143 +69,175 @@ public class SignupPanel extends JPanel implements ActionListener {
         this.setLayout(null);
         this.setBounds(0,80,(int)(frameConfig.getWidth()),(int)frameConfig.getHeight()-80);
 
-        TitleLable = new JLabel();
-        TitleLable.setBounds(220,20,150,20);
-        TitleLable.setText("SingUp!");
-        TitleLable.setVisible(true);
+        titleLable = new JLabel();
+        titleLable.setBounds(220,20,150,20);
+        titleLable.setText("SingUp!");
+        titleLable.setVisible(true);
 
-        FirstNameField = new JLabel();
-        FirstNameField.setBounds(50,50,150,20);
-        FirstNameField.setText("Insert your first name*");
-        FirstNameField.setVisible(true);
+        firstNameField = new JLabel();
+        firstNameField.setBounds(50,50,150,20);
+        firstNameField.setText("Insert your first name*");
+        firstNameField.setVisible(true);
 
-        FirstNameText = new JTextArea();
-        FirstNameText.setBounds(50,80,150,40);
-        FirstNameText.setVisible(true);
+        firstNameText = new JTextArea();
+        firstNameText.setBounds(50,80,150,40);
+        firstNameText.setVisible(true);
 
-        LastNameField = new JLabel();
-        LastNameField.setBounds(300,50,150,20);
-        LastNameField.setText("Insert your last name*");
-        LastNameField.setVisible(true);
+        lastNameField = new JLabel();
+        lastNameField.setBounds(300,50,150,20);
+        lastNameField.setText("Insert your last name*");
+        lastNameField.setVisible(true);
 
-        LastNameText = new JTextArea();
-        LastNameText.setBounds(300,80,150,40);
-        LastNameText.setVisible(true);
+        lastNameText = new JTextArea();
+        lastNameText.setBounds(300,80,150,40);
+        lastNameText.setVisible(true);
 
-        EmailLable = new JLabel();
-        EmailLable.setBounds(50,140,150,20);
-        EmailLable.setText("Insert your email*");
-        EmailLable.setVisible(true);
+        emailLable = new JLabel();
+        emailLable.setBounds(50,140,150,20);
+        emailLable.setText("Insert your email*");
+        emailLable.setVisible(true);
 
-        EmailText = new JTextArea();
-        EmailText.setBounds(50,170,150,40);
-        EmailText.setVisible(true);
+        emailText = new JTextArea();
+        emailText.setBounds(50,170,150,40);
+        emailText.setVisible(true);
 
-        PhoneLable = new JLabel();
-        PhoneLable.setBounds(300,140,150,20);
-        PhoneLable.setText("Insert your phone");
-        PhoneLable.setVisible(true);
+        phoneLable = new JLabel();
+        phoneLable.setBounds(300,140,150,20);
+        phoneLable.setText("Insert your phone");
+        phoneLable.setVisible(true);
 
-        PhoneText = new JTextArea();
-        PhoneText.setBounds(300,170,150,40);
-        PhoneText.setVisible(true);
+        phoneText = new JTextArea();
+        phoneText.setBounds(300,170,150,40);
+        phoneText.setVisible(true);
 
-        BirthDateLable = new JLabel();
-        BirthDateLable.setBounds(50+250,240,150,20);
-        BirthDateLable.setText("Choose Your Birth Date:");
-        BirthDateLable.setVisible(true);
+        birthDateLable = new JLabel();
+        birthDateLable.setBounds(50+250,240,150,20);
+        birthDateLable.setText("Choose Your Birth Date:");
+        birthDateLable.setVisible(true);
 
-        BirthDateCheck = new JCheckBox();
-        BirthDateCheck.setSelected(true);
-
-        BirthDateCheck.setBackground(colorConfig.getColor01());
-        BirthDateCheck.setBounds(450,240,20,20);
-        BirthDateCheck.addActionListener(this);
+        birthDateCheck = new JCheckBox();
+        birthDateCheck.setSelected(true);
+        birthDateCheck.setBackground(colorConfig.getColor01());
+        birthDateCheck.setBounds(450,240,20,20);
+        birthDateCheck.addActionListener(this);
 
         Integer[] DayArray = CreateSeqArrayOfIntegers(1,31);
-        DayCombo = new JComboBox<Integer>(DayArray);
-        DayCombo.setBounds(170+250,270,40,20);
+        dayCombo = new JComboBox<Integer>(DayArray);
+        dayCombo.setBounds(170+250,270,40,20);
 
         Integer[] MonthArray = CreateSeqArrayOfIntegers(1,13);
-        MonthCombo = new JComboBox<Integer>(MonthArray);
-        MonthCombo.setBounds(125+250,270,40,20);
+        monthCombo = new JComboBox<Integer>(MonthArray);
+        monthCombo.setBounds(125+250,270,40,20);
 
-        Integer[] YearArray = CreateSeqArrayOfIntegers(Date.getYear()-1,Date.getYear()-100);
-        YearCombo = new JComboBox<Integer>(YearArray);
-        YearCombo.setBounds(50+250,270,70,20);
+        Integer[] YearArray = CreateSeqArrayOfIntegers(date.getYear()-1,date.getYear()-100);
+        yearCombo = new JComboBox<Integer>(YearArray);
+        yearCombo.setBounds(50+250,270,70,20);
 
-        UserNameLable = new JLabel();
-        UserNameLable.setBounds(50,240,150,20);
-        UserNameLable.setText("Insert your UserName*");
-        UserNameLable.setVisible(true);
+        userNameLable = new JLabel();
+        userNameLable.setBounds(50,240,150,20);
+        userNameLable.setText("Insert your UserName*");
+        userNameLable.setVisible(true);
 
-        UserNameText = new JTextArea();
-        UserNameText.setBounds(50,270,150,40);
-        UserNameText.setVisible(true);
+        userNameText = new JTextArea();
+        userNameText.setBounds(50,270,150,40);
+        userNameText.setVisible(true);
 
-        Password1Lable = new JLabel();
-        Password1Lable.setBounds(50,310,150,20);
-        Password1Lable.setText("Insert your Password*");
-        Password1Lable.setVisible(true);
+        password1Lable = new JLabel();
+        password1Lable.setBounds(50,310,150,20);
+        password1Lable.setText("Insert your Password*");
+        password1Lable.setVisible(true);
 
-        Password1Text = new JTextArea();
-        Password1Text.setBounds(50,340,150,40);
-        Password1Text.setVisible(true);
+        password1Text = new JTextArea();
+        password1Text.setBounds(50,340,150,40);
+        password1Text.setVisible(true);
 
-        Password2Lable = new JLabel();
-        Password2Lable.setBounds(50,390,200,20);
-        Password2Lable.setText("Insert your Password again*");
-        Password2Lable.setVisible(true);
+        password2Lable = new JLabel();
+        password2Lable.setBounds(50,390,200,20);
+        password2Lable.setText("Insert your Password again*");
+        password2Lable.setVisible(true);
 
-        Password2Text = new JTextArea();
-        Password2Text.setBounds(50,420,150,40);
-        Password2Text.setVisible(true);
+        password2Text = new JTextArea();
+        password2Text.setBounds(50,420,150,40);
+        password2Text.setVisible(true);
 
-        BioLable = new JLabel();
-        BioLable.setBounds(300,310,150,20);
-        BioLable.setText("Insert Bio");
-        BioLable.setVisible(true);
+        bioLable = new JLabel();
+        bioLable.setBounds(300,310,150,20);
+        bioLable.setText("Insert Bio");
+        bioLable.setVisible(true);
 
-        BioText = new JTextArea();
-        BioText.setBounds(300,340,150,40);
-        BioText.setVisible(true);
+        bioText = new JTextArea();
+        bioText.setBounds(300,340,150,40);
+        bioText.setVisible(true);
 
-        SingUpBotton = new JButton("SingUp!");
-        SingUpBotton.setText("SingUp!");
-        SingUpBotton.setFocusable(false);
-        SingUpBotton.setBounds(300,400,110,50);
-        SingUpBotton.addActionListener(this);
+        singUpBotton = new JButton("SingUp!");
+        singUpBotton.setText("SingUp!");
+        singUpBotton.setFocusable(false);
+        singUpBotton.setBounds(300,400,110,50);
+        singUpBotton.addActionListener(this);
 
-        this.add(TitleLable);
-        this.add(FirstNameField);
-        this.add(LastNameField);
-        this.add(FirstNameText);
-        this.add(LastNameText);
-        this.add(EmailLable);
-        this.add(EmailText);
-        this.add(PhoneLable);
-        this.add(PhoneText);
-        this.add(BirthDateLable);
-        this.add(BirthDateCheck);
-        this.add(DayCombo);
-        this.add(MonthCombo);
-        this.add(YearCombo);
-        this.add(UserNameLable);
-        this.add(UserNameText);
-        this.add(Password1Lable);
-        this.add(Password1Text);
-        this.add(Password2Lable);
-        this.add(Password2Text);
-        this.add(SingUpBotton);
-        this.add(BioLable);
-        this.add(BioText);
+        this.add(titleLable);
+        this.add(firstNameField);
+        this.add(lastNameField);
+        this.add(firstNameText);
+        this.add(lastNameText);
+        this.add(emailLable);
+        this.add(emailText);
+        this.add(phoneLable);
+        this.add(phoneText);
+        this.add(birthDateLable);
+        this.add(birthDateCheck);
+        this.add(dayCombo);
+        this.add(monthCombo);
+        this.add(yearCombo);
+        this.add(userNameLable);
+        this.add(userNameText);
+        this.add(password1Lable);
+        this.add(password1Text);
+        this.add(password2Lable);
+        this.add(password2Text);
+        this.add(singUpBotton);
+        this.add(bioLable);
+        this.add(bioText);
 
 
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if(e.getSource() == singUpBotton){
+            SignupEvent signupEvent = new SignupEvent(firstNameText.getText(),
+                                                        lastNameText.getText(),
+                                                        userNameText.getText(),
+                                                        password1Text.getText(),
+                                                        password2Text.getText(),
+                                                        emailText.getText(),
+                                                        getDayCombo(),
+                                                        getMonthCombo(),
+                                                        getYearCombo(),
+                                                        phoneText.getText(),
+                                                        bioText.getText());
+            try {
+                signupListener.listen(signupEvent);
+            } catch (UserNameStartsWithDigitException userNameStartsWithDigitException) {
+                userNameStartsWithDigitException.printStackTrace();
+            } catch (EmptyFieldException emptyFieldException) {
+                emptyFieldException.printStackTrace();
+            } catch (PasswordsNotMatchException passwordsNotMatchException) {
+                passwordsNotMatchException.printStackTrace();
+            } catch (ClassNotFoundException classNotFoundException) {
+                classNotFoundException.printStackTrace();
+            } catch (UsernameExistsException usernameExistsException) {
+                usernameExistsException.printStackTrace();
+            } catch (EmailExistException emailExistException) {
+                emailExistException.printStackTrace();
+            } catch (CouldNotConnectToServerException couldNotConnectToServerException) {
+                couldNotConnectToServerException.printStackTrace();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
 
+
+        }
     }
 
 
@@ -212,6 +256,19 @@ public class SignupPanel extends JPanel implements ActionListener {
 
         return arr;
     }
+
+    public String getYearCombo() {
+        return String.valueOf(yearCombo.getSelectedItem());
+    }
+
+    public String getMonthCombo() {
+        return String.valueOf(monthCombo.getSelectedItem());
+    }
+
+    public String getDayCombo() {
+        return String.valueOf(dayCombo.getSelectedItem());
+    }
+
 
 
 }

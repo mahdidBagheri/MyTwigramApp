@@ -1,6 +1,4 @@
-package ClientConnection.Client;
-
-import ClientConnection.ClientConnection;
+package Connection.Client;
 
 import java.io.Serializable;
 import java.util.HashMap;

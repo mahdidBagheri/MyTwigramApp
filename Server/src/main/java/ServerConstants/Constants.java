@@ -1,4 +1,4 @@
-package Constants;
+package ServerConstants;
 
 public interface Constants {
     int portNumber = 9000;
