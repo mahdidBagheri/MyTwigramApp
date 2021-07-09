@@ -205,17 +205,34 @@ public class SignupPanel extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == singUpBotton){
-            SignupEvent signupEvent = new SignupEvent(firstNameText.getText(),
-                                                        lastNameText.getText(),
-                                                        userNameText.getText(),
-                                                        password1Text.getText(),
-                                                        password2Text.getText(),
-                                                        emailText.getText(),
-                                                        getDayCombo(),
-                                                        getMonthCombo(),
-                                                        getYearCombo(),
-                                                        phoneText.getText(),
-                                                        bioText.getText());
+            SignupEvent signupEvent;
+            if(birthDateCheck.isSelected()){
+                signupEvent = new SignupEvent(firstNameText.getText(),
+                        lastNameText.getText(),
+                        userNameText.getText(),
+                        password1Text.getText(),
+                        password2Text.getText(),
+                        emailText.getText(),
+                        getDayCombo(),
+                        getMonthCombo(),
+                        getYearCombo(),
+                        phoneText.getText(),
+                        bioText.getText());
+            }
+            else {
+                signupEvent = new SignupEvent(firstNameText.getText(),
+                        lastNameText.getText(),
+                        userNameText.getText(),
+                        password1Text.getText(),
+                        password2Text.getText(),
+                        emailText.getText(),
+                        null,
+                        null,
+                        null,
+                        phoneText.getText(),
+                        bioText.getText());
+            }
+
             try {
                 signupListener.listen(signupEvent);
             } catch (UserNameStartsWithDigitException userNameStartsWithDigitException) {
@@ -237,6 +254,18 @@ public class SignupPanel extends JPanel implements ActionListener {
             }
 
 
+        }
+        else if(e.getSource()== birthDateCheck){
+            if(birthDateCheck.isSelected()){
+                dayCombo.setEnabled(true);
+                monthCombo.setEnabled(true);
+                yearCombo.setEnabled(true);
+            }
+            else {
+                dayCombo.setEnabled(false);
+                monthCombo.setEnabled(false);
+                yearCombo.setEnabled(false);
+            }
         }
     }
 

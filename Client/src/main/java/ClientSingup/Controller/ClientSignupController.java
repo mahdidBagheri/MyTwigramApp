@@ -57,6 +57,7 @@ public class ClientSignupController {
         payLoad.getStringStringHashMap().put("username",signupEvent.getUserName());
         payLoad.getStringStringHashMap().put("password",signupEvent.getPassword1());
         payLoad.getStringStringHashMap().put("email",signupEvent.getEmail());
+
         ClientRequest clientRequest = new ClientRequest("signup",payLoad,null,"validate username",null,null);
         boolean isUsernameExists = clientConnection.executeBoolean(clientRequest);
         if(isUsernameExists){
@@ -81,6 +82,29 @@ public class ClientSignupController {
 
     }
 
-    public void signup() {
+    public void signup(SignupEvent signupEvent) throws CouldNotConnectToServerException, IOException, ClassNotFoundException, EmailExistException {
+        ClientConnection clientConnection = new ClientConnection();
+
+        ClientPayLoad payLoad = new ClientPayLoad();
+        payLoad.getStringStringHashMap().put("username",signupEvent.getUserName());
+        payLoad.getStringStringHashMap().put("password",signupEvent.getPassword1());
+        payLoad.getStringStringHashMap().put("email",signupEvent.getEmail());
+        payLoad.getStringStringHashMap().put("birthDate",birthDate(signupEvent));
+        payLoad.getStringStringHashMap().put("bio",signupEvent.getBio());
+        payLoad.getStringStringHashMap().put("phoneNumber",signupEvent.getPhone());
+        payLoad.getStringStringHashMap().put("firstName",signupEvent.getFirstName());
+        payLoad.getStringStringHashMap().put("lastName",signupEvent.getLastName());
+        ClientRequest clientRequest = new ClientRequest("signup",payLoad,null,"signup",null,null);
+        clientConnection.execute(clientRequest);
+
+    }
+
+    public String birthDate(SignupEvent signUpEvent){
+        if(signUpEvent.getBirthDay() == null){
+            return null;
+        }
+        return signUpEvent.getBirthDay() + "-"
+                + signUpEvent.getBirthMonth() + "-"
+                + signUpEvent.getBirthYear() + " 00:00:00";
     }
 }

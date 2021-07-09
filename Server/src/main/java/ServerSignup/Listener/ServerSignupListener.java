@@ -4,6 +4,7 @@ import Connection.Client.ClientRequest;
 import Connection.Server.ServerConnection;
 import Connection.Server.ServerRequest;
 import ServerSignup.Controller.ServerSignupController;
+import User.Model.User;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -30,14 +31,19 @@ public class ServerSignupListener {
             ServerRequest serverRequest = new ServerRequest(clientRequest.getUsername(), Boolean.toString(isValidUserName), null);
             serverConnection.execute(serverRequest);
         }
-        /*
+
         else if(clientRequest.getCommand().equals("signup")){
             User user = new User();
-            user.setUsername(clientRequest.getUsername());
-            user.setPassword(clientRequest.getPassword());
+            user.setUserName(clientRequest.getClientPayLoad().getStringStringHashMap().get("username"));
+            user.setPassWord(clientRequest.getClientPayLoad().getStringStringHashMap().get("password"));
+            user.setfName(clientRequest.getClientPayLoad().getStringStringHashMap().get("firstName"));
+            user.setlName(clientRequest.getClientPayLoad().getStringStringHashMap().get("lastName"));
             user.setEmail(clientRequest.getClientPayLoad().getStringStringHashMap().get("email"));
-            signupController.signupUser(user);
+            user.setBio(clientRequest.getClientPayLoad().getStringStringHashMap().get("bio"));
+            user.setPhoneNumber(clientRequest.getClientPayLoad().getStringStringHashMap().get("phoneNumber"));
+            user.setBirthDate(clientRequest.getClientPayLoad().getStringStringHashMap().get("birthDate"));
+            signupController.signUpUser(user);
         }
-         */
+
     }
 }

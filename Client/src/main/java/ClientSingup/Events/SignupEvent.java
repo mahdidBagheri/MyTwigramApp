@@ -8,7 +8,9 @@ public class SignupEvent {
     String password1;
     String password2;
     String email;
-    String birthDate;
+    String birthDay;
+    String birthMonth;
+    String birthYear;
     String phone;
     String bio;
 
@@ -29,7 +31,9 @@ public class SignupEvent {
         this.password1 = password1;
         this.password2 = password2;
         this.email = email;
-        this.birthDate = birthDate;
+        this.birthDay = birthDay;
+        this.birthMonth = birthMonth;
+        this.birthYear = birthYear;
         this.phone = phone;
         this.bio = bio;
     }
@@ -58,15 +62,23 @@ public class SignupEvent {
         return email;
     }
 
-    public String getBirthDate() {
-        return birthDate;
-    }
-
     public String getPhone() {
         return phone;
     }
 
     public String getBio() {
         return bio;
+    }
+
+    public String getBirthDay() {
+        return birthDay;
+    }
+
+    public String getBirthMonth() {
+        return birthMonth;
+    }
+
+    public String getBirthYear() {
+        return birthYear;
     }
 }

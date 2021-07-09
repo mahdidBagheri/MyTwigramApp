@@ -27,7 +27,7 @@ public class SignupListener {
         ClientSignupController signupController = new ClientSignupController(mainPanel);
 
         signupController.validateSignup(signupEvent);
-        signupController.signup();
+        signupController.signup(signupEvent);
     }
 
 }
