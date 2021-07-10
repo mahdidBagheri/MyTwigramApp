@@ -16,6 +16,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.time.LocalDate;
 
 public class SignupPanel extends JPanel implements ActionListener {
@@ -251,6 +252,8 @@ public class SignupPanel extends JPanel implements ActionListener {
                 couldNotConnectToServerException.printStackTrace();
             } catch (IOException ioException) {
                 ioException.printStackTrace();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
             }
 
 

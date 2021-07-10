@@ -8,9 +8,11 @@ import ClientSingup.Events.SignupEvent;
 import ClientSingup.Exceptions.EmptyFieldException;
 import ClientSingup.Exceptions.PasswordsNotMatchException;
 import ClientSingup.Exceptions.UserNameStartsWithDigitException;
+import LocalDataBase.LocalDataBase;
 import MainFrame.View.MainPanel;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 public class SignupListener {
     MainPanel mainPanel;
@@ -22,12 +24,15 @@ public class SignupListener {
             EmptyFieldException, PasswordsNotMatchException,
             ClassNotFoundException, UsernameExistsException,
             EmailExistException, CouldNotConnectToServerException,
-            IOException {
+            IOException, SQLException {
 
         ClientSignupController signupController = new ClientSignupController(mainPanel);
 
         signupController.validateSignup(signupEvent);
         signupController.signup(signupEvent);
+        LocalDataBase localDataBase = new LocalDataBase();
+        localDataBase.createLocalDataBase("User" + signupEvent.getUserName() + "DataBase");
+
     }
 
 }
