@@ -236,6 +236,8 @@ public class SignupPanel extends JPanel implements ActionListener {
 
             try {
                 signupListener.listen(signupEvent);
+                clearAllFields();
+                JOptionPane.showMessageDialog(this,"successfully signed up!");
             } catch (UserNameStartsWithDigitException userNameStartsWithDigitException) {
                 userNameStartsWithDigitException.printStackTrace();
             } catch (EmptyFieldException emptyFieldException) {
@@ -270,6 +272,17 @@ public class SignupPanel extends JPanel implements ActionListener {
                 yearCombo.setEnabled(false);
             }
         }
+    }
+
+    private void clearAllFields() {
+        firstNameText.setText(" ");
+        lastNameText.setText(" ");
+        emailText.setText(" ");
+        phoneText.setText(" ");
+        userNameText.setText(" ");
+        password1Text.setText(" ");
+        password2Text.setText(" ");
+        bioText.setText(" ");
     }
 
 
