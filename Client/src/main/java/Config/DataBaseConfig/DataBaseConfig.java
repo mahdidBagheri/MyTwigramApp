@@ -10,7 +10,7 @@ import java.util.Properties;
 public class DataBaseConfig {
     String dataBaseConfigPath;
 
-    String dataBaseAddress;
+    String dataBaseName;
 
     public DataBaseConfig() throws IOException {
         ClientMainConfig mainConfig = new ClientMainConfig();
@@ -20,7 +20,7 @@ public class DataBaseConfig {
         FileReader fileReader = new FileReader(dataBaseConfigPath);
         properties.load(fileReader);
 
-        dataBaseAddress = properties.getProperty("dataBaseAddress");
+        dataBaseName = properties.getProperty("dataBaseName");
     }
 
     public void saveDataBaseName(String DBname) throws IOException {
@@ -30,12 +30,12 @@ public class DataBaseConfig {
         Properties properties = new Properties();
         FileWriter fileWriter = new FileWriter(dataBaseConfigPath);
 
-        properties.setProperty("dataBaseAddress",DBname);
+        properties.setProperty("dataBaseName",DBname);
         properties.store(fileWriter,"");
         int a = 0;
     }
 
-    public String getDataBaseAddress() {
-        return dataBaseAddress;
+    public String getDataBaseName() {
+        return dataBaseName;
     }
 }

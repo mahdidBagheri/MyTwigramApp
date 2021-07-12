@@ -62,25 +62,25 @@ public class LocalDataBase {
 
 
     private void createGroupsTable() throws SQLException {
-        String sql = String.format("create table \"GroupsTable\"(\"ChatAddress\" character varying (50),\"GroupName\" character varying (50), \"Date\" timestamp without time zone);");
+        String sql = String.format("create table \"GroupsTable\"(\"ChatAddress\" character varying (50),\"GroupName\" character varying (50), \"Date\" timestamp without time zone, \"sync\" character varying (6) );");
         Statement statement = localDBConnection.createStatement();
         statement.executeUpdate(sql);
     }
 
     private void createChatsTable() throws SQLException {
-        String sql = String.format("create table \"ChatsTable\"(\"ChatAddress\" character varying (50),\"Username\" character varying (50), \"Date\" timestamp without time zone);");
+        String sql = String.format("create table \"ChatsTable\"(\"ChatAddress\" character varying (50),\"Username\" character varying (50), \"Date\" timestamp without time zone, \"sync\" character varying (6));");
         Statement statement = localDBConnection.createStatement();
         statement.executeUpdate(sql);
     }
 
     private void createTimeLineTable() throws SQLException {
-        String sql = String.format("create table \"TimeLine\"(\"UUID\" uuid NOT NULL PRIMARY KEY, \"text\" text,\"Username\" character varying (50), \"Date\" timestamp without time zone);");
+        String sql = String.format("create table \"TimeLine\"(\"UUID\" uuid NOT NULL PRIMARY KEY, \"text\" text,\"Username\" character varying (50), \"Date\" timestamp without time zone,\"sync\" character varying (6));");
         Statement statement = localDBConnection.createStatement();
         statement.executeUpdate(sql);
     }
 
     private void createUserInfoTable() throws SQLException {
-        String sql = String.format("create table \"UserInfo\"(\"UUID\" uuid NOT NULL PRIMARY KEY, \"Username\" character varying (50), \"Pass\" character varying (50),\"Fname\" character varying (50),\"Lname\" character varying (50),\"Email\" character varying (50),\"Privacy\" character varying (50),\"BirthDate\" character varying (50),\"PhoneNumber\" character varying (50),\"Bio\" character varying (50),\"Status\" character varying (50),\"LastSeen\" character varying (50), \"DateJoined\" timestamp without time zone,\"Activities\" character varying (50),\"ProfilePic\" character varying (200));");
+        String sql = String.format("create table \"UserInfo\"(\"UUID\" uuid NOT NULL PRIMARY KEY, \"Username\" character varying (50), \"Pass\" character varying (50),\"Fname\" character varying (50),\"Lname\" character varying (50),\"Email\" character varying (50),\"Privacy\" character varying (50),\"BirthDate\" character varying (50),\"PhoneNumber\" character varying (50),\"Bio\" character varying (50),\"Status\" character varying (50),\"LastSeen\" character varying (50), \"DateJoined\" timestamp without time zone,\"Activities\" character varying (50),\"ProfilePic\" character varying (200), \"sync\" character varying (6));");
         Statement statement = localDBConnection.createStatement();
         statement.executeUpdate(sql);
     }
@@ -93,7 +93,7 @@ public class LocalDataBase {
         tables.add("mutes");
 
         for(String tablename : tables){
-            String sql = String.format("create table \"%s\"(\"UUID\" uuid NOT NULL PRIMARY KEY, \"Username\" character varying (50));",tablename);
+            String sql = String.format("create table \"%s\"(\"UUID\" uuid NOT NULL PRIMARY KEY, \"Username\" character varying (50), \"sync\" character varying (6));",tablename);
             Statement statement = localDBConnection.createStatement();
             statement.executeUpdate(sql);
         }
@@ -105,7 +105,7 @@ public class LocalDataBase {
         tables.add("twitts");
 
         for(String tablename : tables){
-            String sql = String.format("create table \"%s\"(\"TwittUUID\" uuid NOT NULL PRIMARY KEY, \"text\" text, \"Author\" character varying (50),\"LikesNum\" character varying (50),\"RetwittsNum\" character varying (50));",tablename);
+            String sql = String.format("create table \"%s\"(\"TwittUUID\" uuid NOT NULL PRIMARY KEY, \"text\" text, \"Author\" character varying (50),\"LikesNum\" character varying (50),\"RetwittsNum\" character varying (50), \"sync\" character varying (6));",tablename);
             Statement statement = localDBConnection.createStatement();
             statement.executeUpdate(sql);
         }
@@ -116,6 +116,7 @@ public class LocalDataBase {
         Statement statement = localDBConnection.createStatement();
         statement.executeUpdate(sql);
     }
+
 
 
 

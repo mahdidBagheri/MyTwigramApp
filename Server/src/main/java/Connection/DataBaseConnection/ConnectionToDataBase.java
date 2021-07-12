@@ -35,4 +35,8 @@ public class ConnectionToDataBase {
         Statement statement = this.connection.createStatement();
         return statement.executeQuery(sql);
     }
+
+    public void finalize() throws SQLException {
+        connection.close();
+    }
 }
