@@ -3,6 +3,7 @@ package Connection.Client;
 import Connection.Server.ServerConnection;
 import Connection.Server.ServerWaitForInput;
 import ServerSignup.Listener.ServerSignupListener;
+import User.Exceptions.unsuccessfullReadDataFromDatabase;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -37,6 +38,8 @@ public class ClientThread extends Thread{
                 ioException.printStackTrace();
             }
             e.printStackTrace();
+        } catch (User.Exceptions.unsuccessfullReadDataFromDatabase unsuccessfullReadDataFromDatabase) {
+            unsuccessfullReadDataFromDatabase.printStackTrace();
         }
     }
 }

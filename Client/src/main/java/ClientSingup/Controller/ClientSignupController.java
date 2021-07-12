@@ -2,6 +2,7 @@ package ClientSingup.Controller;
 
 import Connection.Client.ClientPayLoad;
 import Connection.Client.ClientRequest;
+import Connection.Client.ClientWaitForInput;
 import Connection.ClientConnection;
 import Connection.Exceptions.CouldNotConnectToServerException;
 import Connection.Exceptions.EmailExistException;
@@ -10,9 +11,13 @@ import ClientSingup.Events.SignupEvent;
 import ClientSingup.Exceptions.EmptyFieldException;
 import ClientSingup.Exceptions.PasswordsNotMatchException;
 import ClientSingup.Exceptions.UserNameStartsWithDigitException;
+import Connection.Server.ServerRequest;
+import LocalDataBase.ConnectionToLocalDataBase;
 import MainFrame.View.MainPanel;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.sql.SQLException;
 
 public class ClientSignupController {
     MainPanel mainPanel;
@@ -106,5 +111,112 @@ public class ClientSignupController {
         return signUpEvent.getBirthDay() + "-"
                 + signUpEvent.getBirthMonth() + "-"
                 + signUpEvent.getBirthYear() + " 00:00:00";
+    }
+
+    public void saveUserDataToLocalDataBase(SignupEvent signupEvent) throws SQLException, IOException, ClassNotFoundException {
+        ClientConnection clientConnection = new ClientConnection();
+        ClientRequest clientRequest = new ClientRequest("signup",null,null,"userData",signupEvent.getUserName(),signupEvent.getPassword1());
+        clientConnection.execute(clientRequest);
+
+        ClientWaitForInput.waitForInput(clientConnection.getSocket());
+        ObjectInputStream objectInputStream = new ObjectInputStream(clientConnection.getSocket().getInputStream());
+        ServerRequest serverRequest = (ServerRequest) objectInputStream.readObject();
+
+        ConnectionToLocalDataBase connectionToLocalDataBase = new ConnectionToLocalDataBase();
+
+        String sqlQuery;
+        String defaultProfilePath = "../Server/src/main/resources/Pics/UsersPics/defaultProfilePic.PNG";
+        if(serverRequest.getPayLoad().getUser().getBirthDate().isEmpty()){
+            sqlQuery = String.format("insert into \"UserInfo\" (\"UUID\", " +
+                            "\"Username\", " +
+                            "\"Pass\"," +
+                            "\"Fname\", " +
+                            "\"Lname\"," +
+                            "\"Email\"," +
+                            "\"BirthDate\","+
+                            "\"Bio\","+
+                            "\"PhoneNumber\","+
+                            "\"DateJoined\","+
+                            "\"Privacy\","+
+                            "\"Status\","+
+                            "\"LastSeenMode\","+
+                            "\"LastSeen\","+
+                            "\"ProfilePic\"," +
+                            "\"sync\")"+
+                            "values (uuid_generate_v4(),"+
+                            "'%s',"+
+                            "'%s',"+
+                            "'%s',"+
+                            "'%s',"+
+                            "'%s',"+
+                            "'%s',"+
+                            "'%s',"+
+                            "'%s',"+
+                            "'%s',"+
+                            "'Public',"+
+                            "'Active',"+
+                            "'EveryOne',"+
+                            "'%s'," +
+                            "'%s'," +
+                            "true);",
+                    serverRequest.getPayLoad().getUser().getUserName(),
+                    serverRequest.getPayLoad().getUser().getPassWord(),
+                    serverRequest.getPayLoad().getUser().getfName(),
+                    serverRequest.getPayLoad().getUser().getlName(),
+                    serverRequest.getPayLoad().getUser().getEmail(),
+                    serverRequest.getPayLoad().getUser().getBirthDate(),
+                    serverRequest.getPayLoad().getUser().getBio(),
+                    serverRequest.getPayLoad().getUser().getPhoneNumber(),
+                    serverRequest.getPayLoad().getUser().getLastSeen(),
+                    serverRequest.getPayLoad().getUser().getLastSeen(),
+                    defaultProfilePath);
+
+        }
+        else {
+            sqlQuery = String.format("insert into \"UserInfo\" (\"UUID\", " +
+                            "\"Username\", " +
+                            "\"Pass\"," +
+                            "\"Fname\", " +
+                            "\"Lname\"," +
+                            "\"Email\"," +
+                            "\"Bio\","+
+                            "\"PhoneNumber\","+
+                            "\"DateJoined\","+
+                            "\"Privacy\","+
+                            "\"Status\","+
+                            "\"LastSeenMode\","+
+                            "\"LastSeen\"," +
+                            "\"ProfilePic\"," +
+                            "\"sync\")"+
+                            "values (uuid_generate_v4(),"+
+                            "'%s',"+
+                            "'%s',"+
+                            "'%s',"+
+                            "'%s',"+
+                            "'%s',"+
+                            "'%s',"+
+                            "'%s',"+
+                            "'%s',"+
+                            "'Public',"+
+                            "'Active',"+
+                            "'EveryOne',"+
+                            "'%s'," +
+                            "'%s'," +
+                            "true);",
+                    serverRequest.getPayLoad().getUser().getUserName(),
+                    serverRequest.getPayLoad().getUser().getPassWord(),
+                    serverRequest.getPayLoad().getUser().getfName(),
+                    serverRequest.getPayLoad().getUser().getlName(),
+                    serverRequest.getPayLoad().getUser().getEmail(),
+                    serverRequest.getPayLoad().getUser().getBio(),
+                    serverRequest.getPayLoad().getUser().getPhoneNumber(),
+                    serverRequest.getPayLoad().getUser().getLastSeen(),
+                    serverRequest.getPayLoad().getUser().getLastSeen(),
+                    defaultProfilePath);
+
+        }
+
+        connectionToLocalDataBase.executeUpdate(sqlQuery);
+
     }
 }

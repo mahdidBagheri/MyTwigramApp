@@ -15,6 +15,7 @@ import Notification.Model.PendingFollowersRequestNotif;
 import Twitt.Controller.TwittsController;
 import Twitt.Model.Twitt;
 import User.Exceptions.*;
+import User.Model.Activity;
 import User.Model.User;
 import Utils.DateTime;
 
@@ -61,9 +62,54 @@ public class UserController {
         readProfilePic();
     }
 
+    public void readAll(String userName) throws unsuccessfullReadDataFromDatabase, SQLException
+    {
+        readUserUUIDbyUsername(userName);
+        readUserName();
+        readfirstName();
+        readlastName();
+        readBio();
+        readBirthDate();
+        readEmail();
+        readLastSeen();
+        readLastSeenMode();
+        readPassword();
+        readStatus();
+        readPrivacy();
+        readActivities();
+        readMutedUsers();
+        readFollowing();
+        readFollowers();
+        readBlackList();
+        readSavedTwitts();
+        readLikes();
+        readPhoneNumber();
+        readTwitts();
+        readProfilePic();
+    }
+
+    private void readUserUUIDbyUsername(String username) throws SQLException, unsuccessfullReadDataFromDatabase {
+        ConnectionToDataBase connectionToServer = new ConnectionToDataBase();
+        String sql = String.format("select \"UserUUID\" from  \"UsersTable\"  where  \"UserName\" = '%s';", username);
+        ResultSet rs = connectionToServer.executeQuery(sql);
+        connectionToServer.Disconect();
+        if (rs != null) {
+            if (rs.next()) {
+                user.setUserUUID(rs.getString(1));
+                connectionToServer.Disconect();
+            } else {
+                connectionToServer.Disconect();
+                throw new unsuccessfullReadDataFromDatabase("Could not retrive User Name");
+            }
+        } else {
+            connectionToServer.Disconect();
+            throw new unsuccessfullReadDataFromDatabase("Could not retrive User Name");
+        }
+    }
+
     public void readUserName() throws SQLException, unsuccessfullReadDataFromDatabase {
         ConnectionToDataBase connectionToServer = new ConnectionToDataBase();
-        String sql = String.format("select \"UserName\" from  \"UsersTable\"  where  \"UserUUID\" = '%s'", user.getUserUUID());
+        String sql = String.format("select \"UserName\" from  \"UsersTable\"  where  \"UserUUID\" = '%s';", user.getUserUUID());
         ResultSet rs = connectionToServer.executeQuery(sql);
         connectionToServer.Disconect();
         if (rs != null) {
@@ -82,7 +128,7 @@ public class UserController {
 
     public void readPassword() throws SQLException, unsuccessfullReadDataFromDatabase {
         ConnectionToDataBase connectionToServer = new ConnectionToDataBase();
-        String sql = String.format("select \"Pass\" from  \"UsersTable\"  where  \"UserUUID\" = '%s'", user.getUserUUID());
+        String sql = String.format("select \"Pass\" from  \"UsersTable\"  where  \"UserUUID\" = '%s';", user.getUserUUID());
         ResultSet rs = connectionToServer.executeQuery(sql);
         connectionToServer.Disconect();
         if (rs != null) {
@@ -101,7 +147,7 @@ public class UserController {
 
     public void readfirstName() throws SQLException, unsuccessfullReadDataFromDatabase {
         ConnectionToDataBase connectionToServer = new ConnectionToDataBase();
-        String sql = String.format("select \"Fname\" from  \"UsersTable\"  where  \"UserUUID\" = '%s'", user.getUserUUID());
+        String sql = String.format("select \"Fname\" from  \"UsersTable\"  where  \"UserUUID\" = '%s';", user.getUserUUID());
         ResultSet rs = connectionToServer.executeQuery(sql);
         connectionToServer.Disconect();
         if (rs != null) {
@@ -120,7 +166,7 @@ public class UserController {
 
     public void readlastName() throws SQLException, unsuccessfullReadDataFromDatabase {
         ConnectionToDataBase connectionToServer = new ConnectionToDataBase();
-        String sql = String.format("select \"Lname\" from  \"UsersTable\"  where  \"UserUUID\" = '%s'", user.getUserUUID());
+        String sql = String.format("select \"Lname\" from  \"UsersTable\"  where  \"UserUUID\" = '%s';", user.getUserUUID());
         ResultSet rs = connectionToServer.executeQuery(sql);
         connectionToServer.Disconect();
         if (rs != null) {
@@ -139,7 +185,7 @@ public class UserController {
 
     public void readEmail() throws SQLException, unsuccessfullReadDataFromDatabase {
         ConnectionToDataBase connectionToServer = new ConnectionToDataBase();
-        String sql = String.format("select \"Email\" from  \"UsersTable\"  where  \"UserUUID\" = '%s'", user.getUserUUID());
+        String sql = String.format("select \"Email\" from  \"UsersTable\"  where  \"UserUUID\" = '%s';", user.getUserUUID());
         ResultSet rs = connectionToServer.executeQuery(sql);
         connectionToServer.Disconect();
         if (rs != null) {
@@ -158,7 +204,7 @@ public class UserController {
 
     public void readPrivacy() throws SQLException, unsuccessfullReadDataFromDatabase {
         ConnectionToDataBase connectionToServer = new ConnectionToDataBase();
-        String sql = String.format("select \"Privacy\" from  \"UsersTable\"  where  \"UserUUID\" = '%s'", user.getUserUUID());
+        String sql = String.format("select \"Privacy\" from  \"UsersTable\"  where  \"UserUUID\" = '%s';", user.getUserUUID());
         ResultSet rs = connectionToServer.executeQuery(sql);
         connectionToServer.Disconect();
         if (rs != null) {
@@ -964,10 +1010,22 @@ public class UserController {
 
     public void readActivities() throws SQLException {
         DateTime dateTime = new DateTime();
+        user.getActivities().clear();
         ConnectionToDataBase connectionToServer = new ConnectionToDataBase();
         String sql = String.format("select * from \"User%sActivities\" where \"Date\" between '%s' AND '%s' ;", user.getUserUUID(), dateTime.Yesterday(), dateTime.Now());
         ResultSet rs = connectionToServer.executeQuery(sql);
-        user.setActivities(rs);
+        if (rs != null) {
+            while (rs.next()) {
+                Activity activity = new Activity();
+                Twitt twitt = new Twitt();
+                twitt.setTwittUUID(rs.getString(2));
+                activity.setUUID(rs.getString(1));
+                activity.setTwitt(twitt);
+                activity.setDate(rs.getString(4));
+                activity.setType(rs.getString(3));
+                user.getActivities().add(activity);
+            }
+        }
         connectionToServer.Disconect();
     }
 
@@ -1119,6 +1177,7 @@ public class UserController {
             while (rs.next()) {
                 String path = rs.getString(1);
                 user.setProfilePic(new ImageIcon(path));
+                int a = 0;
             }
             connectionToServer.Disconect();
         } else {

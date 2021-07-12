@@ -15,7 +15,7 @@ public class ConnectionToLocalDataBase {
     Connection localDBConnection;
 
 
-    public void connectionToLocalDataBase() throws ClassNotFoundException, SQLException, IOException {
+    public ConnectionToLocalDataBase() throws ClassNotFoundException, SQLException, IOException {
         DataBaseConfig dataBaseConfig = new DataBaseConfig();
 
         this.localjdbsURL = jdbsURL + dataBaseConfig.getDataBaseName();

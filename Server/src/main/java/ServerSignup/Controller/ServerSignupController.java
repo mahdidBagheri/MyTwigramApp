@@ -67,7 +67,7 @@ public class ServerSignupController {
     public void signUpUser(User user) throws SQLException {
         String nowString = dateTime.Now();
         String sqlQuery;
-        String defaultProfilePath = "../MyTwitterApp-Graphgics/src/src/main/resources/ProfilePics//defaultProfilePic.PNG";
+        String defaultProfilePath = "../MyTwitterApp_Networks/Server/src/main/resources/Pics/UsersPics/defaultProfilePic.PNG";
 
         if(user.getBirthDate() != null){
             sqlQuery = String.format("insert into \"UsersTable\" (\"UserUUID\", " +

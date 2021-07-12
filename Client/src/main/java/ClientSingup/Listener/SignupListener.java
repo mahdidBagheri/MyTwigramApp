@@ -32,6 +32,7 @@ public class SignupListener {
         signupController.signup(signupEvent);
         LocalDataBase localDataBase = new LocalDataBase();
         localDataBase.createLocalDataBase("User" + signupEvent.getUserName() + "DataBase");
+        signupController.saveUserDataToLocalDataBase(signupEvent);
 
     }
 

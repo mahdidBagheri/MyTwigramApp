@@ -2,8 +2,11 @@ package ServerSignup.Listener;
 
 import Connection.Client.ClientRequest;
 import Connection.Server.ServerConnection;
+import Connection.Server.ServerPayLoad;
 import Connection.Server.ServerRequest;
 import ServerSignup.Controller.ServerSignupController;
+import User.Controller.UserController;
+import User.Exceptions.unsuccessfullReadDataFromDatabase;
 import User.Model.User;
 
 import java.io.IOException;
@@ -18,7 +21,7 @@ public class ServerSignupListener {
     }
 
 
-    public void listen(ClientRequest clientRequest) throws SQLException, IOException {
+    public void listen(ClientRequest clientRequest) throws SQLException, IOException, unsuccessfullReadDataFromDatabase {
         ServerSignupController signupController = new ServerSignupController(serverConnection);
 
         if(clientRequest.getCommand().equals("validate email")){
@@ -43,6 +46,17 @@ public class ServerSignupListener {
             user.setPhoneNumber(clientRequest.getClientPayLoad().getStringStringHashMap().get("phoneNumber"));
             user.setBirthDate(clientRequest.getClientPayLoad().getStringStringHashMap().get("birthDate"));
             signupController.signUpUser(user);
+        }
+        else if(clientRequest.getCommand().equals("userData")){
+            User user = new User();
+            UserController userController = new UserController(user);
+            userController.readAll(clientRequest.getUsername());
+
+            ServerPayLoad serverPayLoad = new ServerPayLoad();
+            serverPayLoad.setUser(user);
+
+            ServerRequest serverRequest = new ServerRequest(null, "userData",serverPayLoad);
+            serverConnection.execute(serverRequest);
         }
 
     }
