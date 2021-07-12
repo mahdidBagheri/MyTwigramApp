@@ -1,3 +1,4 @@
 colorConfigPath=..\\MyTwitterApp_Networks\\Client\\src\\main\\resources\\Config\\ColorConfig\\ColorConfig
 frameConfigPath=..\\MyTwitterApp_Networks\\Client\\src\\main\\resources\\Config\\FrameConfig\\FrameConfig
 networksConfig=..\\MyTwitterApp_Networks\\Client\\src\\main\\resources\\Config\\NetworkConfig\\NetworkConfig
+dataBaseConfigPath=..\\MyTwitterApp_Networks\\Client\\src\\main\\resources\\Config\\DataBaseConfig\\DataBaseConfig

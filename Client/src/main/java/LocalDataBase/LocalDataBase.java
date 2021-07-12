@@ -1,5 +1,8 @@
 package LocalDataBase;
 
+import Config.DataBaseConfig.DataBaseConfig;
+
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -25,9 +28,10 @@ public class LocalDataBase {
             Statement statement = connection.createStatement();
             String sql = "create database" + " \"" + DBname + "\" " +  ";";
             statement.executeUpdate( sql);
-            //connection.close();
 
             createAdditionalTables();
+            DataBaseConfig dataBaseConfig = new DataBaseConfig();
+            dataBaseConfig.saveDataBaseName(DBname);
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -35,6 +39,8 @@ public class LocalDataBase {
         } catch (ClassNotFoundException throwables){
             throwables.printStackTrace();
             System.out.println("class not found exception");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
