@@ -1,27 +1,35 @@
 package ClientLogin.View;
 
+import ClientLogin.Events.LoginEvent;
+import ClientLogin.Exceptions.EmptyFieldException;
+import ClientLogin.Listeners.LoginListener;
 import Config.ColorConfig.ColorConfig;
 import Config.FrameConfig.FrameConfig;
+import Connection.Exceptions.UserPassNotMatchException;
 import MainFrame.View.MainPanel;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.sql.SQLException;
 
 public class LoginPanel extends JPanel implements ActionListener {
 
-    JLabel UserNameLable ;
-    JTextArea UserNameText;
+    JLabel userNameLable ;
+    JTextArea userNameText;
 
-    JLabel PasswordLable ;
-    JTextArea PasswordText;
+    JLabel passwordLable ;
+    JTextArea passwordText;
 
-    JButton LogInBotton;
+    JButton logInBotton;
     JButton exitBtn;
 
+    LoginListener loginListener;
 
     public LoginPanel(MainPanel mainPanel) throws IOException {
+        this.loginListener = new LoginListener(mainPanel);
+
         ColorConfig colorConfig = new ColorConfig();
         FrameConfig frameConfig = new FrameConfig();
 
@@ -30,30 +38,30 @@ public class LoginPanel extends JPanel implements ActionListener {
         this.setBounds(0,80,(int)(frameConfig.getWidth()),(int)frameConfig.getHeight()-80);
 
 
-        UserNameLable = new JLabel();
-        UserNameLable.setBounds(50,50,150,20);
-        UserNameLable.setText("Insert your UserName*:");
-        UserNameLable.setVisible(true);
+        userNameLable = new JLabel();
+        userNameLable.setBounds(50,50,150,20);
+        userNameLable.setText("Insert your UserName*:");
+        userNameLable.setVisible(true);
 
-        UserNameText = new JTextArea();
-        UserNameText.setBounds(50,80,150,40);
-        UserNameText.setVisible(true);
+        userNameText = new JTextArea();
+        userNameText.setBounds(50,80,150,40);
+        userNameText.setVisible(true);
 
-        PasswordLable = new JLabel();
-        PasswordLable.setBounds(300,50,150,20);
-        PasswordLable.setText("Insert your Password*:");
-        PasswordLable.setVisible(true);
+        passwordLable = new JLabel();
+        passwordLable.setBounds(300,50,150,20);
+        passwordLable.setText("Insert your Password*:");
+        passwordLable.setVisible(true);
 
-        PasswordText = new JTextArea();
-        PasswordText.setBounds(300,80,150,40);
-        PasswordText.setVisible(true);
+        passwordText = new JTextArea();
+        passwordText.setBounds(300,80,150,40);
+        passwordText.setVisible(true);
 
 
-        LogInBotton = new JButton("LogIn!");
-        LogInBotton.setText("LogIn!");
-        LogInBotton.setFocusable(false);
-        LogInBotton.setBounds(200,200,110,50);
-        LogInBotton.addActionListener(this);
+        logInBotton = new JButton("LogIn!");
+        logInBotton.setText("LogIn!");
+        logInBotton.setFocusable(false);
+        logInBotton.setBounds(200,200,110,50);
+        logInBotton.addActionListener(this);
 
         exitBtn = new JButton("Exit!");
         exitBtn.setText("Exit!");
@@ -62,16 +70,32 @@ public class LoginPanel extends JPanel implements ActionListener {
         exitBtn.addActionListener(this);
 
 
-        this.add(UserNameLable);
-        this.add(UserNameText);
-        this.add(PasswordLable);
-        this.add(PasswordText);
-        this.add(LogInBotton);
+        this.add(userNameLable);
+        this.add(userNameText);
+        this.add(passwordLable);
+        this.add(passwordText);
+        this.add(logInBotton);
         this.add(exitBtn);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
+        if(e.getSource() == logInBotton){
+            LoginEvent loginEvent = new LoginEvent(userNameText.getText(), passwordText.getText());
+            try {
+                loginListener.listen(loginEvent);
+                System.out.println("successfully loggedin");
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            } catch (EmptyFieldException emptyFieldException) {
+                emptyFieldException.printStackTrace();
+            } catch (ClassNotFoundException classNotFoundException) {
+                classNotFoundException.printStackTrace();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            } catch (UserPassNotMatchException userPassNotMatchException) {
+                userPassNotMatchException.printStackTrace();
+            }
+        }
     }
 }

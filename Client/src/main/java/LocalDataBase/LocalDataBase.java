@@ -92,7 +92,7 @@ public class LocalDataBase {
     }
 
     private void createUserInfoTable() throws SQLException {
-        String sql = String.format("create table \"UserInfo\"(\"UUID\" uuid NOT NULL PRIMARY KEY, \"Username\" character varying (50), \"Pass\" character varying (50),\"Fname\" character varying (50),\"Lname\" character varying (50),\"Email\" character varying (50),\"Privacy\" character varying (50),\"BirthDate\" character varying (50),\"PhoneNumber\" character varying (50),\"Bio\" character varying (50),\"Status\" character varying (50),\"LastSeen\" character varying (50),\"LastSeenMode\" character varying (50), \"DateJoined\" timestamp without time zone,\"Activities\" character varying (50),\"ProfilePic\" character varying (200), \"sync\" character varying (6));");
+        String sql = String.format("create table \"UserInfo\"(\"UUID\" uuid NOT NULL PRIMARY KEY, \"Username\" character varying (50), \"Pass\" character varying (50),\"Fname\" character varying (50),\"Lname\" character varying (50),\"Email\" character varying (50),\"Privacy\" character varying (50),\"BirthDate\" character varying (50),\"PhoneNumber\" character varying (50),\"Bio\" character varying (50),\"Status\" character varying (50),\"LastSeen\" character varying (50),\"LastSeenMode\" character varying (50), \"DateJoined\" timestamp without time zone,\"Activities\" character varying (50),\"ProfilePic\" character varying (200),\"Session\" character varying (50), \"sync\" character varying (6));");
         Statement statement = localDBConnection.createStatement();
         statement.executeUpdate(sql);
     }
