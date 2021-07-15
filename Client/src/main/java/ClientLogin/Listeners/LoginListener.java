@@ -3,8 +3,13 @@ package ClientLogin.Listeners;
 import ClientLogin.Controller.LoginController;
 import ClientLogin.Events.LoginEvent;
 import ClientLogin.Exceptions.EmptyFieldException;
+import Connection.Client.ClientPayLoad;
+import Connection.Client.ClientRequest;
+import Connection.ClientConnection;
 import Connection.Exceptions.UserPassNotMatchException;
 import MainFrame.View.MainPanel;
+import User.Controller.UserController;
+import User.Model.User;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -21,5 +26,18 @@ public class LoginListener {
 
         loginController.validateLogin(loginEvent);
         loginController.loginUser(loginEvent);
+        // read data
+
+        User mainUser = new User();
+        UserController userController = new UserController(mainUser);
+        userController.setAsMain();
+
+        ClientConnection clientConnection = new ClientConnection();
+        ClientPayLoad clientPayLoad = new ClientPayLoad();
+        clientPayLoad.getStringStringHashMap().put("username",mainUser.getUserName());
+        ClientRequest clientRequest = new ClientRequest("profile",clientPayLoad,mainUser.getSession(),"profileData",mainUser.getUserName(),mainUser.getPassWord());
+        clientConnection.execute(clientRequest);
+
+        mainPanel.addProfilePanel(mainUser);
     }
 }

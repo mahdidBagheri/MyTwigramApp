@@ -3,12 +3,12 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 import Connection.Client.ClientThread;
-import ServerConstants.Constants;
+import ServerConstants.ServerConstants;
 
 public class ServerMain {
     public static void main(String[] args) throws IOException {
         ServerSocket serverSocket = null;
-        serverSocket = new ServerSocket(Constants.portNumber);
+        serverSocket = new ServerSocket(ServerConstants.portNumber);
 
         while (true) {
 

@@ -27,10 +27,12 @@ public class User implements Serializable {
     private String birthDate;
     private String privacy;
     private String lastSeenMode;
+    private String session;
+    private String sync;
 
-    private LinkedList<String> followers = new LinkedList<String>();
-    private LinkedList<String> following = new LinkedList<String>();
-    private LinkedList<String> blackList = new LinkedList<String>();
+    private LinkedList<User> followers = new LinkedList<User>();
+    private LinkedList<User> following = new LinkedList<User>();
+    private LinkedList<User> blackList = new LinkedList<User>();
     private LinkedList<Notification> notifications = new LinkedList<Notification>();
 
     private LinkedList<String> pendingFollowingRequest = new LinkedList<String>();
@@ -160,27 +162,43 @@ public class User implements Serializable {
         this.lastSeenMode = lastSeenMode;
     }
 
-    public LinkedList<String> getFollowers() {
+    public String getSession() {
+        return session;
+    }
+
+    public void setSession(String session) {
+        this.session = session;
+    }
+
+    public String getSync() {
+        return sync;
+    }
+
+    public void setSync(String sync) {
+        this.sync = sync;
+    }
+
+    public LinkedList<User> getFollowers() {
         return followers;
     }
 
-    public void setFollowers(LinkedList<String> followers) {
+    public void setFollowers(LinkedList<User> followers) {
         this.followers = followers;
     }
 
-    public LinkedList<String> getFollowing() {
+    public LinkedList<User> getFollowing() {
         return following;
     }
 
-    public void setFollowing(LinkedList<String> following) {
+    public void setFollowing(LinkedList<User> following) {
         this.following = following;
     }
 
-    public LinkedList<String> getBlackList() {
+    public LinkedList<User> getBlackList() {
         return blackList;
     }
 
-    public void setBlackList(LinkedList<String> blackList) {
+    public void setBlackList(LinkedList<User> blackList) {
         this.blackList = blackList;
     }
 

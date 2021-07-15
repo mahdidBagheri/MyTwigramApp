@@ -27,6 +27,8 @@ public class User implements Serializable {
     private String birthDate;
     private String privacy;
     private String lastSeenMode;
+    private String session;
+    private String sync;
 
     private LinkedList<String> followers = new LinkedList<String>();
     private LinkedList<String> following = new LinkedList<String>();
@@ -158,6 +160,22 @@ public class User implements Serializable {
 
     public void setLastSeenMode(String lastSeenMode) {
         this.lastSeenMode = lastSeenMode;
+    }
+
+    public String getSession() {
+        return session;
+    }
+
+    public void setSession(String session) {
+        this.session = session;
+    }
+
+    public String getSync() {
+        return sync;
+    }
+
+    public void setSync(String sync) {
+        this.sync = sync;
     }
 
     public LinkedList<String> getFollowers() {

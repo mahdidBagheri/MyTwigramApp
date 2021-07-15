@@ -1,6 +1,6 @@
 package ServerConstants;
 
-public interface Constants {
+public interface ServerConstants {
     int portNumber = 9000;
     String IP = "localhost";
     int picWidth = 150;

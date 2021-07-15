@@ -1,14 +1,12 @@
 package ServerLogin.Listener;
 
 import Connection.Client.ClientRequest;
-import Connection.DataBaseConnection.ConnectionToDataBase;
 import Connection.Server.ServerConnection;
 import Connection.Server.ServerPayLoad;
 import Connection.Server.ServerRequest;
 import ServerLogin.Controller.ServerLoginController;
 
 import java.io.IOException;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class ServerLoginListener {

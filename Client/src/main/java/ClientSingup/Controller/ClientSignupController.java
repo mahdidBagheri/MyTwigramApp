@@ -1,5 +1,6 @@
 package ClientSingup.Controller;
 
+import Config.PathConfig.PathConfig;
 import Connection.Client.ClientPayLoad;
 import Connection.Client.ClientRequest;
 import Connection.Client.ClientWaitForInput;
@@ -124,8 +125,10 @@ public class ClientSignupController {
 
         ConnectionToLocalDataBase connectionToLocalDataBase = new ConnectionToLocalDataBase();
 
+        PathConfig pathConfig = new PathConfig();
+
         String sqlQuery;
-        String defaultProfilePath = "../Server/src/main/resources/Pics/UsersPics/defaultProfilePic.PNG";
+        String defaultProfilePath = pathConfig.getUsersPicsPath() + "//defaultProfilePic.PNG";
         if(serverRequest.getPayLoad().getUser().getBirthDate().isEmpty()){
             sqlQuery = String.format("insert into \"UserInfo\" (\"UUID\", " +
                             "\"Username\", " +

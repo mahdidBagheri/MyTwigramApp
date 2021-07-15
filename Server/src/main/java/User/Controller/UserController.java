@@ -9,9 +9,7 @@ import Chats.Model.newChat;
 import Connection.DataBaseConnection.ConnectionToDataBase;
 import Connection.Utils.DataBaseUtils;
 import Groups.Model.Group;
-import Notification.Model.NewFollowerNotif;
 import Notification.Model.Notification;
-import Notification.Model.PendingFollowersRequestNotif;
 import Twitt.Controller.TwittsController;
 import Twitt.Model.Twitt;
 import User.Exceptions.*;
@@ -1190,7 +1188,7 @@ public class UserController {
 
     public void changeProfilePic(String path) throws IOException, SQLException {
 
-        ImageIcon myImage = new ImageIcon(new ImageIcon(path).getImage().getScaledInstance(Constants.picWidth, Constants.picHeight, Image.SCALE_DEFAULT));
+        ImageIcon myImage = new ImageIcon(new ImageIcon(path).getImage().getScaledInstance(ServerConstants.picWidth, ServerConstants.picHeight, Image.SCALE_DEFAULT));
         user.setProfilePic(myImage);
         BufferedImage bImage = null;
 
@@ -1199,9 +1197,9 @@ public class UserController {
 
         int type = bImage.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : bImage.getType();
 
-        BufferedImage resizedBuffImg = new BufferedImage(Constants.picWidth, Constants.picHeight, type);
+        BufferedImage resizedBuffImg = new BufferedImage(ServerConstants.picWidth, ServerConstants.picHeight, type);
         Graphics2D g = resizedBuffImg.createGraphics();
-        g.drawImage(bImage, 0, 0, Constants.picWidth, Constants.picHeight, null);
+        g.drawImage(bImage, 0, 0, ServerConstants.picWidth, ServerConstants.picHeight, null);
         g.dispose();
 
         String dstPath = String.format("../MyTwitterApp-Graphgics/src/src/main/resources/ProfilePics//%s.PNG", user.getUserUUID());
@@ -1229,7 +1227,7 @@ public class UserController {
         if(twitt.getReports().contains(user.getUserUUID())){
             throw new alreadyReportedException("AlreadyReportedException");
         }
-        if(twitt.getReports().size() >= Constants.reportsNum){
+        if(twitt.getReports().size() >= ServerConstants.reportsNum){
             twittsController.deleteTwitt();
         }
 

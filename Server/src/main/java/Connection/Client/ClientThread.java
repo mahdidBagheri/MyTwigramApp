@@ -3,6 +3,7 @@ package Connection.Client;
 import Connection.Server.ServerConnection;
 import Connection.Server.ServerWaitForInput;
 import ServerLogin.Listener.ServerLoginListener;
+import ServerProfile.Listener.ServerProfileListener;
 import ServerSignup.Listener.ServerSignupListener;
 import User.Exceptions.unsuccessfullReadDataFromDatabase;
 
@@ -35,6 +36,10 @@ public class ClientThread extends Thread{
             if (clientRequest.getSource().equals("login")) {
                 ServerLoginListener loginListener = new ServerLoginListener(serverConnection);
                 loginListener.listen(clientRequest);
+            }
+            if (clientRequest.getSource().equals("profile")) {
+                ServerProfileListener serverProfileListener = new ServerProfileListener(serverConnection);
+                serverProfileListener.listen(clientRequest);
             }
         }catch (IOException | ClassNotFoundException | SQLException e){
             try {

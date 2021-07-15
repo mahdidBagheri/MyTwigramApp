@@ -4,6 +4,9 @@ import ClientLogin.View.LoginPanel;
 import ClientSingup.View.SignupPanel;
 import Config.ColorConfig.ColorConfig;
 import Config.FrameConfig.FrameConfig;
+import Options.View.OptionPanel;
+import Profile.View.ProfilePanel;
+import User.Model.User;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,6 +16,8 @@ import java.util.LinkedList;
 public class MainPanel extends JPanel {
 
     LinkedList<JPanel> panels = new LinkedList<>();
+    LinkedList<JPanel> panelsTail = new LinkedList<>();
+
 
     public static MainPanel mainPanel = null;
 
@@ -47,6 +52,14 @@ public class MainPanel extends JPanel {
         this.add(new SignupPanel(mainPanel));
     }
 
+    public void addProfilePanel(User user) throws IOException {
+        this.clear();
+        this.add(new OptionPanel(mainPanel));
+        int a = 0;
+        this.add(new ProfilePanel(mainPanel, user));
+        int b = 0;
+    }
+
     private void clear() {
         for (int i = 0; i < panels.size(); i++){
             if (panels.get(i) != null){
@@ -64,6 +77,7 @@ public class MainPanel extends JPanel {
         this.repaint();
         panels.add(jPanel);
     }
+
 
 
 }

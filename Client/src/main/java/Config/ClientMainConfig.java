@@ -11,6 +11,7 @@ public class ClientMainConfig {
     String colorConfigPath;
     String fontConfigPath;
     String dataBaseConfigPath;
+    String pathConfigPath;
 
     public ClientMainConfig() throws IOException {
         Properties properties = new Properties();
@@ -20,6 +21,7 @@ public class ClientMainConfig {
         colorConfigPath = properties.getProperty("colorConfigPath");
         fontConfigPath = properties.getProperty("fontConfigPath");
         dataBaseConfigPath = properties.getProperty("dataBaseConfigPath");
+        pathConfigPath = properties.getProperty("pathConfigPath");
 
     }
 
@@ -57,5 +59,17 @@ public class ClientMainConfig {
 
     public String getDataBaseConfigPath() {
         return dataBaseConfigPath;
+    }
+
+    public void setDataBaseConfigPath(String dataBaseConfigPath) {
+        this.dataBaseConfigPath = dataBaseConfigPath;
+    }
+
+    public String getPathConfigPath() {
+        return pathConfigPath;
+    }
+
+    public void setPathConfigPath(String pathConfogPath) {
+        this.pathConfigPath = pathConfogPath;
     }
 }
