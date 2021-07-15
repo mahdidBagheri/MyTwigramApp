@@ -117,5 +117,16 @@ public class OptionPanel extends JPanel implements ActionListener {
                 classNotFoundException.printStackTrace();
             }
         }
+        else if(e.getSource() == searchBotton){
+            try {
+                optionsListener.listen("searchBtn");
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            } catch (ClassNotFoundException classNotFoundException) {
+                classNotFoundException.printStackTrace();
+            }
+        }
     }
 }

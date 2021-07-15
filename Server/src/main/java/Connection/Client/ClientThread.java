@@ -4,6 +4,7 @@ import Connection.Server.ServerConnection;
 import Connection.Server.ServerWaitForInput;
 import ServerLogin.Listener.ServerLoginListener;
 import ServerProfile.Listener.ServerProfileListener;
+import ServerSearch.Listener.ServerSearchListener;
 import ServerSignup.Listener.ServerSignupListener;
 import User.Exceptions.unsuccessfullReadDataFromDatabase;
 
@@ -40,6 +41,10 @@ public class ClientThread extends Thread{
             if (clientRequest.getSource().equals("profile")) {
                 ServerProfileListener serverProfileListener = new ServerProfileListener(serverConnection);
                 serverProfileListener.listen(clientRequest);
+            }
+            if (clientRequest.getSource().equals("search")) {
+                ServerSearchListener serverSearchListener = new ServerSearchListener(serverConnection);
+                serverSearchListener.listen(clientRequest);
             }
         }catch (IOException | ClassNotFoundException | SQLException e){
             try {

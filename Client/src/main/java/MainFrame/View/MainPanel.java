@@ -1,6 +1,7 @@
 package MainFrame.View;
 
 import ClientLogin.View.LoginPanel;
+import ClientSearch.View.SearchPanel;
 import ClientSingup.View.SignupPanel;
 import Config.ColorConfig.ColorConfig;
 import Config.FrameConfig.FrameConfig;
@@ -79,5 +80,11 @@ public class MainPanel extends JPanel {
     }
 
 
-
+    public void addSearchPanel() throws IOException {
+        this.clear();
+        this.add(new OptionPanel(mainPanel));
+        int a = 0;
+        this.add(new SearchPanel(mainPanel));
+        int b = 0;
+    }
 }

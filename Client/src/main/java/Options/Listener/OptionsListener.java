@@ -31,5 +31,8 @@ public class OptionsListener {
 
             mainPanel.addProfilePanel(mainUser);
         }
+        else if(command.equals("searchBtn")){
+            mainPanel.addSearchPanel();
+        }
     }
 }
