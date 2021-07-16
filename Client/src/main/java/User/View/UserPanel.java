@@ -2,7 +2,10 @@ package User.View;
 
 import Config.ColorConfig.ColorConfig;
 import Twitt.Listeners.TwittViewListener;
+import User.Events.UserEvent;
 import User.Events.UserViewEvent;
+import User.Exceptions.FollowException;
+import User.Listener.ClientUserListener;
 import User.Listener.UserViewListener;
 import User.Model.User;
 
@@ -10,6 +13,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.sql.SQLException;
 
 public class UserPanel extends JPanel implements ActionListener {
     User user;
@@ -44,9 +48,11 @@ public class UserPanel extends JPanel implements ActionListener {
 
     UserViewListener userViewListener;
     TwittViewListener twittViewListener;
+    ClientUserListener userListener;
 
     public UserPanel(UserViewEvent userViewEvent) throws IOException {
         this.twittViewListener = new TwittViewListener();
+        this.userListener = new ClientUserListener(userViewEvent.getMainPanel());
 
         ColorConfig colorConfig = new ColorConfig();
 
@@ -233,6 +239,28 @@ public class UserPanel extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if(e.getSource() == follow_OR_unfollowBtn){
 
+            try {
+                UserEvent userEvent = new UserEvent(user,"followOrUnfollow");
+                userListener.listen(userEvent);
+                JOptionPane.showMessageDialog(this,"successfully followed");
+                if(follow_OR_unfollowBtn.getText().equals("follow")){
+                    follow_OR_unfollowBtn.setText("unfollow");
+                }
+                else {
+                    follow_OR_unfollowBtn.setText("follow");
+                }
+
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            } catch (ClassNotFoundException classNotFoundException) {
+                classNotFoundException.printStackTrace();
+            } catch (FollowException followException) {
+                followException.printStackTrace();
+            }
+        }
     }
 }

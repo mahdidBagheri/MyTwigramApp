@@ -58,7 +58,7 @@ public class SearchPanel extends JPanel implements ActionListener {
         upBtn.setText("Up");
         upBtn.setVisible(true);
 
-        searchResultPanel = new ResultPanel();
+        searchResultPanel = new ResultPanel(mainPanel);
         searchResultPanel.setUserViewListener(new UserViewListener(mainPanel));
 
 

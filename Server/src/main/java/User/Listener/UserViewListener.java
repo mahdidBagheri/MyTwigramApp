@@ -11,9 +11,9 @@ import User.Model.User;
 import java.io.IOException;
 import java.sql.SQLException;
 
-public class UserListener {
+public class UserViewListener {
     ServerConnection serverConnection;
-    public UserListener(ServerConnection serverConnection) {
+    public UserViewListener(ServerConnection serverConnection) {
         this.serverConnection = serverConnection;
     }
 

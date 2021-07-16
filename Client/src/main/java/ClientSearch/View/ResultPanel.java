@@ -1,5 +1,6 @@
 package ClientSearch.View;
 
+import MainFrame.View.MainPanel;
 import User.Events.UserViewEvent;
 import User.Listener.UserViewListener;
 import Config.ColorConfig.ColorConfig;
@@ -20,13 +21,17 @@ public class ResultPanel extends JPanel implements ActionListener {
     JLabel nameLabel;
     JLabel bioLabel;
 
-    public ResultPanel() throws IOException {
+    MainPanel mainPanel;
+
+    public ResultPanel(MainPanel mainPanel) throws IOException {
         this.setLayout(null);
         this.setBounds(20, 150, 300,350);
         ColorConfig colorConfig = new ColorConfig();
 
         this.setBackground(colorConfig.getColor02());
         this.setVisible(true);
+
+        this.mainPanel = mainPanel;
 
     }
 
@@ -83,7 +88,7 @@ public class ResultPanel extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == goProfileBtn){
             try {
-                UserViewEvent userViewEvent = new UserViewEvent(user);
+                UserViewEvent userViewEvent = new UserViewEvent(user,mainPanel);
                 userViewListener.listen(userViewEvent);
 
             } catch (SQLException throwables) {

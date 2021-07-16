@@ -1,13 +1,18 @@
 package Connection.Client;
 
 import Connection.Server.ServerConnection;
+import Connection.Server.ServerRequest;
 import Connection.Server.ServerWaitForInput;
 import ServerLogin.Listener.ServerLoginListener;
 import ServerProfile.Listener.ServerProfileListener;
 import ServerSearch.Listener.ServerSearchListener;
 import ServerSignup.Listener.ServerSignupListener;
-import User.Exceptions.unsuccessfullReadDataFromDatabase;
-import User.Listener.UserListener;
+import User.Exceptions.alreadyFollowedException;
+import User.Exceptions.notFollowingUserException;
+import User.Exceptions.selfFollowException;
+import User.Exceptions.sendFollowRequestException;
+import User.Listener.ServerUserListener;
+import User.Listener.UserViewListener;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -48,7 +53,11 @@ public class ClientThread extends Thread{
                 serverSearchListener.listen(clientRequest);
             }
             if (clientRequest.getSource().equals("userView")) {
-                UserListener userListener = new UserListener(serverConnection);
+                UserViewListener userViewListener = new UserViewListener(serverConnection);
+                userViewListener.listen(clientRequest);
+            }
+            if (clientRequest.getSource().equals("onUserAction")) {
+                ServerUserListener userListener = new ServerUserListener(serverConnection);
                 userListener.listen(clientRequest);
             }
         }catch (IOException | ClassNotFoundException | SQLException e){
@@ -60,6 +69,13 @@ public class ClientThread extends Thread{
             e.printStackTrace();
         } catch (User.Exceptions.unsuccessfullReadDataFromDatabase unsuccessfullReadDataFromDatabase) {
             unsuccessfullReadDataFromDatabase.printStackTrace();
+        } catch (selfFollowException | sendFollowRequestException | alreadyFollowedException | notFollowingUserException e){
+            ServerRequest serverRequest = new ServerRequest(null,"could not follow",null);
+            try {
+                serverConnection.execute(serverRequest);
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
         }
     }
 }

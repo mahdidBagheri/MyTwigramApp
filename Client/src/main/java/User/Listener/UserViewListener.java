@@ -30,7 +30,7 @@ public class UserViewListener {
         ObjectInputStream objectInputStream = new ObjectInputStream(clientConnection.getSocket().getInputStream());
         ServerRequest serverRequest = (ServerRequest) objectInputStream.readObject();
 
-        UserViewEvent userViewEvent1 = new UserViewEvent(serverRequest.getPayLoad().getUser());
+        UserViewEvent userViewEvent1 = new UserViewEvent(serverRequest.getPayLoad().getUser(), mainPanel);
         mainPanel.addUserPanel(userViewEvent1);
     }
 }
