@@ -23,6 +23,10 @@ public class DataBaseConfig {
         dataBaseName = properties.getProperty("dataBaseName");
     }
 
+    public void changeAcount(String username) throws IOException {
+        saveDataBaseName("User" + username + "DataBase");
+    }
+
     public void saveDataBaseName(String DBname) throws IOException {
         ClientMainConfig mainConfig = new ClientMainConfig();
         dataBaseConfigPath = mainConfig.getDataBaseConfigPath();

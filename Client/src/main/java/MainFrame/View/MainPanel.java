@@ -7,17 +7,18 @@ import Config.ColorConfig.ColorConfig;
 import Config.FrameConfig.FrameConfig;
 import Options.View.OptionPanel;
 import Profile.View.ProfilePanel;
+import User.Events.UserViewEvent;
 import User.Model.User;
+import User.View.UserPanel;
 
 import javax.swing.*;
-import java.awt.*;
 import java.io.IOException;
 import java.util.LinkedList;
 
 public class MainPanel extends JPanel {
 
     LinkedList<JPanel> panels = new LinkedList<>();
-    LinkedList<JPanel> panelsTail = new LinkedList<>();
+    LinkedList<JPanel> panelsTrace = new LinkedList<>();
 
 
     public static MainPanel mainPanel = null;
@@ -37,6 +38,7 @@ public class MainPanel extends JPanel {
 
     public void addWelcomePanel() throws IOException {
         this.clear();
+        this.panelsTrace.clear();
         this.add(new WelcomePanel());
         this.add(new TopPanel(mainPanel));
     }
@@ -72,6 +74,15 @@ public class MainPanel extends JPanel {
         }
 
     }
+    private void clearPanels() {
+        for (int i = 0; i < panels.size(); i++){
+            if (panels.get(i) != null){
+                this.remove(panels.get(i));
+                this.repaint();
+                i--;
+            }
+        }
+    }
 
     public void add(JPanel jPanel){
         super.add(jPanel);
@@ -83,8 +94,21 @@ public class MainPanel extends JPanel {
     public void addSearchPanel() throws IOException {
         this.clear();
         this.add(new OptionPanel(mainPanel));
-        int a = 0;
         this.add(new SearchPanel(mainPanel));
-        int b = 0;
     }
+
+    public void addUserPanel(UserViewEvent userViewEvent) throws IOException {
+        if(panels.size() == 2){
+            panelsTrace.add(panels.get(0));
+            panelsTrace.add(panels.get(1));
+        }
+        else {
+            panelsTrace.add(panels.getLast());
+        }
+
+        this.clear();
+        this.add(new UserPanel(userViewEvent));
+    }
+
+
 }

@@ -2,6 +2,7 @@ package ClientSearch.View;
 
 import ClientSearch.Events.SearchEvent;
 import ClientSearch.Listeners.SearchViewListener;
+import User.Listener.UserViewListener;
 import Config.ColorConfig.ColorConfig;
 import Config.FrameConfig.FrameConfig;
 import Connection.Server.ServerRequest;
@@ -24,6 +25,7 @@ public class SearchPanel extends JPanel implements ActionListener {
     private JButton downBtn;
 
     private SearchViewListener searchViewListener;
+    private UserViewListener userViewListener;
 
     LinkedList<User> searchResultList = new LinkedList<>();
 
@@ -57,6 +59,7 @@ public class SearchPanel extends JPanel implements ActionListener {
         upBtn.setVisible(true);
 
         searchResultPanel = new ResultPanel();
+        searchResultPanel.setUserViewListener(new UserViewListener(mainPanel));
 
 
         downBtn = new JButton();

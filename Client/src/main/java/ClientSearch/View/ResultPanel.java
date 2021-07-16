@@ -1,6 +1,7 @@
 package ClientSearch.View;
 
-import ClientSearch.Listeners.ViewUserListener;
+import User.Events.UserViewEvent;
+import User.Listener.UserViewListener;
 import Config.ColorConfig.ColorConfig;
 import User.Model.User;
 
@@ -8,9 +9,10 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.sql.SQLException;
 
 public class ResultPanel extends JPanel implements ActionListener {
-    ViewUserListener viewUserListener;
+    UserViewListener userViewListener;
     JButton goProfileBtn;
     JLabel userNameLable;
     User user;
@@ -79,11 +81,33 @@ public class ResultPanel extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if(e.getSource() == goProfileBtn){
+            try {
+                UserViewEvent userViewEvent = new UserViewEvent(user);
+                userViewListener.listen(userViewEvent);
 
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            } catch (ClassNotFoundException classNotFoundException) {
+                classNotFoundException.printStackTrace();
+            }
+        }
     }
 
     public void showNotFound() {
         userNameLable.setText("NOT FOUND!");
+        userNameLable.setText(" ");
+        user = null;
+        profilePicLable.setText(" ");
+        nameLabel.setText(" ");
+        bioLabel.setText(" ");
         this.repaint();
+    }
+
+
+    public void setUserViewListener(UserViewListener userViewListener) {
+        this.userViewListener = userViewListener;
     }
 }

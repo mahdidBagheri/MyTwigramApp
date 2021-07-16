@@ -43,7 +43,7 @@ public class User implements Serializable {
 
     private String Status;
 
-    private LinkedList<String> twitts = new LinkedList<String>();
+    private LinkedList<Twitt> twitts = new LinkedList<Twitt>();
     private LinkedList<String> likes = new LinkedList<String>();
     private LinkedList<Twitt> savedTwitts = new LinkedList<Twitt>();
     private LinkedList<String> reTwitts = new LinkedList<String>();
@@ -258,11 +258,11 @@ public class User implements Serializable {
         Status = status;
     }
 
-    public LinkedList<String> getTwitts() {
+    public LinkedList<Twitt> getTwitts() {
         return twitts;
     }
 
-    public void setTwitts(LinkedList<String> twitts) {
+    public void setTwitts(LinkedList<Twitt> twitts) {
         this.twitts = twitts;
     }
 

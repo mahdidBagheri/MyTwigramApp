@@ -7,6 +7,7 @@ import ServerProfile.Listener.ServerProfileListener;
 import ServerSearch.Listener.ServerSearchListener;
 import ServerSignup.Listener.ServerSignupListener;
 import User.Exceptions.unsuccessfullReadDataFromDatabase;
+import User.Listener.UserListener;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -45,6 +46,10 @@ public class ClientThread extends Thread{
             if (clientRequest.getSource().equals("search")) {
                 ServerSearchListener serverSearchListener = new ServerSearchListener(serverConnection);
                 serverSearchListener.listen(clientRequest);
+            }
+            if (clientRequest.getSource().equals("userView")) {
+                UserListener userListener = new UserListener(serverConnection);
+                userListener.listen(clientRequest);
             }
         }catch (IOException | ClassNotFoundException | SQLException e){
             try {

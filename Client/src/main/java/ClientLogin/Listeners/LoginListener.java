@@ -3,6 +3,7 @@ package ClientLogin.Listeners;
 import ClientLogin.Controller.LoginController;
 import ClientLogin.Events.LoginEvent;
 import ClientLogin.Exceptions.EmptyFieldException;
+import Config.DataBaseConfig.DataBaseConfig;
 import Connection.Client.ClientPayLoad;
 import Connection.Client.ClientRequest;
 import Connection.ClientConnection;
@@ -27,6 +28,9 @@ public class LoginListener {
         loginController.validateLogin(loginEvent);
         loginController.loginUser(loginEvent);
         // read data
+
+        DataBaseConfig dataBaseConfig = new DataBaseConfig();
+        dataBaseConfig.changeAcount(loginEvent.getUsername());
 
         User mainUser = new User();
         UserController userController = new UserController(mainUser);

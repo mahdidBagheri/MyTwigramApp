@@ -128,5 +128,16 @@ public class OptionPanel extends JPanel implements ActionListener {
                 classNotFoundException.printStackTrace();
             }
         }
+        else if(e.getSource() == logOut){
+            try {
+                optionsListener.listen("logOutBtn");
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            } catch (ClassNotFoundException classNotFoundException) {
+                classNotFoundException.printStackTrace();
+            }
+        }
     }
 }

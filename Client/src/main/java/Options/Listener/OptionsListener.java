@@ -34,5 +34,8 @@ public class OptionsListener {
         else if(command.equals("searchBtn")){
             mainPanel.addSearchPanel();
         }
+        else if(command.equals("logOutBtn")){
+            mainPanel.addWelcomePanel();
+        }
     }
 }

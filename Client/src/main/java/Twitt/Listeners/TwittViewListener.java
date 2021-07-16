@@ -1,4 +1,4 @@
-package CommonClasses.Listeners;
+package Twitt.Listeners;
 
 public class TwittViewListener {
 }

@@ -1,7 +1,7 @@
 package Profile.View;
 
-import CommonClasses.Listeners.TwittViewListener;
-import CommonClasses.Listeners.UserViewListener;
+import Twitt.Listeners.TwittViewListener;
+import User.Listener.UserViewListener;
 import Config.ColorConfig.ColorConfig;
 import MainFrame.View.MainPanel;
 import Profile.Listener.ChangeProfileListener;
@@ -56,7 +56,7 @@ public class ProfilePanel extends JPanel implements ActionListener {
         this.mainPanel = mainPanel;
         this.user = user;
 
-        this.userViewListener = new UserViewListener();
+        this.userViewListener = new UserViewListener(mainPanel);
         this.twittViewListener = new TwittViewListener();
         this.changeProfileListener = new ChangeProfileListener();
 
@@ -193,7 +193,7 @@ public class ProfilePanel extends JPanel implements ActionListener {
 
     private void getTwittsItems(User user) {
         for (int i = 0; i < user.getTwitts().size(); i++) {
-            twittsCombo.addItem(user.getTwitts().get(i));
+            twittsCombo.addItem(user.getTwitts().get(i).getText());
         }
     }
 
