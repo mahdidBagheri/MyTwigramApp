@@ -336,18 +336,18 @@ public class User implements Serializable {
         this.groups = groups;
     }
 
-    public boolean isFollowedBy(String UserUUID) throws SQLException {
-        for (int i = 0; i < getFollowers().size() ; i++) {
-            if(getFollowers().get(i).getUserUUID().equals(UserUUID)){
+    public boolean isFollowedBy(String userUUID) throws SQLException {
+        for (int i = 0; i <this.getFollowing().size() ; i++) {
+            if(this.getFollowers().get(i).getUserUUID().equals(userUUID)){
                 return true;
             }
         }
         return false;
     }
 
-    public boolean isFollowing(String UserUUID){
-        for (int i = 0; i < getFollowing().size(); i++) {
-            if(getFollowing().get(i).getUserUUID().equals(UserUUID)){
+    public boolean isFollowing(String userUUID){
+        for (int i = 0; i <this.getFollowing().size() ; i++) {
+            if(this.getFollowing().get(i).getUserUUID().equals(userUUID)){
                 return true;
             }
         }

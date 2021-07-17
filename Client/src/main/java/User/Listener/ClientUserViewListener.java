@@ -8,6 +8,7 @@ import Connection.Server.ServerRequest;
 import MainFrame.View.MainPanel;
 import User.Controller.ClientUserController;
 import User.Events.UserViewEvent;
+import User.Model.User;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -21,11 +22,12 @@ public class ClientUserViewListener {
     }
 
     public void listen(UserViewEvent userViewEvent) throws IOException, ClassNotFoundException, SQLException {
-        ClientUserController clientUserController = new ClientUserController(userViewEvent.getUser());
+        User user = userViewEvent.getUser();
+        ClientUserController clientUserController = new ClientUserController(user);
         clientUserController.readAllByUsername();
 
 
-        UserViewEvent userViewEvent1 = new UserViewEvent(userViewEvent.getUser(), mainPanel);
+        UserViewEvent userViewEvent1 = new UserViewEvent(user, mainPanel);
         mainPanel.addUserPanel(userViewEvent1);
 
     }

@@ -4,6 +4,7 @@ import Config.ColorConfig.ColorConfig;
 import MainFrame.Listener.BackListener;
 import MainFrame.View.MainPanel;
 import Twitt.Listeners.TwittViewListener;
+import User.Controller.ClientUserController;
 import User.Events.UserEvent;
 import User.Events.UserViewEvent;
 import User.Exceptions.FollowException;
@@ -139,7 +140,7 @@ public class UserPanel extends JPanel implements ActionListener {
 
         follow_OR_unfollowBtn = new JButton();
         follow_OR_unfollowBtn.setBounds(20, 190, 120, 40);
-        follow_OR_unfollowBtn.setText(userViewEvent.getMainUser().isFollowing(user.getUserUUID()) ? "unfollow" : "follow");
+        follow_OR_unfollowBtn.setText(userViewEvent.getMainUser().isFollowing(user.getUserName()) ? "unfollow" : "follow");
         follow_OR_unfollowBtn.setVisible(true);
         follow_OR_unfollowBtn.addActionListener(this);
 
@@ -226,18 +227,21 @@ public class UserPanel extends JPanel implements ActionListener {
 
 
     private void getFollowersItems(UserViewEvent userViewEvent) {
+        followersCombo.removeAllItems();
         for (int i = 0; i < userViewEvent.getUser().getFollowers().size(); i++) {
             followersCombo.addItem(userViewEvent.getUser().getFollowers().get(i).getUserName());
         }
     }
 
     private void getFollowingsItems(UserViewEvent userViewEvent) {
+        followingCombo.removeAllItems();
         for (int i = 0; i < userViewEvent.getUser().getFollowing().size(); i++) {
             followingCombo.addItem(userViewEvent.getUser().getFollowing().get(i).getUserName());
         }
     }
 
     private void getTwittsItems(UserViewEvent userViewEvent) {
+        twittsCombo.removeAllItems();
         for (int i = 0; i < userViewEvent.getUser().getTwitts().size(); i++) {
             twittsCombo.addItem(userViewEvent.getUser().getTwitts().get(i).getText());
         }
@@ -259,6 +263,7 @@ public class UserPanel extends JPanel implements ActionListener {
                     follow_OR_unfollowBtn.setText("follow");
                     JOptionPane.showMessageDialog(this,"successfully unfollowed");
                 }
+                updateCombos();
 
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
@@ -273,5 +278,18 @@ public class UserPanel extends JPanel implements ActionListener {
         else if(e.getSource() == backBtn){
             backListener.listen();
         }
+    }
+
+    private void updateCombos() throws SQLException, IOException, ClassNotFoundException {
+
+        User user = this.user;
+        ClientUserController clientUserController = new ClientUserController(user);
+        clientUserController.readAllByUsername();
+
+        UserViewEvent userViewEvent = new UserViewEvent(clientUserController.getUser(),mainPanel);
+
+        getFollowersItems(userViewEvent);
+        getFollowingsItems(userViewEvent);
+        getTwittsItems(userViewEvent);
     }
 }

@@ -4,7 +4,7 @@ import Connection.Client.ClientRequest;
 import Connection.Server.ServerConnection;
 import Connection.Server.ServerPayLoad;
 import Connection.Server.ServerRequest;
-import User.Controller.UserController;
+import User.Controller.ServerUserController;
 import User.Exceptions.unsuccessfullReadDataFromDatabase;
 import User.Model.User;
 

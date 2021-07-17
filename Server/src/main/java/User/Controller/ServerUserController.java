@@ -29,9 +29,9 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import ServerConstants.*;
 
-public class UserController {
+public class ServerUserController {
     User user;
-    public UserController(User user) {
+    public ServerUserController(User user) {
         this.user = user;
     }
 
@@ -335,7 +335,7 @@ public class UserController {
 
     public void Follow(String dstUserUUID) throws SQLException, alreadyFollowedException, selfFollowException,unsuccessfullReadDataFromDatabase {
         ConnectionToDataBase connectionToServer = new ConnectionToDataBase();
-        UserController userController = new UserController(user);
+        ServerUserController userController = new ServerUserController(user);
         DateTime dateTime = new DateTime();
         String now = dateTime.Now();
 
@@ -346,9 +346,9 @@ public class UserController {
         }
         User dstuser = new User();
         dstuser.setUserUUID(dstUserUUID);
-        UserController desUserController = new UserController(dstuser);
+        ServerUserController desUserController = new ServerUserController(dstuser);
 
-        if (!user.isFollowing(dstuser.getUserUUID())) {
+        if (!user.isFollowing(dstuser.getUserName())) {
             String sql = String.format("insert into \"User%sFollowing\" (\"UUID\",\"UserUUIDs\",\"Date\") values (uuid_generate_v4(),'%s','%s');", user.getUserUUID(), dstuser.getUserUUID(), now);
             connectionToServer.executeUpdate(sql);
         } else {
@@ -357,7 +357,7 @@ public class UserController {
             throw new alreadyFollowedException("you already following this user!");
         }
 
-        if (!dstuser.isFollowedBy(user.getUserUUID())) {
+        if (!dstuser.isFollowedBy(user.getUserName())) {
             String sql = String.format("insert into \"User%sFollowers\"(\"UUID\",\"UserUUIDs\",\"Date\") values (uuid_generate_v4(),'%s','%s');", dstuser.getUserUUID(), user.getUserUUID(), now);
             connectionToServer.executeUpdate(sql);
         }
@@ -370,7 +370,7 @@ public class UserController {
 
     public void UnFollow(String FollowerUUID) throws SQLException, notFollowingUserException, unsuccessfullReadDataFromDatabase {
         ConnectionToDataBase connectionToServer = new ConnectionToDataBase();
-        UserController userController = new UserController(user);
+        ServerUserController userController = new ServerUserController(user);
 
         if (this.user.isFollowing(FollowerUUID)) {
             User dstUser = new User();
@@ -394,54 +394,57 @@ public class UserController {
         connectionToServer.Disconect();
     }
 
-    public String ChangeFollowOrunFollow(String dstUserUUID) throws SQLException,
+    public String ChangeFollowOrunFollow(String username) throws SQLException,
             alreadyFollowedException, notFollowingUserException, selfFollowException,
             sendFollowRequestException, FileNotFoundException, unsuccessfullReadDataFromDatabase {
 
         User dstUser = new User();
-        dstUser.setUserUUID(dstUserUUID);
-        UserController dstUserController = new UserController(dstUser);
-        dstUserController.readPrivacy();
+        ServerUserController dstUserController = new ServerUserController(dstUser);
+        dstUserController.readAll(username);
 
         if (dstUser.getPrivacy().equals("Private")) {
             System.out.println("this user has a private acount to follow he/she must accept your invitation");
-            if (!this.user.isFollowing(dstUserUUID)) {
-                SendFollowRequest(dstUserUUID);
+            if (!this.user.isFollowing(username)) {
+                SendFollowRequest(username);
                 return "followRequestSent";
             } else {
-                UnFollow(dstUserUUID);
+                UnFollow(username);
                 return "unfollowed";
             }
 
         } else {
 
-            if (!user.isFollowing(dstUserUUID)) {
-                Follow(dstUserUUID);
+            if (!user.isFollowing(dstUser.getUserUUID())) {
+                Follow(dstUser.getUserUUID());
                 return "followed";
 
 
             } else {
-                UnFollow(dstUserUUID);
+                UnFollow(dstUser.getUserUUID());
                 return "unfollowed";
             }
         }
     }
 
-    public void readFollowers() throws SQLException {
+    public void readFollowers() throws SQLException, unsuccessfullReadDataFromDatabase {
         user.setFollowers(new LinkedList<>());
-        LinkedList<String> followers = new LinkedList<String>();
+        LinkedList<User> followers = new LinkedList<User>();
         DataBaseUtils dataBaseUtils = new DataBaseUtils();
         String followerTableAddress = "User" + user.getUserUUID() + "Followers";
         ConnectionToDataBase connectionToServer = new ConnectionToDataBase();
 
         if (!dataBaseUtils.isEmptyTable(followerTableAddress)) {
 
-            String sql = String.format("select \"UserUUIDs\" from  \"%s\" ; ", followerTableAddress);
+            String sql = String.format("select * from  \"%s\" ; ", followerTableAddress);
             ResultSet rs = connectionToServer.executeQuery(sql);
             connectionToServer.Disconect();
             if (rs != null) {
                 while (rs.next()) {
-                    followers.add(rs.getString(1));
+                    User user = new User();
+                    user.setUserUUID(rs.getString(2));
+                    ServerUserController userController = new ServerUserController(user);
+                    userController.readUserName();
+                    followers.add(user);
                 }
                 user.setFollowers(followers);
             } else {
@@ -451,9 +454,9 @@ public class UserController {
         connectionToServer.Disconect();
     }
 
-    public void readFollowing() throws SQLException {
+    public void readFollowing() throws SQLException, unsuccessfullReadDataFromDatabase {
         user.setFollowing(new LinkedList<>());
-        LinkedList<String> Followings = new LinkedList<>();
+        LinkedList<User> followings = new LinkedList<>();
         ConnectionToDataBase connectionToServer = new ConnectionToDataBase();
         DataBaseUtils dataBaseUtils = new DataBaseUtils();
         String followingTableAddress = "User" + user.getUserUUID() + "Following";
@@ -463,9 +466,13 @@ public class UserController {
             connectionToServer.Disconect();
             if (rs != null) {
                 while (rs.next()) {
-                    Followings.add(rs.getString(1));
+                    User user = new User();
+                    user.setUserUUID(rs.getString(1));
+                    ServerUserController userController = new ServerUserController(user);
+                    userController.readUserName();
+                    followings.add(user);
                 }
-                user.setFollowing(Followings);
+                user.setFollowing(followings);
             } else {
                 System.out.println("could not add followers");
             }
@@ -473,9 +480,9 @@ public class UserController {
         connectionToServer.Disconect();
     }
 
-    public void readBlackList() throws SQLException {
+    public void readBlackList() throws SQLException, unsuccessfullReadDataFromDatabase {
         user.getBlackList().clear();
-        LinkedList<String> BlackList = new LinkedList<>();
+        LinkedList<User> blackList = new LinkedList<>();
         ConnectionToDataBase connectionToServer = new ConnectionToDataBase();
         DataBaseUtils dataBaseUtils = new DataBaseUtils();
         String blacklistTableAddress = "User" + user.getUserUUID() + "BlackList";
@@ -486,9 +493,13 @@ public class UserController {
             connectionToServer.Disconect();
             if (rs != null) {
                 while (rs.next()) {
-                    BlackList.add(rs.getString(1));
+                    User user = new User();
+                    user.setUserUUID(rs.getString(2));
+                    ServerUserController userController = new ServerUserController(user);
+                    userController.readUserName();
+                    blackList.add(user);
                 }
-                user.setBlackList(BlackList);
+                user.setBlackList(blackList);
             } else {
                 System.out.println("could not add black list");
             }
@@ -521,7 +532,7 @@ public class UserController {
         }
         User dstUser = new User();
         dstUser.setUserUUID(UserUUID);
-        UserController desUserController = new UserController(dstUser);
+        ServerUserController desUserController = new ServerUserController(dstUser);
         desUserController.readFollowing();
 
         readFollowing();
@@ -543,7 +554,7 @@ public class UserController {
         }
     }
 
-    public void unBlock(String UserUUID) throws SQLException, successfullyUnBlockedException, unSuccessfullyUnBlockedException {
+    public void unBlock(String UserUUID) throws SQLException, successfullyUnBlockedException, unSuccessfullyUnBlockedException, unsuccessfullReadDataFromDatabase {
         ConnectionToDataBase connectionToServer = new ConnectionToDataBase();
         readBlackList();
         if (user.getBlackList().contains(UserUUID)) {
@@ -594,7 +605,7 @@ public class UserController {
         //throw new removeFollowingRequestException("Following request removed");
     }
 
-    public void SendFollowRequest(String dstUserUUID) throws SQLException, alreadyFollowedException, selfFollowException, sendFollowRequestException {
+    public void SendFollowRequest(String dstUserUUID) throws SQLException, alreadyFollowedException, selfFollowException, sendFollowRequestException, unsuccessfullReadDataFromDatabase {
         ConnectionToDataBase connectionToServer = new ConnectionToDataBase();
         DateTime dateTime = new DateTime();
         String now = dateTime.Now();
@@ -606,7 +617,7 @@ public class UserController {
 
         User dstuser = new User();
         dstuser.setUserUUID(dstUserUUID);
-        UserController dstUserController = new UserController(dstuser);
+        ServerUserController dstUserController = new ServerUserController(dstuser);
         dstUserController.readFollowing();
         readFollowing();
 
@@ -841,14 +852,17 @@ public class UserController {
         ConnectionToDataBase connectionToServer = new ConnectionToDataBase();
         String MutedTableAddress = "User" + user.getUserUUID() + "Twitts";
         DataBaseUtils dataBaseUtils = new DataBaseUtils();
-        LinkedList<String> TwittsList = new LinkedList<>();
+        LinkedList<Twitt> TwittsList = new LinkedList<>();
 
         if (!dataBaseUtils.isEmptyTable(MutedTableAddress)) {
-            String getTwittsQuery = String.format("select \"TwittUUIDs\" from  \"%s\" ", MutedTableAddress);
+            String getTwittsQuery = String.format("select * from  \"%s\" ", MutedTableAddress);
             ResultSet rs = connectionToServer.executeQuery(getTwittsQuery);
             if (rs != null) {
                 while (rs.next()) {
-                    TwittsList.add(rs.getString(1));
+                    Twitt twitt = new Twitt();
+                    twitt.setTwittUUID(rs.getString(1));
+                    //TODO fillup
+                    TwittsList.add(twitt);
                 }
                 user.setTwitts(TwittsList);
                 connectionToServer.Disconect();
@@ -992,7 +1006,7 @@ public class UserController {
 
                     User contact = new User();
                     contact.setUserUUID(rs.getString(2));
-                    UserController contactController = new UserController(contact);
+                    ServerUserController contactController = new ServerUserController(contact);
                     contactController.readUserName();
 
                     pv.setContact(contact);

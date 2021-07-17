@@ -336,13 +336,13 @@ public class User implements Serializable {
         this.groups = groups;
     }
 
-    public boolean isFollowedBy(String UserUUID) throws SQLException {
-        if(this.getFollowers().contains(UserUUID)){
-            return true;
+    public boolean isFollowedBy(String username) throws SQLException {
+        for (int i = 0; i <this.getFollowing().size() ; i++) {
+            if(this.getFollowers().get(i).getUserName().equals(username)){
+                return true;
+            }
         }
-        else{
-            return false;
-        }
+        return false;
     }
 
     public boolean isFollowing(String UserUUID){
@@ -362,20 +362,20 @@ public class User implements Serializable {
             return false;
         }
     }
-/*
-    public boolean isBlockedBy(String UserUUID) throws SQLException {
-        User dstUser = new User();
-        dstUser.setUserUUID(UserUUID);
-        UserController dsrUserController = new UserController(dstUser);
-        dsrUserController.readBlackList();
-        if(dstUser.getBlackList().contains(this.getUserUUID())){
-            return true;
+    /*
+        public boolean isBlockedBy(String UserUUID) throws SQLException {
+            User dstUser = new User();
+            dstUser.setUserUUID(UserUUID);
+            UserController dsrUserController = new UserController(dstUser);
+            dsrUserController.readBlackList();
+            if(dstUser.getBlackList().contains(this.getUserUUID())){
+                return true;
+            }
+            else{
+                return false;
+            }
         }
-        else{
-            return false;
-        }
-    }
- */
+     */
     public boolean isMuted(String UserUUID){
         if(this.getMutedUsers().contains(UserUUID)){
             return true;

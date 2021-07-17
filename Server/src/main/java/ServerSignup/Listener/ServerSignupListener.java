@@ -5,7 +5,7 @@ import Connection.Server.ServerConnection;
 import Connection.Server.ServerPayLoad;
 import Connection.Server.ServerRequest;
 import ServerSignup.Controller.ServerSignupController;
-import User.Controller.UserController;
+import User.Controller.ServerUserController;
 import User.Exceptions.unsuccessfullReadDataFromDatabase;
 import User.Model.User;
 
@@ -49,7 +49,7 @@ public class ServerSignupListener {
         }
         else if(clientRequest.getCommand().equals("userData")){
             User user = new User();
-            UserController userController = new UserController(user);
+            ServerUserController userController = new ServerUserController(user);
             userController.readAll(clientRequest.getUsername());
 
             ServerPayLoad serverPayLoad = new ServerPayLoad();

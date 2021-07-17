@@ -3,7 +3,7 @@ package User.Listener;
 import Connection.Client.ClientRequest;
 import Connection.Server.ServerConnection;
 import Connection.Server.ServerRequest;
-import User.Controller.UserController;
+import User.Controller.ServerUserController;
 import User.Exceptions.*;
 import User.Model.User;
 
@@ -23,12 +23,12 @@ public class ServerUserListener {
 
         if(clientRequest.getCommand().equals("followOrUnfollow")){
             User mainUser = new User();
-            UserController mainUserController = new UserController(mainUser);
+            ServerUserController mainUserController = new ServerUserController(mainUser);
             mainUserController.readAll(clientRequest.getUsername());
             User user = new User();
-            UserController userController = new UserController(user);
+            ServerUserController userController = new ServerUserController(user);
             userController.readAll(clientRequest.getClientPayLoad().getStringStringHashMap().get("username"));
-            String res = mainUserController.ChangeFollowOrunFollow(user.getUserUUID());
+            String res = mainUserController.ChangeFollowOrunFollow(user.getUserName());
 
             ServerRequest serverRequest = new ServerRequest(clientRequest.getUsername(),res,null);
             serverConnection.execute(serverRequest);

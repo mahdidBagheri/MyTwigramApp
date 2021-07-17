@@ -5,7 +5,7 @@ import Connection.DataBaseConnection.ConnectionToDataBase;
 import Connection.Server.ServerConnection;
 import Connection.Server.ServerPayLoad;
 import Connection.Server.ServerRequest;
-import User.Controller.UserController;
+import User.Controller.ServerUserController;
 import User.Exceptions.unsuccessfullReadDataFromDatabase;
 import User.Model.User;
 
@@ -28,7 +28,7 @@ public class ServerSearchListener {
         if(rs != null){
             if(rs.next()){
                 User user = new User();
-                UserController userController = new UserController(user);
+                ServerUserController userController = new ServerUserController(user);
                 userController.readAll(rs.getString(2));
                 user.setPassWord("");
                 serverPayLoad.setUser(user);
