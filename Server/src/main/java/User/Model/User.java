@@ -337,21 +337,21 @@ public class User implements Serializable {
     }
 
     public boolean isFollowedBy(String UserUUID) throws SQLException {
-        if(this.getFollowers().contains(UserUUID)){
-            return true;
+        for (int i = 0; i < getFollowers().size() ; i++) {
+            if(getFollowers().get(i).getUserUUID().equals(UserUUID)){
+                return true;
+            }
         }
-        else{
-            return false;
-        }
+        return false;
     }
 
     public boolean isFollowing(String UserUUID){
-        if(this.getFollowing().contains(UserUUID)){
-            return true;
+        for (int i = 0; i < getFollowing().size(); i++) {
+            if(getFollowing().get(i).getUserUUID().equals(UserUUID)){
+                return true;
+            }
         }
-        else{
-            return false;
-        }
+        return false;
     }
 
     public boolean isBlocked(String UserUUID){

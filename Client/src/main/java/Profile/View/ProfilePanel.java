@@ -1,7 +1,7 @@
 package Profile.View;
 
 import Twitt.Listeners.TwittViewListener;
-import User.Listener.UserViewListener;
+import User.Listener.ClientUserViewListener;
 import Config.ColorConfig.ColorConfig;
 import MainFrame.View.MainPanel;
 import Profile.Listener.ChangeProfileListener;
@@ -48,7 +48,7 @@ public class ProfilePanel extends JPanel implements ActionListener {
 
     JFileChooser picChooser;
 
-    UserViewListener userViewListener;
+    ClientUserViewListener userViewListener;
     TwittViewListener twittViewListener;
     ChangeProfileListener changeProfileListener = new ChangeProfileListener();
 
@@ -56,7 +56,7 @@ public class ProfilePanel extends JPanel implements ActionListener {
         this.mainPanel = mainPanel;
         this.user = user;
 
-        this.userViewListener = new UserViewListener(mainPanel);
+        this.userViewListener = new ClientUserViewListener(mainPanel);
         this.twittViewListener = new TwittViewListener();
         this.changeProfileListener = new ChangeProfileListener();
 

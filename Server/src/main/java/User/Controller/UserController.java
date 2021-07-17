@@ -348,7 +348,7 @@ public class UserController {
         dstuser.setUserUUID(dstUserUUID);
         UserController desUserController = new UserController(dstuser);
 
-        if (!user.getFollowing().contains(dstuser.getUserUUID())) {
+        if (!user.isFollowing(dstuser.getUserUUID())) {
             String sql = String.format("insert into \"User%sFollowing\" (\"UUID\",\"UserUUIDs\",\"Date\") values (uuid_generate_v4(),'%s','%s');", user.getUserUUID(), dstuser.getUserUUID(), now);
             connectionToServer.executeUpdate(sql);
         } else {
@@ -357,7 +357,7 @@ public class UserController {
             throw new alreadyFollowedException("you already following this user!");
         }
 
-        if (!dstuser.getFollowers().contains(user.getUserUUID())) {
+        if (!dstuser.isFollowedBy(user.getUserUUID())) {
             String sql = String.format("insert into \"User%sFollowers\"(\"UUID\",\"UserUUIDs\",\"Date\") values (uuid_generate_v4(),'%s','%s');", dstuser.getUserUUID(), user.getUserUUID(), now);
             connectionToServer.executeUpdate(sql);
         }
@@ -372,7 +372,7 @@ public class UserController {
         ConnectionToDataBase connectionToServer = new ConnectionToDataBase();
         UserController userController = new UserController(user);
 
-        if (this.user.getFollowing().contains(FollowerUUID)) {
+        if (this.user.isFollowing(FollowerUUID)) {
             User dstUser = new User();
             dstUser.setUserUUID(FollowerUUID);
 
@@ -394,7 +394,7 @@ public class UserController {
         connectionToServer.Disconect();
     }
 
-    public void ChangeFollowOrunFollow(String dstUserUUID) throws SQLException,
+    public String ChangeFollowOrunFollow(String dstUserUUID) throws SQLException,
             alreadyFollowedException, notFollowingUserException, selfFollowException,
             sendFollowRequestException, FileNotFoundException, unsuccessfullReadDataFromDatabase {
 
@@ -407,17 +407,22 @@ public class UserController {
             System.out.println("this user has a private acount to follow he/she must accept your invitation");
             if (!this.user.isFollowing(dstUserUUID)) {
                 SendFollowRequest(dstUserUUID);
+                return "followRequestSent";
             } else {
                 UnFollow(dstUserUUID);
+                return "unfollowed";
             }
 
         } else {
 
             if (!user.isFollowing(dstUserUUID)) {
                 Follow(dstUserUUID);
+                return "followed";
+
 
             } else {
                 UnFollow(dstUserUUID);
+                return "unfollowed";
             }
         }
     }

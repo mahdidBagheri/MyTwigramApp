@@ -6,7 +6,7 @@ import User.Events.UserEvent;
 import User.Events.UserViewEvent;
 import User.Exceptions.FollowException;
 import User.Listener.ClientUserListener;
-import User.Listener.UserViewListener;
+import User.Listener.ClientUserViewListener;
 import User.Model.User;
 
 import javax.swing.*;
@@ -46,7 +46,7 @@ public class UserPanel extends JPanel implements ActionListener {
     JButton exitBtn;
 
 
-    UserViewListener userViewListener;
+    ClientUserViewListener userViewListener;
     TwittViewListener twittViewListener;
     ClientUserListener userListener;
 
@@ -244,12 +244,15 @@ public class UserPanel extends JPanel implements ActionListener {
             try {
                 UserEvent userEvent = new UserEvent(user,"followOrUnfollow");
                 userListener.listen(userEvent);
-                JOptionPane.showMessageDialog(this,"successfully followed");
                 if(follow_OR_unfollowBtn.getText().equals("follow")){
                     follow_OR_unfollowBtn.setText("unfollow");
+                    JOptionPane.showMessageDialog(this,"successfully followed");
+
                 }
                 else {
                     follow_OR_unfollowBtn.setText("follow");
+                    JOptionPane.showMessageDialog(this,"successfully unfollowed");
+
                 }
 
             } catch (SQLException throwables) {

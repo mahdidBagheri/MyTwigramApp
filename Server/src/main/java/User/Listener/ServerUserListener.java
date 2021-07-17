@@ -28,9 +28,9 @@ public class ServerUserListener {
             User user = new User();
             UserController userController = new UserController(user);
             userController.readAll(clientRequest.getClientPayLoad().getStringStringHashMap().get("username"));
-            mainUserController.ChangeFollowOrunFollow(user.getUserUUID());
+            String res = mainUserController.ChangeFollowOrunFollow(user.getUserUUID());
 
-            ServerRequest serverRequest = new ServerRequest(clientRequest.getUsername(),"followed",null);
+            ServerRequest serverRequest = new ServerRequest(clientRequest.getUsername(),res,null);
             serverConnection.execute(serverRequest);
         }
     }

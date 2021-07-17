@@ -2,7 +2,7 @@ package ClientSearch.View;
 
 import MainFrame.View.MainPanel;
 import User.Events.UserViewEvent;
-import User.Listener.UserViewListener;
+import User.Listener.ClientUserViewListener;
 import Config.ColorConfig.ColorConfig;
 import User.Model.User;
 
@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 public class ResultPanel extends JPanel implements ActionListener {
-    UserViewListener userViewListener;
+    ClientUserViewListener userViewListener;
     JButton goProfileBtn;
     JLabel userNameLable;
     User user;
@@ -112,7 +112,7 @@ public class ResultPanel extends JPanel implements ActionListener {
     }
 
 
-    public void setUserViewListener(UserViewListener userViewListener) {
+    public void setUserViewListener(ClientUserViewListener userViewListener) {
         this.userViewListener = userViewListener;
     }
 }
