@@ -111,4 +111,14 @@ public class MainPanel extends JPanel {
     }
 
 
+    public void back() {
+        clear();
+        if(panelsTrace.size() == 2){
+            this.add(panelsTrace.pollLast());
+            this.add(panelsTrace.pollLast());
+        }
+        else {
+            this.add(panelsTrace.getLast());
+        }
+    }
 }

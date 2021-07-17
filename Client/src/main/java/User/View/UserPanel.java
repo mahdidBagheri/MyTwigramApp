@@ -1,6 +1,8 @@
 package User.View;
 
 import Config.ColorConfig.ColorConfig;
+import MainFrame.Listener.BackListener;
+import MainFrame.View.MainPanel;
 import Twitt.Listeners.TwittViewListener;
 import User.Events.UserEvent;
 import User.Events.UserViewEvent;
@@ -49,10 +51,15 @@ public class UserPanel extends JPanel implements ActionListener {
     ClientUserViewListener userViewListener;
     TwittViewListener twittViewListener;
     ClientUserListener userListener;
+    BackListener backListener;
+
+    MainPanel mainPanel;
 
     public UserPanel(UserViewEvent userViewEvent) throws IOException {
         this.twittViewListener = new TwittViewListener();
         this.userListener = new ClientUserListener(userViewEvent.getMainPanel());
+        this.mainPanel = userViewEvent.getMainPanel();
+        this.backListener = new BackListener(mainPanel);
 
         ColorConfig colorConfig = new ColorConfig();
 
@@ -247,12 +254,10 @@ public class UserPanel extends JPanel implements ActionListener {
                 if(follow_OR_unfollowBtn.getText().equals("follow")){
                     follow_OR_unfollowBtn.setText("unfollow");
                     JOptionPane.showMessageDialog(this,"successfully followed");
-
                 }
                 else {
                     follow_OR_unfollowBtn.setText("follow");
                     JOptionPane.showMessageDialog(this,"successfully unfollowed");
-
                 }
 
             } catch (SQLException throwables) {
@@ -264,6 +269,9 @@ public class UserPanel extends JPanel implements ActionListener {
             } catch (FollowException followException) {
                 followException.printStackTrace();
             }
+        }
+        else if(e.getSource() == backBtn){
+            backListener.listen();
         }
     }
 }
