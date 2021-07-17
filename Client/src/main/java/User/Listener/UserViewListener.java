@@ -32,5 +32,6 @@ public class UserViewListener {
 
         UserViewEvent userViewEvent1 = new UserViewEvent(serverRequest.getPayLoad().getUser(), mainPanel);
         mainPanel.addUserPanel(userViewEvent1);
+
     }
 }
