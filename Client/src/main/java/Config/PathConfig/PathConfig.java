@@ -11,6 +11,7 @@ public class PathConfig {
     String pathConfigPath;
 
     private String usersPicsPath;
+    private String twittsPicsPath;
 
 
     public PathConfig() throws IOException {
@@ -22,10 +23,15 @@ public class PathConfig {
         properties.load(fileReader);
 
         usersPicsPath = properties.getProperty("usersPics");
+        twittsPicsPath = properties.getProperty("twittsPics");
 
     }
 
     public String getUsersPicsPath() {
         return usersPicsPath;
+    }
+
+    public String getTwittsPicsPath() {
+        return twittsPicsPath;
     }
 }

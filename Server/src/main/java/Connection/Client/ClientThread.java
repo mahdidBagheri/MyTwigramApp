@@ -4,6 +4,7 @@ import Connection.Server.ServerConnection;
 import Connection.Server.ServerRequest;
 import Connection.Server.ServerWaitForInput;
 import ServerLogin.Listener.ServerLoginListener;
+import ServerNewTwitt.Listener.ServerNewTwittListener;
 import ServerProfile.Listener.ServerProfileListener;
 import ServerSearch.Listener.ServerSearchListener;
 import ServerSignup.Listener.ServerSignupListener;
@@ -59,6 +60,10 @@ public class ClientThread extends Thread{
             if (clientRequest.getSource().equals("onUserAction")) {
                 ServerUserListener userListener = new ServerUserListener(serverConnection);
                 userListener.listen(clientRequest);
+            }
+            if (clientRequest.getSource().equals("newTwitt")) {
+                ServerNewTwittListener serverTwittListener = new ServerNewTwittListener(serverConnection);
+                serverTwittListener.listen(clientRequest);
             }
         }catch (IOException | ClassNotFoundException | SQLException e){
             try {

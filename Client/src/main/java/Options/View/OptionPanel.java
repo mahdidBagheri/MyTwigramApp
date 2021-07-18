@@ -109,34 +109,29 @@ public class OptionPanel extends JPanel implements ActionListener {
         if(e.getSource() == profileBotton){
             try {
                 optionsListener.listen("profileBtn");
-            } catch (SQLException throwables) {
+            } catch (SQLException | IOException | ClassNotFoundException throwables) {
                 throwables.printStackTrace();
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            } catch (ClassNotFoundException classNotFoundException) {
-                classNotFoundException.printStackTrace();
             }
         }
         else if(e.getSource() == searchBotton){
             try {
                 optionsListener.listen("searchBtn");
-            } catch (SQLException throwables) {
+            } catch (SQLException | IOException | ClassNotFoundException throwables) {
                 throwables.printStackTrace();
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            } catch (ClassNotFoundException classNotFoundException) {
-                classNotFoundException.printStackTrace();
             }
         }
         else if(e.getSource() == logOut){
             try {
                 optionsListener.listen("logOutBtn");
-            } catch (SQLException throwables) {
+            } catch (SQLException | IOException | ClassNotFoundException throwables) {
                 throwables.printStackTrace();
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            } catch (ClassNotFoundException classNotFoundException) {
-                classNotFoundException.printStackTrace();
+            }
+        }
+        else if(e.getSource() == newTwittBotton){
+            try {
+                optionsListener.listen("newTwitt");
+            } catch (SQLException | IOException | ClassNotFoundException throwables) {
+                throwables.printStackTrace();
             }
         }
     }

@@ -8,6 +8,7 @@ import java.util.Properties;
 
 public class PathConfig {
     private String usersPicPath;
+    private String twittsPicPath;
 
     public PathConfig() throws IOException {
         ServerMainConfig mainConfig = new ServerMainConfig();
@@ -17,9 +18,14 @@ public class PathConfig {
         properties.load(fileReader);
 
         usersPicPath = properties.getProperty("usersPicsPath");
+        twittsPicPath = properties.getProperty("twittsPicsPath");
     }
 
     public String getUsersPicPath() {
         return usersPicPath;
+    }
+
+    public String getTwittsPicPath() {
+        return twittsPicPath;
     }
 }

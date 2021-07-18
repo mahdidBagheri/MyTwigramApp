@@ -37,5 +37,8 @@ public class OptionsListener {
         else if(command.equals("logOutBtn")){
             mainPanel.addWelcomePanel();
         }
+        else if(command.equals("newTwitt")){
+            mainPanel.addNewTwittPanel();
+        }
     }
 }

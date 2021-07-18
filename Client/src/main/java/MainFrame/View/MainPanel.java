@@ -7,6 +7,7 @@ import Config.ColorConfig.ColorConfig;
 import Config.FrameConfig.FrameConfig;
 import Options.View.OptionPanel;
 import Profile.View.ProfilePanel;
+import NewTwitt.View.NewTwittPanel;
 import User.Events.UserViewEvent;
 import User.Model.User;
 import User.View.UserPanel;
@@ -120,5 +121,11 @@ public class MainPanel extends JPanel {
         else {
             this.add(panelsTrace.getLast());
         }
+    }
+
+    public void addNewTwittPanel() throws IOException {
+        this.clear();
+        this.add(new OptionPanel(mainPanel));
+        this.add(new NewTwittPanel(mainPanel));
     }
 }

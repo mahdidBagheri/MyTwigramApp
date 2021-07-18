@@ -146,7 +146,7 @@ public class ClientSignupController {
                             "\"LastSeen\","+
                             "\"ProfilePic\"," +
                             "\"sync\")"+
-                            "values (uuid_generate_v4(),"+
+                            "values ('%s',"+
                             "'%s',"+
                             "'%s',"+
                             "'%s',"+
@@ -162,6 +162,7 @@ public class ClientSignupController {
                             "'%s'," +
                             "'%s'," +
                             "true);",
+                    serverRequest.getPayLoad().getUser().getUserUUID(),
                     serverRequest.getPayLoad().getUser().getUserName(),
                     serverRequest.getPayLoad().getUser().getPassWord(),
                     serverRequest.getPayLoad().getUser().getfName(),
@@ -191,7 +192,7 @@ public class ClientSignupController {
                             "\"LastSeen\"," +
                             "\"ProfilePic\"," +
                             "\"sync\")"+
-                            "values (uuid_generate_v4(),"+
+                            "values ('%s',"+
                             "'%s',"+
                             "'%s',"+
                             "'%s',"+
@@ -206,6 +207,7 @@ public class ClientSignupController {
                             "'%s'," +
                             "'%s'," +
                             "true);",
+                    serverRequest.getPayLoad().getUser().getUserUUID(),
                     serverRequest.getPayLoad().getUser().getUserName(),
                     serverRequest.getPayLoad().getUser().getPassWord(),
                     serverRequest.getPayLoad().getUser().getfName(),
