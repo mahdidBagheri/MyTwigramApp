@@ -5,7 +5,7 @@ import java.sql.*;
 public class ConnectionToDataBase {
     String UserName = "postgres";
     String PassWord = "1";
-    String jdbsURL = "jdbc:postgresql://localhost:5432/TwigramServer02";
+    String jdbsURL = "jdbc:postgresql://localhost:5432/TwigramServer03";
     String PostgresDriver = "org.postgresql.Driver";
     Connection connection;
     public ConnectionToDataBase(){

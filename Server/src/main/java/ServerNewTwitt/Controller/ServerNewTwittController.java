@@ -2,6 +2,7 @@ package ServerNewTwitt.Controller;
 
 import Connection.Client.ClientRequest;
 import Connection.DataBaseConnection.ConnectionToDataBase;
+import ServerConfig.PathConfig.PathConfig;
 import Twitt.Model.Twitt;
 import User.Model.User;
 
@@ -112,6 +113,7 @@ public class ServerNewTwittController {
     }
 
     public void setImage() throws IOException, SQLException {
+        PathConfig pathConfig = new PathConfig();
 
         BufferedImage bImage = null;
 
@@ -125,7 +127,7 @@ public class ServerNewTwittController {
         g.drawImage(bImage, 0, 0, ServerConstants.picWidth, ServerConstants.picHeight, null);
         g.dispose();
 
-        String dstPath = String.format("../MyTwitterApp-Graphgics/src/src/main/resources/TwittsPics//%s.PNG",newTwitt.getTwittUUID());
+        String dstPath = String.format(pathConfig.getTwittsPicPath()+"//%s.PNG",newTwitt.getTwittUUID());
 
         ImageIO.write(resizedBuffImg, "PNG", new File(dstPath));
 
