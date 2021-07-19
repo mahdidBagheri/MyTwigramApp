@@ -1,5 +1,6 @@
 package Connection.Server;
 
+import TimeLine.Model.TimeLine;
 import User.Model.User;
 
 import java.io.Serializable;
@@ -11,6 +12,7 @@ public class ServerPayLoad implements Serializable {
     LinkedList<User> usersRequestedList = new LinkedList<>();
 
     User user;
+    TimeLine timeLine;
 
     public User getUser() {
         return user;
@@ -27,4 +29,13 @@ public class ServerPayLoad implements Serializable {
     public LinkedList<User> getUsersRequestedList() {
         return usersRequestedList;
     }
+
+    public TimeLine getTimeLine() {
+        return timeLine;
+    }
+
+    public void setTimeLine(TimeLine timeLine) {
+        this.timeLine = timeLine;
+    }
 }
+

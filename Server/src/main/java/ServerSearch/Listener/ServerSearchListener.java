@@ -5,6 +5,7 @@ import Connection.DataBaseConnection.ConnectionToDataBase;
 import Connection.Server.ServerConnection;
 import Connection.Server.ServerPayLoad;
 import Connection.Server.ServerRequest;
+import Twitt.Exceptions.TwittReadDataException;
 import User.Controller.ServerUserController;
 import User.Exceptions.unsuccessfullReadDataFromDatabase;
 import User.Model.User;
@@ -19,7 +20,7 @@ public class ServerSearchListener {
         this.serverConnection = serverConnection;
     }
 
-    public void listen(ClientRequest clientRequest) throws SQLException, unsuccessfullReadDataFromDatabase, IOException {
+    public void listen(ClientRequest clientRequest) throws SQLException, unsuccessfullReadDataFromDatabase, IOException, TwittReadDataException {
         ConnectionToDataBase connectionToDataBase = new ConnectionToDataBase();
         String sql = String.format("select * from \"UsersTable\" where \"UserName\" = '%s';",clientRequest.getClientPayLoad().getStringStringHashMap().get("searchedItem"));
         ResultSet rs = connectionToDataBase.executeQuery(sql);

@@ -3,7 +3,7 @@ package User.View;
 import Config.ColorConfig.ColorConfig;
 import MainFrame.Listener.BackListener;
 import MainFrame.View.MainPanel;
-import Twitt.Listeners.TwittViewListener;
+import Twitt.Listeners.ClientTwittViewListener;
 import User.Controller.ClientUserController;
 import User.Events.UserEvent;
 import User.Events.UserViewEvent;
@@ -50,14 +50,14 @@ public class UserPanel extends JPanel implements ActionListener {
 
 
     ClientUserViewListener userViewListener;
-    TwittViewListener twittViewListener;
+    ClientTwittViewListener twittViewListener;
     ClientUserListener userListener;
     BackListener backListener;
 
     MainPanel mainPanel;
 
     public UserPanel(UserViewEvent userViewEvent) throws IOException {
-        this.twittViewListener = new TwittViewListener();
+        this.twittViewListener = new ClientTwittViewListener();
         this.userListener = new ClientUserListener(userViewEvent.getMainPanel());
         this.mainPanel = userViewEvent.getMainPanel();
         this.backListener = new BackListener(mainPanel);

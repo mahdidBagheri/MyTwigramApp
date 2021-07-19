@@ -134,5 +134,12 @@ public class OptionPanel extends JPanel implements ActionListener {
                 throwables.printStackTrace();
             }
         }
+        else if(e.getSource() == timeLineBotton){
+            try {
+                optionsListener.listen("timeLine");
+            } catch (SQLException | IOException | ClassNotFoundException throwables) {
+                throwables.printStackTrace();
+            }
+        }
     }
 }

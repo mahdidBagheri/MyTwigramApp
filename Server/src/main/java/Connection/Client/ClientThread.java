@@ -8,6 +8,8 @@ import ServerNewTwitt.Listener.ServerNewTwittListener;
 import ServerProfile.Listener.ServerProfileListener;
 import ServerSearch.Listener.ServerSearchListener;
 import ServerSignup.Listener.ServerSignupListener;
+import TimeLine.ServerListener.ServerTimeLineListener;
+import Twitt.Exceptions.TwittReadDataException;
 import User.Exceptions.alreadyFollowedException;
 import User.Exceptions.notFollowingUserException;
 import User.Exceptions.selfFollowException;
@@ -65,6 +67,10 @@ public class ClientThread extends Thread{
                 ServerNewTwittListener serverTwittListener = new ServerNewTwittListener(serverConnection);
                 serverTwittListener.listen(clientRequest);
             }
+            if (clientRequest.getSource().equals("timeLine")) {
+                ServerTimeLineListener serverTimeLineListener = new ServerTimeLineListener(serverConnection);
+                serverTimeLineListener.listen(clientRequest);
+            }
         }catch (IOException | ClassNotFoundException | SQLException e){
             try {
                 serverConnection.getSocket().close();
@@ -81,6 +87,8 @@ public class ClientThread extends Thread{
             } catch (IOException ioException) {
                 ioException.printStackTrace();
             }
+        } catch (TwittReadDataException e) {
+            e.printStackTrace();
         }
     }
 }

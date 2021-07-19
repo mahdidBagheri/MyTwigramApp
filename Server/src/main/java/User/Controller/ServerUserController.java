@@ -10,7 +10,8 @@ import Connection.DataBaseConnection.ConnectionToDataBase;
 import Connection.Utils.DataBaseUtils;
 import Groups.Model.Group;
 import Notification.Model.Notification;
-import Twitt.Controller.TwittsController;
+import Twitt.Controller.ServerTwittsController;
+import Twitt.Exceptions.TwittReadDataException;
 import Twitt.Model.Twitt;
 import User.Exceptions.*;
 import User.Model.Activity;
@@ -35,8 +36,7 @@ public class ServerUserController {
         this.user = user;
     }
 
-    public void readAll() throws unsuccessfullReadDataFromDatabase, SQLException
-             {
+    public void readAll() throws unsuccessfullReadDataFromDatabase, SQLException, TwittReadDataException {
         readUserName();
         readfirstName();
         readlastName();
@@ -60,8 +60,7 @@ public class ServerUserController {
         readProfilePic();
     }
 
-    public void readAll(String userName) throws unsuccessfullReadDataFromDatabase, SQLException
-    {
+    public void readAll(String userName) throws unsuccessfullReadDataFromDatabase, SQLException, TwittReadDataException {
         readUserUUIDbyUsername(userName);
         readUserName();
         readfirstName();
@@ -396,7 +395,7 @@ public class ServerUserController {
 
     public String ChangeFollowOrunFollow(String username) throws SQLException,
             alreadyFollowedException, notFollowingUserException, selfFollowException,
-            sendFollowRequestException, FileNotFoundException, unsuccessfullReadDataFromDatabase {
+            sendFollowRequestException, FileNotFoundException, unsuccessfullReadDataFromDatabase, TwittReadDataException {
 
         User dstUser = new User();
         ServerUserController dstUserController = new ServerUserController(dstUser);
@@ -898,7 +897,7 @@ public class ServerUserController {
         }
     }
 
-    public void readSavedTwitts() throws SQLException, unsuccessfullReadDataFromDatabase {
+    public void readSavedTwitts() throws SQLException, unsuccessfullReadDataFromDatabase, TwittReadDataException {
         ConnectionToDataBase connectionToServer = new ConnectionToDataBase();
         String SavedTwittsTableAddress = "User" + user.getUserUUID() + "SavedTwitts";
         DataBaseUtils dataBaseUtils = new DataBaseUtils();
@@ -912,7 +911,7 @@ public class ServerUserController {
                 while (rs.next()) {
                     Twitt twitt = new Twitt();
                     twitt.setTwittUUID(rs.getString(1));
-                    TwittsController twittsController = new TwittsController(twitt);
+                    ServerTwittsController twittsController = new ServerTwittsController(twitt);
                     twittsController.readText();
                     SavedTwittsList.add(twitt);
                 }
@@ -1238,9 +1237,9 @@ public class ServerUserController {
         connectionToServer.Disconect();
     }
 
-    public void report(String twittUUID) throws SQLException, alreadyReportedException, unsuccessfullReadDataFromDatabase {
+    public void report(String twittUUID) throws SQLException, alreadyReportedException, unsuccessfullReadDataFromDatabase, TwittReadDataException {
         Twitt twitt = new Twitt();
-        TwittsController twittsController = new TwittsController(twitt);
+        ServerTwittsController twittsController = new ServerTwittsController(twitt);
         twitt.setTwittUUID( twittUUID);
         twittsController.readReports();
         if(twitt.getReports().contains(user.getUserUUID())){

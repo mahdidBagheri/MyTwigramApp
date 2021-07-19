@@ -3,6 +3,7 @@ package User.Listener;
 import Connection.Client.ClientRequest;
 import Connection.Server.ServerConnection;
 import Connection.Server.ServerRequest;
+import Twitt.Exceptions.TwittReadDataException;
 import User.Controller.ServerUserController;
 import User.Exceptions.*;
 import User.Model.User;
@@ -19,7 +20,7 @@ public class ServerUserListener {
 
     public void listen(ClientRequest clientRequest) throws unsuccessfullReadDataFromDatabase,
             SQLException, IOException, sendFollowRequestException,
-            selfFollowException, alreadyFollowedException, notFollowingUserException {
+            selfFollowException, alreadyFollowedException, notFollowingUserException, TwittReadDataException {
 
         if(clientRequest.getCommand().equals("followOrUnfollow")){
             User mainUser = new User();

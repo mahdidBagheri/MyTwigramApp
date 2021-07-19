@@ -1,6 +1,6 @@
 package Profile.View;
 
-import Twitt.Listeners.TwittViewListener;
+import Twitt.Listeners.ClientTwittViewListener;
 import User.Listener.ClientUserViewListener;
 import Config.ColorConfig.ColorConfig;
 import MainFrame.View.MainPanel;
@@ -49,7 +49,7 @@ public class ProfilePanel extends JPanel implements ActionListener {
     JFileChooser picChooser;
 
     ClientUserViewListener userViewListener;
-    TwittViewListener twittViewListener;
+    ClientTwittViewListener twittViewListener;
     ChangeProfileListener changeProfileListener = new ChangeProfileListener();
 
     public ProfilePanel(MainPanel mainPanel, User user) throws IOException {
@@ -57,7 +57,7 @@ public class ProfilePanel extends JPanel implements ActionListener {
         this.user = user;
 
         this.userViewListener = new ClientUserViewListener(mainPanel);
-        this.twittViewListener = new TwittViewListener();
+        this.twittViewListener = new ClientTwittViewListener();
         this.changeProfileListener = new ChangeProfileListener();
 
         ColorConfig colorConfig = new ColorConfig();

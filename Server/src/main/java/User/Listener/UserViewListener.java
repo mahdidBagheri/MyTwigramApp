@@ -4,6 +4,7 @@ import Connection.Client.ClientRequest;
 import Connection.Server.ServerConnection;
 import Connection.Server.ServerPayLoad;
 import Connection.Server.ServerRequest;
+import Twitt.Exceptions.TwittReadDataException;
 import User.Controller.ServerUserController;
 import User.Exceptions.unsuccessfullReadDataFromDatabase;
 import User.Model.User;
@@ -17,7 +18,7 @@ public class UserViewListener {
         this.serverConnection = serverConnection;
     }
 
-    public void listen(ClientRequest clientRequest) throws unsuccessfullReadDataFromDatabase, SQLException, IOException {
+    public void listen(ClientRequest clientRequest) throws unsuccessfullReadDataFromDatabase, SQLException, IOException, TwittReadDataException {
 
         User reqUser = new User();
         UserController userController = new UserController(reqUser);

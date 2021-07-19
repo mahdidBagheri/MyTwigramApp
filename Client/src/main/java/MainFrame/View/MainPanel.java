@@ -8,6 +8,8 @@ import Config.FrameConfig.FrameConfig;
 import Options.View.OptionPanel;
 import Profile.View.ProfilePanel;
 import NewTwitt.View.NewTwittPanel;
+import TimeLine.Model.TimeLine;
+import TimeLine.View.TimeLinePanel;
 import User.Events.UserViewEvent;
 import User.Model.User;
 import User.View.UserPanel;
@@ -127,5 +129,11 @@ public class MainPanel extends JPanel {
         this.clear();
         this.add(new OptionPanel(mainPanel));
         this.add(new NewTwittPanel(mainPanel));
+    }
+
+    public void addTimeLinePanel(TimeLine timeLine) throws IOException {
+        this.clear();
+        this.add(new OptionPanel(mainPanel));
+        this.add(new TimeLinePanel(mainPanel, timeLine));
     }
 }

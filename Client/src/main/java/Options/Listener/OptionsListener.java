@@ -9,6 +9,7 @@ import User.Controller.UserController;
 import User.Model.User;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.sql.SQLException;
 
 public class OptionsListener {
@@ -39,6 +40,23 @@ public class OptionsListener {
         }
         else if(command.equals("newTwitt")){
             mainPanel.addNewTwittPanel();
+        }
+        else if(command.equals("timeLine")){
+            User mainUser = new User();
+            ClientUserController userController = new ClientUserController(mainUser);
+            userController.setAsMain();
+
+            ClientConnection clientConnection = new ClientConnection();
+            ClientPayLoad clientPayLoad = new ClientPayLoad();
+            clientPayLoad.getStringStringHashMap().put("username",mainUser.getUserName());
+            ClientRequest clientRequest = new ClientRequest("timeLine",clientPayLoad,mainUser.getSession(),"timeLine",mainUser.getUserName(),mainUser.getPassWord());
+            clientConnection.execute(clientRequest);
+
+            ClientWaitForInput.waitForInput(clientConnection.getSocket());
+            ObjectInputStream objectInputStream = new ObjectInputStream(clientConnection.getSocket().getInputStream());
+            ServerRequest serverRequest = (ServerRequest) objectInputStream.readObject();
+
+            mainPanel.addTimeLinePanel(serverRequest.getPayLoad().getTimeLine());
         }
     }
 }

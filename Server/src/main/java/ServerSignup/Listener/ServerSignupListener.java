@@ -5,6 +5,7 @@ import Connection.Server.ServerConnection;
 import Connection.Server.ServerPayLoad;
 import Connection.Server.ServerRequest;
 import ServerSignup.Controller.ServerSignupController;
+import Twitt.Exceptions.TwittReadDataException;
 import User.Controller.ServerUserController;
 import User.Exceptions.unsuccessfullReadDataFromDatabase;
 import User.Model.User;
@@ -21,7 +22,7 @@ public class ServerSignupListener {
     }
 
 
-    public void listen(ClientRequest clientRequest) throws SQLException, IOException, unsuccessfullReadDataFromDatabase {
+    public void listen(ClientRequest clientRequest) throws SQLException, IOException, unsuccessfullReadDataFromDatabase, TwittReadDataException {
         ServerSignupController signupController = new ServerSignupController(serverConnection);
 
         if(clientRequest.getCommand().equals("validate email")){
