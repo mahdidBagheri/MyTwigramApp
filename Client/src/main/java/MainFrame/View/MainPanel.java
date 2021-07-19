@@ -1,5 +1,6 @@
 package MainFrame.View;
 
+import Chats.View.ChatsPanel;
 import ClientLogin.View.LoginPanel;
 import ClientSearch.View.SearchPanel;
 import ClientSingup.View.SignupPanel;
@@ -135,5 +136,11 @@ public class MainPanel extends JPanel {
         this.clear();
         this.add(new OptionPanel(mainPanel));
         this.add(new TimeLinePanel(mainPanel, timeLine));
+    }
+
+    public void addChatsPanel(User mainUser) throws IOException {
+        this.clear();
+        this.add(new OptionPanel(mainPanel));
+        this.add(new ChatsPanel(mainPanel,mainUser ));
     }
 }

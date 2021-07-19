@@ -50,7 +50,7 @@ public class ServerNewTwittController {
             setImage();
         }
 
-        if(newTwitt.getType().equals("Reply")){
+        if(newTwitt.getType().equals("reply")){
             InsertIntoParentTwitt();
         }
         connectionToDataBase.Disconect();

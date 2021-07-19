@@ -22,4 +22,8 @@ public class PV {
     public void addMessage(Message message){
 
     }
+
+    public User getContact() {
+        return contact;
+    }
 }

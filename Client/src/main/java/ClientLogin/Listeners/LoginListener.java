@@ -42,6 +42,8 @@ public class LoginListener {
         ClientRequest clientRequest = new ClientRequest("profile",clientPayLoad,mainUser.getSession(),"profileData",mainUser.getUserName(),mainUser.getPassWord());
         clientConnection.execute(clientRequest);
 
+        SyncLocalDataBase syncLocalDataBase = new SyncLocalDataBase();
+        syncLocalDataBase.syncAll();
         mainPanel.addProfilePanel(mainUser);
     }
 }

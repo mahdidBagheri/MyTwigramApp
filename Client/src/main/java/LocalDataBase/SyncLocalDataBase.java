@@ -29,6 +29,10 @@ public class SyncLocalDataBase {
         this.mainUser = mainUser;
     }
 
+    public void syncAll() throws SQLException, IOException, ClassNotFoundException {
+        syncFollowings();
+    }
+
 
     public void syncFollowers() throws SQLException, IOException, ClassNotFoundException {
         syncTablesPointToUser("followers");
@@ -70,11 +74,13 @@ public class SyncLocalDataBase {
 
     private void updateLocalDataBase(String tableName) throws SQLException, IOException, ClassNotFoundException {
         ClientRequest clientRequest = null;
-        String deleteFollowingListQuery = String.format("delete * from followings;");
+        String deleteFollowingListQuery = String.format("delete from followings;");
         connectionToLocalDataBase.executeUpdate(deleteFollowingListQuery);
 
         if (tableName.equals("followings")) {
-            clientRequest = new ClientRequest("onUserAct",null,mainUser.getSession(),"followingsListRequest",mainUser.getUserName(),mainUser.getPassWord());
+            ClientPayLoad clientPayLoad = new ClientPayLoad();
+            clientPayLoad.getStringStringHashMap().put("username",mainUser.getUserName());
+            clientRequest = new ClientRequest("userInfo",clientPayLoad,mainUser.getSession(),"userInfo",mainUser.getUserName(),mainUser.getPassWord());
         }
 
         clientConnection.execute(clientRequest);
@@ -83,11 +89,11 @@ public class SyncLocalDataBase {
         ObjectInputStream objectInputStream = new ObjectInputStream(clientConnection.getSocket().getInputStream());
 
         ServerRequest serverRequest = (ServerRequest) objectInputStream.readObject();
-        LinkedList<User> followings = serverRequest.getPayLoad().getUsersRequestedList();
+        User mainUser = serverRequest.getPayLoad().getUser();
 
         String addfollowings;
-        for (User user : followings){
-            addfollowings = String.format("insert into following ( \"UUID\" , \"Username\" , \"sync\") values ('%s','%s','%s');",user.getUserUUID(),user.getUserName(),"true");
+        for (User user : mainUser.getFollowing()){
+            addfollowings = String.format("insert into followings ( \"UUID\" , \"Username\" , \"sync\") values ('%s','%s','%s');",user.getUserUUID(),user.getUserName(),"true");
             connectionToLocalDataBase.executeUpdate(addfollowings);
         }
 
@@ -95,32 +101,34 @@ public class SyncLocalDataBase {
 
     private void updateServerDataBase(String tableName) throws SQLException, IOException, ClassNotFoundException {
         String sql = null;
-
-        if (tableName.equals("followers")) {
-            sql = String.format("select * from followers;");
-        } else if (tableName.equals("blackList")) {
-            sql = String.format("select * from blacklist;");
-        } else if (tableName.equals("mutes")) {
-            sql = String.format("select * from mutes;");
-        }
-
-        ResultSet rs = connectionToLocalDataBase.executeQuery(sql);
-        ClientPayLoad clientPayLoad = new ClientPayLoad();
-        if (rs != null) {
-            while (rs.next()) {
-                clientPayLoad.getStringStringHashMap().put("username", rs.getString(2));
+        if(tableName.equals("followers") || tableName.equals("blackList") || tableName.equals("mutes")){
+            if (tableName.equals("followers")) {
+                sql = String.format("select * from followers;");
+            } else if (tableName.equals("blackList")) {
+                sql = String.format("select * from blacklist;");
+            } else if (tableName.equals("mutes")) {
+                sql = String.format("select * from mutes;");
             }
-        }
 
-        ClientRequest clientRequest = null;
-        if (tableName.equals("followers")) {
-            clientRequest = new ClientRequest("onUserAct", clientPayLoad, mainUser.getSession(), "syncFollowers", mainUser.getUserName(), mainUser.getPassWord());
-        } else if (tableName.equals("blackList")) {
-            clientRequest = new ClientRequest("onUserAct", clientPayLoad, mainUser.getSession(), "syncBlackList", mainUser.getUserName(), mainUser.getPassWord());
-        } else if (tableName.equals("mutes")) {
-            clientRequest = new ClientRequest("onUserAct", clientPayLoad, mainUser.getSession(), "syncMutes", mainUser.getUserName(), mainUser.getPassWord());
+            ResultSet rs = connectionToLocalDataBase.executeQuery(sql);
+            ClientPayLoad clientPayLoad = new ClientPayLoad();
+            if (rs != null) {
+                while (rs.next()) {
+                    clientPayLoad.getStringStringHashMap().put("username", rs.getString(2));
+                }
+            }
+
+            ClientRequest clientRequest = null;
+            if (tableName.equals("followers")) {
+                clientRequest = new ClientRequest("onUserAction", clientPayLoad, mainUser.getSession(), "syncFollowers", mainUser.getUserName(), mainUser.getPassWord());
+            } else if (tableName.equals("blackList")) {
+                clientRequest = new ClientRequest("onUserAction", clientPayLoad, mainUser.getSession(), "syncBlackList", mainUser.getUserName(), mainUser.getPassWord());
+            } else if (tableName.equals("mutes")) {
+                clientRequest = new ClientRequest("onUserAction", clientPayLoad, mainUser.getSession(), "syncMutes", mainUser.getUserName(), mainUser.getPassWord());
+            }
+            clientConnection.execute(clientRequest);
+
         }
-        clientConnection.execute(clientRequest);
 
     }
 

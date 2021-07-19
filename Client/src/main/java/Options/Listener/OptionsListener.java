@@ -58,5 +58,13 @@ public class OptionsListener {
 
             mainPanel.addTimeLinePanel(serverRequest.getPayLoad().getTimeLine());
         }
+        else if(command.equals("chats")){
+            User mainUser = new User();
+            ClientUserController userController = new ClientUserController(mainUser);
+            userController.setAsMain();
+
+            mainPanel.addChatsPanel(mainUser);
+        }
     }
+
 }

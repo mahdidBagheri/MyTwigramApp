@@ -1,6 +1,6 @@
 package Profile.View;
 
-import Twitt.Listeners.ClientTwittViewListener;
+import TimeLine.Listeners.ClientTwittViewListener;
 import User.Listener.ClientUserViewListener;
 import Config.ColorConfig.ColorConfig;
 import MainFrame.View.MainPanel;

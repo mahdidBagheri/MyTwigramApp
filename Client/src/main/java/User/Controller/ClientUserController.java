@@ -7,7 +7,6 @@ import Connection.ClientConnection;
 import Constants.Constants;
 import LocalDataBase.ConnectionToLocalDataBase;
 import User.Model.User;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -16,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.LinkedList;
 
 public class UserController {
     User user;
@@ -50,6 +50,81 @@ public class UserController {
                 user.setSync(rs.getString(18));
             }
         }
+
+        readFollowers();
+        readFollowings();
+        readMutes();
+        readBlackList();
+    }
+
+    private void readFollowers() throws SQLException, IOException, ClassNotFoundException {
+        user.setFollowers(new LinkedList<User>());
+
+        ConnectionToLocalDataBase connectionToLocalDataBase = new ConnectionToLocalDataBase();
+        String sql = "select * from \"followers\";";
+        ResultSet rs = connectionToLocalDataBase.executeQuery(sql);
+        if(rs != null){
+            while (rs.next()){
+                User flwer = new User();
+                flwer.setUserUUID(rs.getString(1));
+                flwer.setUserName(rs.getString(2));
+                user.getFollowers().add(flwer);
+            }
+        }
+        connectionToLocalDataBase.Disconect();
+    }
+
+    private void readFollowings() throws SQLException, IOException, ClassNotFoundException {
+        user.setFollowing(new LinkedList<User>());
+
+        ConnectionToLocalDataBase connectionToLocalDataBase = new ConnectionToLocalDataBase();
+        String sql = "select * from \"followings\";";
+        ResultSet rs = connectionToLocalDataBase.executeQuery(sql);
+        if(rs != null){
+            while (rs.next()){
+                User flwing = new User();
+                flwing.setUserUUID(rs.getString(1));
+                flwing.setUserName(rs.getString(2));
+                user.getFollowers().add(flwing);
+            }
+        }
+        connectionToLocalDataBase.Disconect();
+
+    }
+    private void readMutes() throws SQLException, IOException, ClassNotFoundException {
+        user.setMutedUsers(new LinkedList<User>());
+
+        ConnectionToLocalDataBase connectionToLocalDataBase = new ConnectionToLocalDataBase();
+        String sql = "select * from \"mutes\";";
+        ResultSet rs = connectionToLocalDataBase.executeQuery(sql);
+        if(rs != null){
+            while (rs.next()){
+                User mutedUser = new User();
+                mutedUser.setUserUUID(rs.getString(1));
+                mutedUser.setUserName(rs.getString(2));
+                user.getBlackList().add(mutedUser);
+            }
+        }
+        connectionToLocalDataBase.Disconect();
+
+    }
+
+    private void readBlackList() throws SQLException, IOException, ClassNotFoundException {
+        user.setFollowing(new LinkedList<User>());
+
+        ConnectionToLocalDataBase connectionToLocalDataBase = new ConnectionToLocalDataBase();
+        String sql = "select * from \"blacklist\";";
+        ResultSet rs = connectionToLocalDataBase.executeQuery(sql);
+        if(rs != null){
+            while (rs.next()){
+                User blockedUser = new User();
+                blockedUser.setUserUUID(rs.getString(1));
+                blockedUser.setUserName(rs.getString(2));
+                user.getBlackList().add(blockedUser);
+            }
+        }
+        connectionToLocalDataBase.Disconect();
+
     }
 
     public void changeProfilePic(String path) throws IOException, SQLException, ClassNotFoundException {

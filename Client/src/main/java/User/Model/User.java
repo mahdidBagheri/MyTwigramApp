@@ -39,7 +39,7 @@ public class User implements Serializable {
     private LinkedList<PendingFollowersRequestNotif> pendingFollowersRequestNotif = new LinkedList<PendingFollowersRequestNotif>();
     private LinkedList<NewFollowerNotif> newFollowers = new LinkedList<NewFollowerNotif>();
     private LinkedList<String> newUnFollowers = new LinkedList<String>();
-    private LinkedList<String> mutedUsers = new LinkedList<String>();
+    private LinkedList<User> mutedUsers = new LinkedList<User>();
 
     private String Status;
 
@@ -242,11 +242,11 @@ public class User implements Serializable {
         this.newUnFollowers = newUnFollowers;
     }
 
-    public LinkedList<String> getMutedUsers() {
+    public LinkedList<User> getMutedUsers() {
         return mutedUsers;
     }
 
-    public void setMutedUsers(LinkedList<String> mutedUsers) {
+    public void setMutedUsers(LinkedList<User> mutedUsers) {
         this.mutedUsers = mutedUsers;
     }
 

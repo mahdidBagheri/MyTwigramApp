@@ -3,7 +3,7 @@ package User.View;
 import Config.ColorConfig.ColorConfig;
 import MainFrame.Listener.BackListener;
 import MainFrame.View.MainPanel;
-import Twitt.Listeners.ClientTwittViewListener;
+import TimeLine.Listeners.ClientTwittViewListener;
 import User.Controller.ClientUserController;
 import User.Events.UserEvent;
 import User.Events.UserViewEvent;

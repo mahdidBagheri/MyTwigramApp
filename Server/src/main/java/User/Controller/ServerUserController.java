@@ -1,6 +1,6 @@
 package User.Controller;
 
-import Chats.Controller.PVController;
+import Chats.Controller.ServerPVController;
 import Chats.Controller.newChatController;
 import Chats.Model.Chats;
 import Chats.Model.Message;
@@ -779,7 +779,7 @@ public class ServerUserController {
         ConnectionToDataBase connectionToServer = new ConnectionToDataBase();
         String NewMutedTableAddress = "User" + user.getUserUUID() + "MutedUsers";
         DataBaseUtils dataBaseUtils = new DataBaseUtils();
-        LinkedList<String> MutedUsersList = new LinkedList<>();
+        LinkedList<User> MutedUsersList = new LinkedList<>();
 
         if (!dataBaseUtils.isEmptyTable(NewMutedTableAddress)) {
 
@@ -787,7 +787,9 @@ public class ServerUserController {
             ResultSet rs = connectionToServer.executeQuery(MutedQuery);
             if (rs != null) {
                 while (rs.next()) {
-                    MutedUsersList.add(rs.getString(1));
+                    User user = new User();
+                    user.setUserUUID(rs.getString(1));
+                    MutedUsersList.add(user);
                 }
                 user.setMutedUsers(MutedUsersList);
                 connectionToServer.Disconect();
@@ -1150,12 +1152,13 @@ public class ServerUserController {
 
     }
 
+    /*
     public void sendMessage(String UserUUID, String Msgtext) throws SQLException, FileNotFoundException {
 
         DateTime dateTime = new DateTime();
         String now = dateTime.Now();
         PV pv = new PV();
-        PVController pvController = new PVController(pv);
+        ServerPVController pvController = new ServerPVController(pv);
         pv.setUser(user);
         //user.ReadDataFromDataBaseByUUID( UserUUID);
         pv.setContact(user);
@@ -1175,6 +1178,8 @@ public class ServerUserController {
         pv.addMessage(message);
 
     }
+
+     */
 
     public void updateLastSeenMode(String mode) throws SQLException {
         ConnectionToDataBase connectionToServer = new ConnectionToDataBase();

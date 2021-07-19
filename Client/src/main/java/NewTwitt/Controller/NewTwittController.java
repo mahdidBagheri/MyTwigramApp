@@ -32,7 +32,9 @@ public class NewTwittController {
         setNewTwittAuthor();
         setNewTwittDate();
         setType(newTwittEvent.getType());
-
+        if(newTwittEvent.getType().equals("reply") || newTwittEvent.getType().equals("retwitt")){
+            newTwitt.setParent(newTwittEvent.getParent());
+        }
         sendToServer();
         saveToLocalDataBase();
     }
@@ -102,5 +104,7 @@ public class NewTwittController {
         newTwitt.setAuthorUUID(mainUser.getUserUUID());
     }
 
-
+    public Twitt getNewTwitt() {
+        return newTwitt;
+    }
 }

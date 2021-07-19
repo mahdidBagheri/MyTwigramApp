@@ -3,6 +3,7 @@ package Twitt.Model;
 import User.Model.User;
 
 import javax.swing.*;
+import java.io.File;
 import java.io.Serializable;
 import java.util.LinkedList;
 
@@ -23,7 +24,15 @@ public class Twitt implements Serializable {
     String picAddress;
     ImageIcon pic;
     User userWhoLiked;
+    File picFile;
 
+    public File getPicFile() {
+        return picFile;
+    }
+
+    public void setPicFile(File picFile) {
+        this.picFile = picFile;
+    }
 
     public String getHasPic() {
         return hasPic;

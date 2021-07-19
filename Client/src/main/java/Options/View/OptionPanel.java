@@ -141,5 +141,12 @@ public class OptionPanel extends JPanel implements ActionListener {
                 throwables.printStackTrace();
             }
         }
+        else if(e.getSource() == chatsBtn){
+            try {
+                optionsListener.listen("chats");
+            } catch (SQLException | IOException | ClassNotFoundException throwables) {
+                throwables.printStackTrace();
+            }
+        }
     }
 }

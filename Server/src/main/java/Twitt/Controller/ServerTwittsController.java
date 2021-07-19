@@ -12,6 +12,7 @@ import Utils.DateTime;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -75,6 +76,7 @@ public class ServerTwittsController {
                     ServerTwittsController replyController = new ServerTwittsController(reply);
                     replyController.readAuthor();
                     replyController.readText();
+                    twittRepliesList.add(reply);
                 }
                 twitt.setReplies(twittRepliesList);
             }
@@ -262,6 +264,7 @@ public class ServerTwittsController {
             if(path != null) {
                 ImageIcon myImage = new ImageIcon(new ImageIcon(path).getImage().getScaledInstance(ServerConstants.picWidth, ServerConstants.picHeight, Image.SCALE_DEFAULT));
                 twitt.setPic(myImage);
+                twitt.setPicFile(new File(path));
             }
         }
         else {

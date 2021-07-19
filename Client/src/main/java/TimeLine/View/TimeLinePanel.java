@@ -1,11 +1,15 @@
 package TimeLine.View;
 
+import ClientLogin.Exceptions.EmptyFieldException;
 import Config.ColorConfig.ColorConfig;
 import Config.FrameConfig.FrameConfig;
 import Constants.Constants;
 import MainFrame.View.MainPanel;
+import TimeLine.Controller.ClientTimeLineController;
+import TimeLine.Events.ReplyEvent;
+import TimeLine.Listeners.*;
 import TimeLine.Model.TimeLine;
-import Twitt.Listeners.*;
+import Twitt.Model.Twitt;
 import User.Listener.ClientUserViewListener;
 
 import javax.swing.*;
@@ -13,8 +17,11 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.sql.SQLException;
 
 public class TimeLinePanel extends JPanel implements ActionListener {
+    public static TimeLinePanel instance = null;
+
     public JButton upBotton;
     public JButton downBotton;
 
@@ -104,7 +111,7 @@ public class TimeLinePanel extends JPanel implements ActionListener {
         likesLable.setVisible(true);
 
         imageLabel = new JLabel();
-        imageLabel.setBounds(200, 30, Constants.picWidth, Constants.picHeight);
+        imageLabel.setBounds(150, 30, Constants.picWidth, Constants.picHeight);
         imageLabel.setVisible(true);
 
 
@@ -226,10 +233,12 @@ public class TimeLinePanel extends JPanel implements ActionListener {
         this.add(reportBtn);
         this.add(imageLabel);
 
+        instance = this;
+
         initialize();
 
         clientMoveTwittListener = new ClientMoveTwittListener(timeLine, this);
-
+        clientReplyListener = new ClientReplyListener(this,timeLine);
 
     }
 
@@ -241,17 +250,66 @@ public class TimeLinePanel extends JPanel implements ActionListener {
         else if(e.getSource() == downBotton){
             clientMoveTwittListener.listen("down");
         }
+        else if(e.getSource() == replyBtn){
+            ReplyEvent replyEvent = new ReplyEvent(timeLine.getTwitts().get(twittNum),replyField.getText());
+            try {
+                clientReplyListener.listen(replyEvent);
+                replyField.setText(" ");
+                JOptionPane.showMessageDialog(this,"reply sent");
+
+            } catch (SQLException | ClassNotFoundException | IOException throwables) {
+                throwables.printStackTrace();
+            } catch (EmptyFieldException emptyFieldException) {
+                JOptionPane.showMessageDialog(this,emptyFieldException.getMessage());
+
+                emptyFieldException.printStackTrace();
+            }
+        }
+        else if(e.getSource() == nextReplyBtn){
+            clientMoveReplyListener.listen("next");
+        }
+        else if(e.getSource() == nextReplyBtn){
+            clientMoveReplyListener.listen("next");
+        }
     }
 
-    public void initialize() {
-        titrLable.setText(timeLine.getTwitts().getLast().getAuthor().getUserName());
-        textLable.setText(timeLine.getTwitts().getLast().getText());
-        likesLable.setText("Likes:" + Integer.toString(timeLine.getTwitts().getLast().getLikes().size()));
-        reTwittsLable.setText("Retwitts: " + Integer.toString(timeLine.getTwitts().getLast().getReTwitts().size()));
-        repliesLable.setText("Replies: " + timeLine.getTwitts().getLast().getReplies().size());
-        if(timeLine.getTwitts().getLast().getReplies().size()!= 0){
-            replyText.setText(timeLine.getTwitts().getLast().getReplies().getFirst().getText());
+    public void updateReply(Twitt twitt) {
+        timeLine.getTwitts().get(twittNum).getReplies().add(twitt);
+        if(timeLine.getTwitts().get(twittNum).getReplies().size() == 1) {
+            replyText.setText(twitt.getText());
+            replyText.repaint();
+            this.repaint();
         }
-        this.repaint();
     }
+
+    public void initialize() throws IOException {
+        if(timeLine.getTwitts().size() > 0) {
+            ClientTimeLineController clientTimeLineController = new ClientTimeLineController(timeLine);
+            clientTimeLineController.saveAndSetStreams();
+            titrLable.setText(timeLine.getTwitts().getLast().getAuthor().getUserName());
+            textLable.setText(timeLine.getTwitts().getLast().getText());
+            likesLable.setText("Likes:" + Integer.toString(timeLine.getTwitts().getLast().getLikes().size()));
+            reTwittsLable.setText("Retwitts: " + Integer.toString(timeLine.getTwitts().getLast().getReTwitts().size()));
+            repliesLable.setText("Replies: " + timeLine.getTwitts().getLast().getReplies().size());
+            if (timeLine.getTwitts().getLast().getReplies().size() != 0) {
+                replyText.setText(timeLine.getTwitts().getLast().getReplies().getFirst().getText());
+            }
+            if (timeLine.getTwitts().getLast().getPic() != null) {
+                setImageLabel(timeLine.getTwitts().getLast().getPic());
+            }
+            imageLabel.repaint();
+            this.repaint();
+        }
+    }
+
+    public void setImageLabel(ImageIcon imageIcon){
+        instance.imageLabel.setIcon(imageIcon);
+        instance.imageLabel.revalidate();
+        instance.imageLabel.repaint();
+        instance.revalidate();
+        instance.repaint();
+        int a = 0;
+    }
+
+
 }
