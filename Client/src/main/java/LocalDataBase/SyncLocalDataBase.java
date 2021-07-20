@@ -1,5 +1,6 @@
 package LocalDataBase;
 
+import Chats.PV.Model.PV;
 import Connection.Client.ClientPayLoad;
 import Connection.Client.ClientRequest;
 import Connection.Client.ClientWaitForInput;
@@ -12,16 +13,13 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.LinkedList;
 
 public class SyncLocalDataBase {
     ConnectionToLocalDataBase connectionToLocalDataBase;
-    ClientConnection clientConnection;
     User mainUser;
 
     public SyncLocalDataBase() throws SQLException, IOException, ClassNotFoundException {
         this.connectionToLocalDataBase = new ConnectionToLocalDataBase();
-        this.clientConnection = new ClientConnection();
         User mainUser = new User();
         UserController mainUserController = new UserController(mainUser);
         mainUserController.setAsMain();
@@ -30,28 +28,166 @@ public class SyncLocalDataBase {
     }
 
     public void syncAll() throws SQLException, IOException, ClassNotFoundException {
-        syncFollowings();
+        syncFollowers();
+        //syncMutes();
+        //syncBlackList();
+
+        //syncFollowings();
+        syncChats();
+
     }
 
 
     public void syncFollowers() throws SQLException, IOException, ClassNotFoundException {
-        syncTablesPointToUser("followers");
+        ClientConnection clientConnection = new ClientConnection();
+        ClientRequest clientRequest = null;
+        String deleteFollowingListQuery = String.format("delete from followers;");
+        connectionToLocalDataBase.executeUpdate(deleteFollowingListQuery);
+
+        ClientPayLoad clientPayLoad = new ClientPayLoad();
+        clientPayLoad.getStringStringHashMap().put("username", mainUser.getUserName());
+        clientRequest = new ClientRequest("userInfo", clientPayLoad, mainUser.getSession(), "userInfo", mainUser.getUserName(), mainUser.getPassWord());
+
+        clientConnection.execute(clientRequest);
+
+        ClientWaitForInput.waitForInput(clientConnection.getSocket());
+        ObjectInputStream objectInputStream = new ObjectInputStream(clientConnection.getSocket().getInputStream());
+
+        ServerRequest serverRequest = (ServerRequest) objectInputStream.readObject();
+        User mainUser = serverRequest.getPayLoad().getUser();
+
+        String addfollowings;
+
+        for (User user : mainUser.getFollowers()) {
+            addfollowings = String.format("insert into followers ( \"UUID\" , \"Username\" , \"sync\") values ('%s','%s','%s');", user.getUserUUID(), user.getUserName(), "true");
+            connectionToLocalDataBase.executeUpdate(addfollowings);
+        }
     }
 
     public void syncFollowings() throws SQLException, IOException, ClassNotFoundException {
-        syncTablesPointToUser("followings");
+        User mainUser = new User();
+        ClientUserController clientUserController = new ClientUserController(mainUser);
+        clientUserController.setAsMain();
+
+        String followingsQuery = String.format("select * from followings;");
+        ResultSet rs = connectionToLocalDataBase.executeQuery(followingsQuery);
+
+        ClientPayLoad clientPayLoad = new ClientPayLoad();
+        if(rs != null){
+            while (rs.next()){
+                clientPayLoad.getStringStringHashMap().put(rs.getString(2),"username");
+            }
+        }
+
+        ClientConnection clientConnection = new ClientConnection();
+        ClientRequest clientRequest = new ClientRequest("sync",clientPayLoad,mainUser.getSession(),"syncFollowings",mainUser.getUserName(),mainUser.getPassWord());
+        clientConnection.execute(clientRequest);
+
     }
 
     public void syncMutes() throws SQLException, IOException, ClassNotFoundException {
-        syncTablesPointToUser("mutes");
+        ClientConnection clientConnection = new ClientConnection();
+
+        ClientRequest clientRequest = null;
+        String deleteFollowingListQuery = String.format("delete from mutes;");
+        connectionToLocalDataBase.executeUpdate(deleteFollowingListQuery);
+
+
+        ClientPayLoad clientPayLoad = new ClientPayLoad();
+        clientPayLoad.getStringStringHashMap().put("username", mainUser.getUserName());
+        clientRequest = new ClientRequest("userInfo", clientPayLoad, mainUser.getSession(), "userInfo", mainUser.getUserName(), mainUser.getPassWord());
+
+
+        clientConnection.execute(clientRequest);
+
+        ClientWaitForInput.waitForInput(clientConnection.getSocket());
+        ObjectInputStream objectInputStream = new ObjectInputStream(clientConnection.getSocket().getInputStream());
+
+        ServerRequest serverRequest = (ServerRequest) objectInputStream.readObject();
+        User mainUser = serverRequest.getPayLoad().getUser();
+
+        String addfollowings;
+
+        for (User user : mainUser.getFollowers()) {
+            addfollowings = String.format("insert into mutes ( \"UUID\" , \"Username\" , \"sync\") values ('%s','%s','%s');", user.getUserUUID(), user.getUserName(), "true");
+            connectionToLocalDataBase.executeUpdate(addfollowings);
+        }
     }
 
     public void syncBlackList() throws SQLException, IOException, ClassNotFoundException {
-        syncTablesPointToUser("blackList");
+        ClientConnection clientConnection = new ClientConnection();
+
+        ClientRequest clientRequest = null;
+        String deleteFollowingListQuery = String.format("delete from blacklist;");
+        connectionToLocalDataBase.executeUpdate(deleteFollowingListQuery);
+
+
+        ClientPayLoad clientPayLoad = new ClientPayLoad();
+        clientPayLoad.getStringStringHashMap().put("username", mainUser.getUserName());
+        clientRequest = new ClientRequest("userInfo", clientPayLoad, mainUser.getSession(), "userInfo", mainUser.getUserName(), mainUser.getPassWord());
+
+
+        clientConnection.execute(clientRequest);
+
+        ClientWaitForInput.waitForInput(clientConnection.getSocket());
+        ObjectInputStream objectInputStream = new ObjectInputStream(clientConnection.getSocket().getInputStream());
+
+        ServerRequest serverRequest = (ServerRequest) objectInputStream.readObject();
+        User mainUser = serverRequest.getPayLoad().getUser();
+
+        String addfollowings;
+
+        for (User user : mainUser.getFollowers()) {
+            addfollowings = String.format("insert into blacklist ( \"UUID\" , \"Username\" , \"sync\") values ('%s','%s','%s');", user.getUserUUID(), user.getUserName(), "true");
+            connectionToLocalDataBase.executeUpdate(addfollowings);
+        }
     }
 
-    public void syncChats() {
-        //TODO
+    public void syncChats() throws SQLException, IOException, ClassNotFoundException {
+        ClientConnection clientConnection = new ClientConnection();
+
+
+        ClientPayLoad clientPayLoad = new ClientPayLoad();
+        clientPayLoad.getStringStringHashMap().put("username", mainUser.getUserName());
+        ClientRequest clientRequest = new ClientRequest("chats", clientPayLoad, mainUser.getSession(), "readChats", mainUser.getUserName(), mainUser.getPassWord());
+
+        clientConnection.execute(clientRequest);
+
+        ClientWaitForInput.waitForInput(clientConnection.getSocket());
+        ObjectInputStream objectInputStream = new ObjectInputStream(clientConnection.getSocket().getInputStream());
+
+        ServerRequest serverRequest = (ServerRequest) objectInputStream.readObject();
+        User mainUser = serverRequest.getPayLoad().getUser();
+
+        String addfollowings;
+
+        String existingPVs = String.format("select * from \"ChatsTable\";");
+        ResultSet rs = connectionToLocalDataBase.executeQuery(existingPVs);
+
+        boolean isExist = false;
+        for (PV pv : mainUser.getChats()) {
+            isExist = false;
+            if(rs != null){
+                while (rs.next()){
+                    if(pv.getPVTableName().equals(rs.getString(1))){
+                        isExist = true;
+                        break;
+                    }
+                }
+                if(!isExist){
+                    addfollowings = String.format("insert into \"ChatsTable\" ( \"ChatAddress\" , \"Username\" , \"Date\",\"sync\") values ('%s','%s','%s','%s');", pv.getPVTableName(), pv.getContact().getUserName(),null, "true");
+                    connectionToLocalDataBase.executeUpdate(addfollowings);
+                }
+            }
+        }
+
+        //TODO sync groups
+
+
+    }
+
+    public void syncPV(String username){
+
     }
 
     public void syncGroups() {
@@ -66,71 +202,7 @@ public class SyncLocalDataBase {
         //TODO
     }
 
-    public void syncTablesPointToUser(String tableName) throws SQLException, IOException, ClassNotFoundException {
-        updateServerDataBase(tableName);
-        updateLocalDataBase(tableName);
 
-    }
-
-    private void updateLocalDataBase(String tableName) throws SQLException, IOException, ClassNotFoundException {
-        ClientRequest clientRequest = null;
-        String deleteFollowingListQuery = String.format("delete from followings;");
-        connectionToLocalDataBase.executeUpdate(deleteFollowingListQuery);
-
-        if (tableName.equals("followings")) {
-            ClientPayLoad clientPayLoad = new ClientPayLoad();
-            clientPayLoad.getStringStringHashMap().put("username",mainUser.getUserName());
-            clientRequest = new ClientRequest("userInfo",clientPayLoad,mainUser.getSession(),"userInfo",mainUser.getUserName(),mainUser.getPassWord());
-        }
-
-        clientConnection.execute(clientRequest);
-
-        ClientWaitForInput.waitForInput(clientConnection.getSocket());
-        ObjectInputStream objectInputStream = new ObjectInputStream(clientConnection.getSocket().getInputStream());
-
-        ServerRequest serverRequest = (ServerRequest) objectInputStream.readObject();
-        User mainUser = serverRequest.getPayLoad().getUser();
-
-        String addfollowings;
-        for (User user : mainUser.getFollowing()){
-            addfollowings = String.format("insert into followings ( \"UUID\" , \"Username\" , \"sync\") values ('%s','%s','%s');",user.getUserUUID(),user.getUserName(),"true");
-            connectionToLocalDataBase.executeUpdate(addfollowings);
-        }
-
-    }
-
-    private void updateServerDataBase(String tableName) throws SQLException, IOException, ClassNotFoundException {
-        String sql = null;
-        if(tableName.equals("followers") || tableName.equals("blackList") || tableName.equals("mutes")){
-            if (tableName.equals("followers")) {
-                sql = String.format("select * from followers;");
-            } else if (tableName.equals("blackList")) {
-                sql = String.format("select * from blacklist;");
-            } else if (tableName.equals("mutes")) {
-                sql = String.format("select * from mutes;");
-            }
-
-            ResultSet rs = connectionToLocalDataBase.executeQuery(sql);
-            ClientPayLoad clientPayLoad = new ClientPayLoad();
-            if (rs != null) {
-                while (rs.next()) {
-                    clientPayLoad.getStringStringHashMap().put("username", rs.getString(2));
-                }
-            }
-
-            ClientRequest clientRequest = null;
-            if (tableName.equals("followers")) {
-                clientRequest = new ClientRequest("onUserAction", clientPayLoad, mainUser.getSession(), "syncFollowers", mainUser.getUserName(), mainUser.getPassWord());
-            } else if (tableName.equals("blackList")) {
-                clientRequest = new ClientRequest("onUserAction", clientPayLoad, mainUser.getSession(), "syncBlackList", mainUser.getUserName(), mainUser.getPassWord());
-            } else if (tableName.equals("mutes")) {
-                clientRequest = new ClientRequest("onUserAction", clientPayLoad, mainUser.getSession(), "syncMutes", mainUser.getUserName(), mainUser.getPassWord());
-            }
-            clientConnection.execute(clientRequest);
-
-        }
-
-    }
 
     public void syncTablesPointToTwitt(String tableName) {
 

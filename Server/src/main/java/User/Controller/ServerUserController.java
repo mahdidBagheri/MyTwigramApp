@@ -1,11 +1,8 @@
 package User.Controller;
 
-import Chats.Controller.ServerPVController;
-import Chats.Controller.newChatController;
-import Chats.Model.Chats;
-import Chats.Model.Message;
-import Chats.Model.PV;
-import Chats.Model.newChat;
+import Chats.PV.Controller.ServerPVController;
+import Chats.Chats.Chats;
+import Chats.PV.Model.PV;
 import Connection.DataBaseConnection.ConnectionToDataBase;
 import Connection.Utils.DataBaseUtils;
 import Groups.Model.Group;
@@ -85,7 +82,7 @@ public class ServerUserController {
         readProfilePic();
     }
 
-    private void readUserUUIDbyUsername(String username) throws SQLException, unsuccessfullReadDataFromDatabase {
+    public void readUserUUIDbyUsername(String username) throws SQLException, unsuccessfullReadDataFromDatabase {
         ConnectionToDataBase connectionToServer = new ConnectionToDataBase();
         String sql = String.format("select \"UserUUID\" from  \"UsersTable\"  where  \"UserName\" = '%s';", username);
         ResultSet rs = connectionToServer.executeQuery(sql);
@@ -1014,12 +1011,14 @@ public class ServerUserController {
 
                     pv.setPVTableName(rs.getString(3));
 
+                    ServerPVController serverPVController = new ServerPVController(pv);
+                    serverPVController.readMessages();
+
                     user.addChat(pv);
+
                 }
 
-                connectionToServer.Disconect();
             } else {
-                connectionToServer.Disconect();
                 throw new unsuccessfullReadDataFromDatabase("Could not read Chats");
             }
         }
@@ -1129,11 +1128,11 @@ public class ServerUserController {
                     group.setgroupName(rs.getString(3));
                     group.setGroupTableAddress(rs.getString(2));
                     user.addGrouop(group);
+
+                    //TODO read messages
                 }
-                connectionToServer.Disconect();
             } else {
                 System.out.println("could not add notification");
-                connectionToServer.Disconect();
                 throw new unsuccessfullReadDataFromDatabase("Could not read Groups");
             }
         }

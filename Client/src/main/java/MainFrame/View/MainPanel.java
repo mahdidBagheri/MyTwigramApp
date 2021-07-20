@@ -1,6 +1,8 @@
 package MainFrame.View;
 
-import Chats.View.ChatsPanel;
+import Chats.PV.Model.PV;
+import Chats.Chats.ChatsPanel;
+import Chats.PV.View.PVPanel;
 import ClientLogin.View.LoginPanel;
 import ClientSearch.View.SearchPanel;
 import ClientSingup.View.SignupPanel;
@@ -142,5 +144,18 @@ public class MainPanel extends JPanel {
         this.clear();
         this.add(new OptionPanel(mainPanel));
         this.add(new ChatsPanel(mainPanel,mainUser ));
+    }
+
+    public void addPVPanel(PV pv) throws IOException {
+        if(panels.size() == 2){
+            panelsTrace.add(panels.get(0));
+            panelsTrace.add(panels.get(1));
+        }
+        else {
+            panelsTrace.add(panels.getLast());
+        }
+
+        this.clear();
+        this.add(new PVPanel(pv, mainPanel));
     }
 }

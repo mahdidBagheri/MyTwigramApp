@@ -1,5 +1,7 @@
 package User.Controller;
 
+import Chats.PV.Controller.PVController;
+import Chats.PV.Model.PV;
 import Config.PathConfig.PathConfig;
 import Connection.Client.ClientPayLoad;
 import Connection.Client.ClientRequest;
@@ -55,6 +57,36 @@ public class UserController {
         readFollowings();
         readMutes();
         readBlackList();
+        readPVs();
+        readGroups();
+    }
+
+    private void readGroups() {
+    }
+
+    private void readPVs() throws SQLException, IOException, ClassNotFoundException {
+        user.getChats().clear();
+
+        String sql = String.format("select * from \"ChatsTable\";");
+        ConnectionToLocalDataBase connectionToLocalDataBase = new ConnectionToLocalDataBase();
+        ResultSet rs = connectionToLocalDataBase.executeQuery(sql);
+
+        if(rs != null){
+            while (rs.next()){
+                PV pv = new PV();
+                pv.setUser(user);
+
+                User contact = new User();
+                contact.setUserName(rs.getString(2));
+                pv.setContact(contact);
+
+                pv.setPVTableName(rs.getString(1));
+                PVController pvController = new PVController(pv);
+                pvController.readMessages();
+
+                user.addChat(pv);
+            }
+        }
     }
 
     private void readFollowers() throws SQLException, IOException, ClassNotFoundException {
@@ -85,7 +117,7 @@ public class UserController {
                 User flwing = new User();
                 flwing.setUserUUID(rs.getString(1));
                 flwing.setUserName(rs.getString(2));
-                user.getFollowers().add(flwing);
+                user.getFollowing().add(flwing);
             }
         }
         connectionToLocalDataBase.Disconect();
@@ -102,7 +134,7 @@ public class UserController {
                 User mutedUser = new User();
                 mutedUser.setUserUUID(rs.getString(1));
                 mutedUser.setUserName(rs.getString(2));
-                user.getBlackList().add(mutedUser);
+                user.getMutedUsers().add(mutedUser);
             }
         }
         connectionToLocalDataBase.Disconect();

@@ -1,6 +1,6 @@
 package Connection.Client;
 
-import Chats.Listeners.ServerChatsListener;
+import Chats.Chats.ServerChatsListener;
 import Connection.Server.ServerConnection;
 import Connection.Server.ServerRequest;
 import Connection.Server.ServerWaitForInput;
@@ -9,6 +9,7 @@ import ServerNewTwitt.Listener.ServerNewTwittListener;
 import ServerProfile.Listener.ServerProfileListener;
 import ServerSearch.Listener.ServerSearchListener;
 import ServerSignup.Listener.ServerSignupListener;
+import ServerSync.Listeners.ServerSyncListener;
 import TimeLine.ServerListener.ServerTimeLineListener;
 import Twitt.Exceptions.TwittReadDataException;
 import User.Exceptions.alreadyFollowedException;
@@ -63,6 +64,10 @@ public class ClientThread extends Thread{
             if (clientRequest.getSource().equals("onUserAction")) {
                 ServerUserListener userListener = new ServerUserListener(serverConnection);
                 userListener.listen(clientRequest);
+            }
+            if (clientRequest.getSource().equals("sync")) {
+                ServerSyncListener serverSyncListener = new ServerSyncListener(serverConnection);
+                serverSyncListener.listen(clientRequest);
             }
             if (clientRequest.getSource().equals("newTwitt")) {
                 ServerNewTwittListener serverTwittListener = new ServerNewTwittListener(serverConnection);

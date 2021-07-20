@@ -59,6 +59,14 @@ public class OptionsListener {
             mainPanel.addTimeLinePanel(serverRequest.getPayLoad().getTimeLine());
         }
         else if(command.equals("chats")){
+
+
+            SyncLocalDataBase syncLocalDataBase = new SyncLocalDataBase();
+            syncLocalDataBase.syncChats();
+            syncLocalDataBase.syncFollowings();
+            syncLocalDataBase.syncFollowers();
+            syncLocalDataBase.syncGroups();
+
             User mainUser = new User();
             ClientUserController userController = new ClientUserController(mainUser);
             userController.setAsMain();
