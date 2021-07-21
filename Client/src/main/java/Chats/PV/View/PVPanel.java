@@ -1,9 +1,13 @@
 package Chats.PV.View;
 
+import Chats.Common.Message.Events.SendMessageEvent;
+import Chats.Common.Message.Model.Message;
 import Chats.Common.Message.View.MessagePanel;
+import Chats.PV.Exceptions.MessageSavedAndNotSent;
 import Chats.PV.Listener.SendMessageListener;
 import Chats.PV.Listener.UpOrDownBtnListener;
 import Chats.PV.Model.PV;
+import Chats.PV.Thread.PVThreadServerListener;
 import Config.ColorConfig.ColorConfig;
 import Config.FrameConfig.FrameConfig;
 import MainFrame.View.MainPanel;
@@ -12,10 +16,12 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.sql.SQLException;
 
 public class PVPanel extends JPanel implements ActionListener {
     PV pv;
     MainPanel mainPanel;
+    PVThreadServerListener pvThreadServerListener;
 
     public static PVPanel instance = null;
 
@@ -45,9 +51,10 @@ public class PVPanel extends JPanel implements ActionListener {
 
     String picPath;
 
-    public PVPanel(PV pv, MainPanel mainPanel) throws IOException {
+    public PVPanel(PV pv, MainPanel mainPanel) throws IOException, InterruptedException, SQLException, ClassNotFoundException {
         this.pv = pv;
         this.mainPanel = mainPanel;
+
 
         messageNumber = Math.max(pv.getMessages().size() - 1, 0);
 
@@ -133,6 +140,16 @@ public class PVPanel extends JPanel implements ActionListener {
         picLable.setVisible(true);
         picLable.setBounds(315, 100, 150, 150);
 
+        addAll();
+
+        instance = this;
+        sendMessageListener = new SendMessageListener(pv);
+        pvThreadServerListener = new PVThreadServerListener(this);
+        pvThreadServerListener.start();
+        upOrDownBtnListener = new UpOrDownBtnListener(this);
+    }
+
+    public void addAll(){
         this.add(upBtn);
         this.add(downBtn);
         this.add(messagePanel);
@@ -146,15 +163,74 @@ public class PVPanel extends JPanel implements ActionListener {
         this.add(editField);
         this.add(exitBtn);
         this.add(deleteImageBtn);
-
-        instance = this;
     }
 
+    public PV getPv() {
+        return pv;
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == backBtn){
+            pvThreadServerListener.setRunning(false);
             mainPanel.back();
         }
+        else if(e.getSource() == sendMessageBtn){
+            SendMessageEvent sendMessageEvent = new SendMessageEvent(messageField.getText());
+            try {
+                sendMessageListener.listen(sendMessageEvent);
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            } catch (ClassNotFoundException classNotFoundException) {
+                classNotFoundException.printStackTrace();
+            } catch (MessageSavedAndNotSent messageSavedAndNotSent) {
+                messageSavedAndNotSent.printStackTrace();
+            }
+        }
+        else if(e.getSource() == upBtn){
+            try {
+                upOrDownBtnListener.listen("up");
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        }
+        else if(e.getSource() == downBtn){
+            try {
+                upOrDownBtnListener.listen("down");
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        }
     }
+
+
+    public void updatePV() throws IOException {
+        messagePanel = new MessagePanel(pv.getMessages().get(messageNumber));
+        this.repaint();
+    }
+
+    public int getMessageNumber() {
+        return messageNumber;
+    }
+
+    public void increaseMessageNumber() {
+        this.messageNumber++;
+    }
+
+    public void decreaseMessageNumber() {
+        this.messageNumber--;
+    }
+
+    public void setMessage(Message message) throws IOException {
+        this.removeAll();
+        this.messagePanel = new MessagePanel(message);
+        addAll();
+
+        this.revalidate();
+        this.repaint();
+    }
+
+
 }

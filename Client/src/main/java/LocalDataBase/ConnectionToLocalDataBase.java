@@ -40,8 +40,9 @@ public class ConnectionToLocalDataBase {
         return statement.executeQuery(sql);
     }
 
-    public void finalize() throws SQLException {
+    public void finalize() throws Throwable {
         localDBConnection.close();
+        super.finalize();
     }
 
 

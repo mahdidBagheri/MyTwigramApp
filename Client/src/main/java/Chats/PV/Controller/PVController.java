@@ -23,6 +23,7 @@ public class PVController {
     }
 
     public void readMessages() throws SQLException, IOException, ClassNotFoundException {
+        pv.getMessages().clear();
         ConnectionToLocalDataBase connectionToLocalDataBase = new ConnectionToLocalDataBase();
         String sql = String.format("select * from \"%s\";",pv.getPVTableName());
         ResultSet rs = connectionToLocalDataBase.executeQuery(sql);
@@ -34,10 +35,16 @@ public class PVController {
                 String text  = rs.getString(2);
                 String picAddress = rs.getString(4);
                 String date = rs.getString(5);
-
-                Message message = new Message(user,text,date,picAddress);
+                Message message;
+                if(picAddress != null){
+                    message = new Message(user,text,date,picAddress);
+                }
+                else {
+                    message = new Message(user,text,date);
+                }
                 pv.addMessage(message);
             }
         }
+        connectionToLocalDataBase.Disconect();
     }
 }

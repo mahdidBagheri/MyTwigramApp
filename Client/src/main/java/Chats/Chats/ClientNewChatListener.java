@@ -4,6 +4,7 @@ import Connection.Client.ClientPayLoad;
 import Connection.Client.ClientRequest;
 import Connection.Client.ClientWaitForInput;
 import Connection.ClientConnection;
+import Connection.Exceptions.CouldNotConnectToServerException;
 import Connection.Server.ServerRequest;
 import User.Controller.ClientUserController;
 import User.Model.User;
@@ -13,7 +14,7 @@ import java.io.ObjectInputStream;
 import java.sql.SQLException;
 
 public class ClientNewChatListener {
-    public void listen(NewChatEvent newChatEvent) throws SQLException, IOException, ClassNotFoundException {
+    public void listen(NewChatEvent newChatEvent) throws SQLException, IOException, ClassNotFoundException, CouldNotConnectToServerException {
         User mainUser = new User();
         ClientUserController clientUserController = new ClientUserController(mainUser);
         clientUserController.setAsMain();

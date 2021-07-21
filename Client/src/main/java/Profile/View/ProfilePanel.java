@@ -1,5 +1,6 @@
 package Profile.View;
 
+import Connection.Exceptions.CouldNotConnectToServerException;
 import TimeLine.Listeners.ClientTwittViewListener;
 import User.Listener.ClientUserViewListener;
 import Config.ColorConfig.ColorConfig;
@@ -255,6 +256,8 @@ public class ProfilePanel extends JPanel implements ActionListener {
                 throwables.printStackTrace();
             } catch (ClassNotFoundException classNotFoundException) {
                 classNotFoundException.printStackTrace();
+            } catch (CouldNotConnectToServerException couldNotConnectToServerException) {
+                couldNotConnectToServerException.printStackTrace();
             }
         }
     }

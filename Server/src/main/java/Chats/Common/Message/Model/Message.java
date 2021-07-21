@@ -21,6 +21,12 @@ public class Message implements Serializable {
         this.picFile = new File(picAddress);
     }
 
+    public Message(User author, String text, String date) {
+        this.author = author;
+        this.text = text;
+        this.date = date;
+    }
+
     public User getAuthor() {
         return author;
     }

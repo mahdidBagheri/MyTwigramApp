@@ -101,17 +101,23 @@ public class ServerPVController {
         if(rs != null){
             while (rs.next()){
                 User author;
-                if(rs.getString(3).equals(pv.getUser().getUserUUID())){
+                if(rs.getString(3).equals(pv.getUser().getUserName())){
                     author = pv.getUser();
                 }
                 else {
                     author = pv.getContact();
+                    author.setUserName(rs.getString(3));
                 }
                 String text = rs.getString(2);
-                String picAddress = rs.getString(3);
-                String date = rs.getString(4);
-
-                Message message = new Message(author,text,date,picAddress);
+                String picAddress = rs.getString(4);
+                String date = rs.getString(5);
+                Message message;
+                if(picAddress != null){
+                    message = new Message(author,text,date,picAddress);
+                }
+                else {
+                    message = new Message(author,text,date);
+                }
                 pv.addMessage(message);
             }
         }
@@ -119,7 +125,8 @@ public class ServerPVController {
 
 
 
-    public void finalize() throws SQLException {
+    public void finalize() throws Throwable {
         connectionToDataBase.Disconect();
+        super.finalize();
     }
 }

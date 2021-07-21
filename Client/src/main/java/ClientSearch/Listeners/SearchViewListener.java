@@ -6,6 +6,7 @@ import Connection.Client.ClientPayLoad;
 import Connection.Client.ClientRequest;
 import Connection.Client.ClientWaitForInput;
 import Connection.ClientConnection;
+import Connection.Exceptions.CouldNotConnectToServerException;
 import Connection.Server.ServerRequest;
 import MainFrame.View.MainPanel;
 import User.Controller.UserController;
@@ -23,7 +24,7 @@ public class SearchViewListener {
         this.searchPanel = searchPanel;
     }
 
-    public void listen(SearchEvent searchEvent) throws SQLException, IOException, ClassNotFoundException {
+    public void listen(SearchEvent searchEvent) throws SQLException, IOException, ClassNotFoundException, CouldNotConnectToServerException {
         User mainUser = new User();
         UserController mainUserController = new UserController(mainUser);
         mainUserController.setAsMain();

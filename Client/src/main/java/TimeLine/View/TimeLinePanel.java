@@ -3,6 +3,7 @@ package TimeLine.View;
 import ClientLogin.Exceptions.EmptyFieldException;
 import Config.ColorConfig.ColorConfig;
 import Config.FrameConfig.FrameConfig;
+import Connection.Exceptions.CouldNotConnectToServerException;
 import Constants.Constants;
 import MainFrame.View.MainPanel;
 import TimeLine.Controller.ClientTimeLineController;
@@ -257,7 +258,7 @@ public class TimeLinePanel extends JPanel implements ActionListener {
                 replyField.setText(" ");
                 JOptionPane.showMessageDialog(this,"reply sent");
 
-            } catch (SQLException | ClassNotFoundException | IOException throwables) {
+            } catch (SQLException | ClassNotFoundException | IOException | CouldNotConnectToServerException throwables) {
                 throwables.printStackTrace();
             } catch (EmptyFieldException emptyFieldException) {
                 JOptionPane.showMessageDialog(this,emptyFieldException.getMessage());

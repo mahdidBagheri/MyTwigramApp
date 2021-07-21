@@ -22,7 +22,7 @@ public class LoginListener {
         this.mainPanel = mainPanel;
     }
 
-    public void listen(LoginEvent loginEvent) throws IOException, EmptyFieldException, ClassNotFoundException, SQLException, UserPassNotMatchException {
+    public void listen(LoginEvent loginEvent) throws IOException, EmptyFieldException, ClassNotFoundException, SQLException, UserPassNotMatchException, CouldNotConnectToServerException {
         LoginController loginController = new LoginController();
 
         loginController.validateLogin(loginEvent);

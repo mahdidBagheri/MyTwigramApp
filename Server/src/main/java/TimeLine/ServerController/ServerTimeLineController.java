@@ -153,6 +153,7 @@ public class ServerTimeLineController {
             }
         }
         LinkedList<String> valueList = new LinkedList<String>(twittsMap.keySet());
+        connectionToDataBase.Disconect();
         return valueList;
     }
 

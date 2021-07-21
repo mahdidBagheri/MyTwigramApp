@@ -1,5 +1,6 @@
 package ClientSearch.View;
 
+import Connection.Exceptions.CouldNotConnectToServerException;
 import MainFrame.View.MainPanel;
 import User.Events.UserViewEvent;
 import User.Listener.ClientUserViewListener;
@@ -97,6 +98,8 @@ public class ResultPanel extends JPanel implements ActionListener {
                 ioException.printStackTrace();
             } catch (ClassNotFoundException classNotFoundException) {
                 classNotFoundException.printStackTrace();
+            } catch (CouldNotConnectToServerException couldNotConnectToServerException) {
+                couldNotConnectToServerException.printStackTrace();
             }
         }
     }

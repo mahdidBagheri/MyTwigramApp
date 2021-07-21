@@ -1,6 +1,7 @@
 package User.View;
 
 import Config.ColorConfig.ColorConfig;
+import Connection.Exceptions.CouldNotConnectToServerException;
 import MainFrame.Listener.BackListener;
 import MainFrame.View.MainPanel;
 import TimeLine.Listeners.ClientTwittViewListener;
@@ -273,6 +274,8 @@ public class UserPanel extends JPanel implements ActionListener {
                 classNotFoundException.printStackTrace();
             } catch (FollowException followException) {
                 followException.printStackTrace();
+            } catch (CouldNotConnectToServerException couldNotConnectToServerException) {
+                couldNotConnectToServerException.printStackTrace();
             }
         }
         else if(e.getSource() == backBtn){
@@ -280,7 +283,7 @@ public class UserPanel extends JPanel implements ActionListener {
         }
     }
 
-    private void updateCombos() throws SQLException, IOException, ClassNotFoundException {
+    private void updateCombos() throws SQLException, IOException, ClassNotFoundException, CouldNotConnectToServerException {
 
         User user = this.user;
         ClientUserController clientUserController = new ClientUserController(user);

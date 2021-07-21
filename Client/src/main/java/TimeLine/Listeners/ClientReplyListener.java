@@ -1,6 +1,7 @@
 package TimeLine.Listeners;
 
 import ClientLogin.Exceptions.EmptyFieldException;
+import Connection.Exceptions.CouldNotConnectToServerException;
 import NewTwitt.Controller.NewTwittController;
 import NewTwitt.Events.NewTwittEvent;
 import TimeLine.Events.ReplyEvent;
@@ -19,7 +20,7 @@ public class ClientReplyListener {
         this.timeLine = timeLine;
     }
 
-    public void listen(ReplyEvent replyEvent) throws SQLException, IOException, ClassNotFoundException, EmptyFieldException {
+    public void listen(ReplyEvent replyEvent) throws SQLException, IOException, ClassNotFoundException, EmptyFieldException, CouldNotConnectToServerException {
         if(replyEvent.getText().isEmpty()){
             throw new EmptyFieldException("reply field is empty");
         }

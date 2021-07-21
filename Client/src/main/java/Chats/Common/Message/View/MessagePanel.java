@@ -13,7 +13,9 @@ public class MessagePanel extends JPanel {
     JLabel authurLbl;
     JLabel imageLbl;
 
+    Message message;
     public MessagePanel(Message message) throws IOException {
+        this.message = message;
         this.setLayout(null);
         ColorConfig colorConfig = new ColorConfig();
 
@@ -23,20 +25,20 @@ public class MessagePanel extends JPanel {
 
         authurLbl = new JLabel();
         authurLbl.setBounds(10,30,100,30);
-        authurLbl.setText("author: " + message.getAuthor().getUserName());
+        authurLbl.setText("author: " + this.message.getAuthor().getUserName());
         authurLbl.setVisible(true);
 
         messageTextLbl = new JLabel();
         messageTextLbl.setBounds(10,80,200,200);
-        messageTextLbl.setText(message.getText());
+        messageTextLbl.setText(this.message.getText());
         messageTextLbl.setVisible(true);
 
         messageDateLbl = new JLabel();
         messageDateLbl.setBounds(10,330,200,30);
-        messageDateLbl.setText(message.getDate());
+        messageDateLbl.setText(this.message.getDate());
         messageDateLbl.setVisible(true);
 
-        imageLbl = new JLabel(message.getPic());
+        imageLbl = new JLabel(this.message.getPic());
         imageLbl.setBounds(140,10,150,150);
         imageLbl.setVisible(true);
 
@@ -81,15 +83,23 @@ public class MessagePanel extends JPanel {
     }
 
     public void setMessage(Message message){
-        authurLbl.setText("author: " +message.getAuthor().getUserName());
+        this.message = message;
+        authurLbl.setText("author: " + message.getAuthor().getUserName());
         messageTextLbl.setText(message.getText());
         messageDateLbl.setText(message.getDate());
+        imageLbl.setIcon(message.getPic());
 
-        this.remove(imageLbl);
-        imageLbl = new JLabel(message.getPic());
-        imageLbl.setBounds(140,10,150,150);
-        imageLbl.setVisible(true);
-        this.add(imageLbl);
+        authurLbl.revalidate();
+        messageTextLbl.revalidate();
+        messageDateLbl.revalidate();
+        imageLbl.revalidate();
+        this.revalidate();
+
+        authurLbl.repaint();
+        messageTextLbl.repaint();
+        messageDateLbl.repaint();
+        imageLbl.repaint();
+        this.repaint();
 
     }
 

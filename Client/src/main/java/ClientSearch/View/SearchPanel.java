@@ -2,6 +2,7 @@ package ClientSearch.View;
 
 import ClientSearch.Events.SearchEvent;
 import ClientSearch.Listeners.SearchViewListener;
+import Connection.Exceptions.CouldNotConnectToServerException;
 import User.Listener.ClientUserViewListener;
 import Config.ColorConfig.ColorConfig;
 import Config.FrameConfig.FrameConfig;
@@ -90,6 +91,8 @@ public class SearchPanel extends JPanel implements ActionListener {
                 ioException.printStackTrace();
             } catch (ClassNotFoundException classNotFoundException) {
                 classNotFoundException.printStackTrace();
+            } catch (CouldNotConnectToServerException couldNotConnectToServerException) {
+                couldNotConnectToServerException.printStackTrace();
             }
 
 

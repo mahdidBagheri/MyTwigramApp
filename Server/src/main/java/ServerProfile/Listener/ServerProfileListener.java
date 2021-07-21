@@ -38,5 +38,6 @@ public class ServerProfileListener {
         ConnectionToDataBase connectionToDataBase = new ConnectionToDataBase();
         String sql = String.format("update \"UsersTable\" set \"ProfilePic\" = '%s' where \"UserName\" = '%s';",path,username);
         connectionToDataBase.executeUpdate(sql);
+        connectionToDataBase.Disconect();
     }
 }

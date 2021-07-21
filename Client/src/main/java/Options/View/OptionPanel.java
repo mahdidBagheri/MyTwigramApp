@@ -2,6 +2,7 @@ package Options.View;
 
 import Config.ColorConfig.ColorConfig;
 import Config.FrameConfig.FrameConfig;
+import Connection.Exceptions.CouldNotConnectToServerException;
 import MainFrame.View.MainPanel;
 import Options.Listener.OptionsListener;
 
@@ -109,42 +110,42 @@ public class OptionPanel extends JPanel implements ActionListener {
         if(e.getSource() == profileBotton){
             try {
                 optionsListener.listen("profileBtn");
-            } catch (SQLException | IOException | ClassNotFoundException throwables) {
+            } catch (SQLException | IOException | ClassNotFoundException | CouldNotConnectToServerException throwables) {
                 throwables.printStackTrace();
             }
         }
         else if(e.getSource() == searchBotton){
             try {
                 optionsListener.listen("searchBtn");
-            } catch (SQLException | IOException | ClassNotFoundException throwables) {
+            } catch (SQLException | IOException | ClassNotFoundException | CouldNotConnectToServerException throwables) {
                 throwables.printStackTrace();
             }
         }
         else if(e.getSource() == logOut){
             try {
                 optionsListener.listen("logOutBtn");
-            } catch (SQLException | IOException | ClassNotFoundException throwables) {
+            } catch (SQLException | IOException | ClassNotFoundException | CouldNotConnectToServerException throwables) {
                 throwables.printStackTrace();
             }
         }
         else if(e.getSource() == newTwittBotton){
             try {
                 optionsListener.listen("newTwitt");
-            } catch (SQLException | IOException | ClassNotFoundException throwables) {
+            } catch (SQLException | IOException | ClassNotFoundException | CouldNotConnectToServerException throwables) {
                 throwables.printStackTrace();
             }
         }
         else if(e.getSource() == timeLineBotton){
             try {
                 optionsListener.listen("timeLine");
-            } catch (SQLException | IOException | ClassNotFoundException throwables) {
+            } catch (SQLException | IOException | ClassNotFoundException | CouldNotConnectToServerException throwables) {
                 throwables.printStackTrace();
             }
         }
         else if(e.getSource() == chatsBtn){
             try {
                 optionsListener.listen("chats");
-            } catch (SQLException | IOException | ClassNotFoundException throwables) {
+            } catch (SQLException | IOException | ClassNotFoundException | CouldNotConnectToServerException throwables) {
                 throwables.printStackTrace();
             }
         }

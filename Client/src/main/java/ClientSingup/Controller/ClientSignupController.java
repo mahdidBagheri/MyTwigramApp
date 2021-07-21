@@ -114,7 +114,7 @@ public class ClientSignupController {
                 + signUpEvent.getBirthYear() + " 00:00:00";
     }
 
-    public void saveUserDataToLocalDataBase(SignupEvent signupEvent) throws SQLException, IOException, ClassNotFoundException {
+    public void saveUserDataToLocalDataBase(SignupEvent signupEvent) throws SQLException, IOException, ClassNotFoundException, CouldNotConnectToServerException {
         ClientConnection clientConnection = new ClientConnection();
         ClientRequest clientRequest = new ClientRequest("signup",null,null,"userData",signupEvent.getUserName(),signupEvent.getPassword1());
         clientConnection.execute(clientRequest);
@@ -222,6 +222,6 @@ public class ClientSignupController {
         }
 
         connectionToLocalDataBase.executeUpdate(sqlQuery);
-
+        connectionToLocalDataBase.Disconect();
     }
 }

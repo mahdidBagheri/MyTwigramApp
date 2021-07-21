@@ -16,18 +16,14 @@ import Constants.Constants;
 public class ClientConnection {
     Socket socket;
 
-    public ClientConnection() {
+    public ClientConnection() throws CouldNotConnectToServerException {
         NetworkConfig networkConfig = new NetworkConfig();
 
         try {
             this.socket = new Socket(Constants.IP, Constants.portNumber);
         } catch (IOException e) {
 
-            try {
-                this.socket = new Socket("localhost", networkConfig.getPort());
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }
+            throw new CouldNotConnectToServerException("could not connect to server");
         }
         System.out.println(socket);
     }

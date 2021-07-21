@@ -18,7 +18,7 @@ public class OptionsListener {
         this.mainPanel = mainPanel;
     }
 
-    public void listen(String command) throws SQLException, IOException, ClassNotFoundException {
+    public void listen(String command) throws SQLException, IOException, ClassNotFoundException, CouldNotConnectToServerException {
         if(command.equals("profileBtn")){
             User mainUser = new User();
             UserController userController = new UserController(mainUser);
@@ -59,7 +59,6 @@ public class OptionsListener {
             mainPanel.addTimeLinePanel(serverRequest.getPayLoad().getTimeLine());
         }
         else if(command.equals("chats")){
-
 
             SyncLocalDataBase syncLocalDataBase = new SyncLocalDataBase();
             syncLocalDataBase.syncChats();

@@ -19,6 +19,7 @@ import User.View.UserPanel;
 
 import javax.swing.*;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.LinkedList;
 
 public class MainPanel extends JPanel {
@@ -146,7 +147,7 @@ public class MainPanel extends JPanel {
         this.add(new ChatsPanel(mainPanel,mainUser ));
     }
 
-    public void addPVPanel(PV pv) throws IOException {
+    public void addPVPanel(PV pv) throws IOException, InterruptedException, SQLException, ClassNotFoundException {
         if(panels.size() == 2){
             panelsTrace.add(panels.get(0));
             panelsTrace.add(panels.get(1));

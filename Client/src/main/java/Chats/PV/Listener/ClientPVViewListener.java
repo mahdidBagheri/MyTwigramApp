@@ -2,6 +2,8 @@ package Chats.PV.Listener;
 
 import Chats.PV.Events.ClientPVViewEvent;
 import Chats.PV.Model.PV;
+import Connection.Exceptions.CouldNotConnectToServerException;
+import LocalDataBase.SyncLocalDataBase;
 import MainFrame.View.MainPanel;
 import User.Controller.ClientUserController;
 import User.Model.User;
@@ -16,10 +18,17 @@ public class ClientPVViewListener {
         this.mainPanel = mainPanel;
     }
 
-    public void listen(ClientPVViewEvent clientPVViewEvent) throws SQLException, IOException, ClassNotFoundException {
+    public void listen(ClientPVViewEvent clientPVViewEvent) throws SQLException, IOException, ClassNotFoundException, InterruptedException {
         User mainUser = new User();
         ClientUserController clientUserController = new ClientUserController(mainUser);
         clientUserController.setAsMain();
+
+        try {
+            SyncLocalDataBase syncLocalDataBase = new SyncLocalDataBase();
+            syncLocalDataBase.syncChats();
+        } catch (CouldNotConnectToServerException e) {
+            e.printStackTrace();
+        }
 
         for (PV pv :mainUser.getChats()){
             if(pv.getContact().getUserName().equals(clientPVViewEvent.getUsername())){

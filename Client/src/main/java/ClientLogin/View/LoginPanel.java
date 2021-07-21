@@ -5,6 +5,7 @@ import ClientLogin.Exceptions.EmptyFieldException;
 import ClientLogin.Listeners.LoginListener;
 import Config.ColorConfig.ColorConfig;
 import Config.FrameConfig.FrameConfig;
+import Connection.Exceptions.CouldNotConnectToServerException;
 import Connection.Exceptions.UserPassNotMatchException;
 import MainFrame.View.MainPanel;
 
@@ -95,6 +96,8 @@ public class LoginPanel extends JPanel implements ActionListener {
                 throwables.printStackTrace();
             } catch (UserPassNotMatchException userPassNotMatchException) {
                 userPassNotMatchException.printStackTrace();
+            } catch (CouldNotConnectToServerException couldNotConnectToServerException) {
+                couldNotConnectToServerException.printStackTrace();
             }
         }
     }

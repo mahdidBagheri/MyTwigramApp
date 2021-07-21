@@ -4,6 +4,7 @@ import Connection.Client.ClientPayLoad;
 import Connection.Client.ClientRequest;
 import Connection.Client.ClientWaitForInput;
 import Connection.ClientConnection;
+import Connection.Exceptions.CouldNotConnectToServerException;
 import Connection.Server.ServerRequest;
 import MainFrame.View.MainPanel;
 import User.Controller.ClientUserController;
@@ -21,7 +22,7 @@ public class ClientUserViewListener {
         this.mainPanel = mainPanel;
     }
 
-    public void listen(UserViewEvent userViewEvent) throws IOException, ClassNotFoundException, SQLException {
+    public void listen(UserViewEvent userViewEvent) throws IOException, ClassNotFoundException, SQLException, CouldNotConnectToServerException {
         User user = userViewEvent.getUser();
         ClientUserController clientUserController = new ClientUserController(user);
         clientUserController.readAllByUsername();

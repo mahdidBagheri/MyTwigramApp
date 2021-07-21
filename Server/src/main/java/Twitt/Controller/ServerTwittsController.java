@@ -281,8 +281,9 @@ public class ServerTwittsController {
 
     }
 
-    public void finalize() throws SQLException {
+    public void finalize() throws Throwable {
         connectionToDataBase.Disconect();
+        super.finalize();
     }
 
 }

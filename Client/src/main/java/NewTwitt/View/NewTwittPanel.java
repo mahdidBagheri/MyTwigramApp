@@ -1,6 +1,7 @@
 package NewTwitt.View;
 
 import Config.ColorConfig.ColorConfig;
+import Connection.Exceptions.CouldNotConnectToServerException;
 import MainFrame.View.MainPanel;
 import NewTwitt.Events.NewTwittEvent;
 import NewTwitt.Exceptions.NewTwittException;
@@ -158,6 +159,8 @@ public class NewTwittPanel extends JPanel implements ActionListener {
 
             } catch (ClassNotFoundException classNotFoundException) {
                 classNotFoundException.printStackTrace();
+            } catch (CouldNotConnectToServerException couldNotConnectToServerException) {
+                couldNotConnectToServerException.printStackTrace();
             }
         }
         else if(e.getSource() == deletePicBtn){

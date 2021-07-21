@@ -4,6 +4,7 @@ import Config.PathConfig.PathConfig;
 import Connection.Client.ClientPayLoad;
 import Connection.Client.ClientRequest;
 import Connection.ClientConnection;
+import Connection.Exceptions.CouldNotConnectToServerException;
 import Constants.Constants;
 import LocalDataBase.ConnectionToLocalDataBase;
 import NewTwitt.Events.NewTwittEvent;
@@ -23,7 +24,7 @@ import java.util.UUID;
 public class NewTwittController {
     Twitt newTwitt;
 
-    public void newTwitt(NewTwittEvent newTwittEvent) throws SQLException, IOException, ClassNotFoundException {
+    public void newTwitt(NewTwittEvent newTwittEvent) throws SQLException, IOException, ClassNotFoundException, CouldNotConnectToServerException {
         newTwitt = new Twitt();
 
         setNewTwittUUID();
@@ -43,9 +44,10 @@ public class NewTwittController {
         ConnectionToLocalDataBase connectionToLocalDataBase = new ConnectionToLocalDataBase();
         String sql = String.format("insert into \"twitts\"(\"TwittUUID\",\"text\",\"Author\",\"sync\") values ('%s','%s','%s','%s');",newTwitt.getTwittUUID(),newTwitt.getText(),newTwitt.getAuthorUUID(),"true");
         connectionToLocalDataBase.executeUpdate(sql);
+        connectionToLocalDataBase.Disconect();
     }
 
-    private void sendToServer() throws IOException {
+    private void sendToServer() throws IOException, CouldNotConnectToServerException {
         ClientConnection clientConnection = new ClientConnection();
         ClientPayLoad clientPayLoad = new ClientPayLoad();
         clientPayLoad.setTwitt(newTwitt);

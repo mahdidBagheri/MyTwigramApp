@@ -59,6 +59,8 @@ public class UserController {
         readBlackList();
         readPVs();
         readGroups();
+
+        connectionToLocalDataBase.Disconect();
     }
 
     private void readGroups() {
@@ -87,6 +89,7 @@ public class UserController {
                 user.addChat(pv);
             }
         }
+        connectionToLocalDataBase.Disconect();
     }
 
     private void readFollowers() throws SQLException, IOException, ClassNotFoundException {
@@ -159,7 +162,7 @@ public class UserController {
 
     }
 
-    public void changeProfilePic(String path) throws IOException, SQLException, ClassNotFoundException {
+    public void changeProfilePic(String path) throws IOException, SQLException, ClassNotFoundException, CouldNotConnectToServerException {
         PathConfig pathConfig = new PathConfig();
         ImageIcon myImage = new ImageIcon(new ImageIcon(path).getImage().getScaledInstance(Constants.picWidth, Constants.picHeight, Image.SCALE_DEFAULT));
         user.setProfilePic(myImage);
@@ -196,5 +199,6 @@ public class UserController {
         ConnectionToLocalDataBase connectionToLocalDataBase = new ConnectionToLocalDataBase();
         String sql = String.format("update \"UserInfo\" set \"ProfilePic\" = '%s';",path);
         connectionToLocalDataBase.executeUpdate(sql);
+        connectionToLocalDataBase.Disconect();
     }
 }

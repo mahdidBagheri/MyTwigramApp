@@ -4,6 +4,7 @@ import Connection.Client.ClientPayLoad;
 import Connection.Client.ClientRequest;
 import Connection.Client.ClientWaitForInput;
 import Connection.ClientConnection;
+import Connection.Exceptions.CouldNotConnectToServerException;
 import Connection.Server.ServerRequest;
 import MainFrame.View.MainPanel;
 import User.Controller.UserController;
@@ -22,7 +23,7 @@ public class ClientUserListener {
         this.mainPanel = mainPanel;
     }
 
-    public void listen(UserEvent userEvent) throws SQLException, IOException, ClassNotFoundException, FollowException {
+    public void listen(UserEvent userEvent) throws SQLException, IOException, ClassNotFoundException, FollowException, CouldNotConnectToServerException {
         if(userEvent.getCommand().equals("followOrUnfollow")){
             User mainUser = new User();
             UserController mainUserController = new UserController(mainUser);

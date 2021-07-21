@@ -59,8 +59,9 @@ public class ServerSignupController {
     }
 
 
-    protected void finalize() throws SQLException {
+    protected void finalize() throws Throwable {
         serverConnection.getConnectionToDataBase().Disconect();
+        super.finalize();
     }
 
 

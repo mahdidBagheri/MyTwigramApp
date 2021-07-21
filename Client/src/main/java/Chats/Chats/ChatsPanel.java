@@ -5,6 +5,7 @@ import Chats.PV.Listener.ClientPVViewListener;
 import Chats.PV.Model.PV;
 import Config.ColorConfig.ColorConfig;
 import Config.FrameConfig.FrameConfig;
+import Connection.Exceptions.CouldNotConnectToServerException;
 import Groups.Model.Group;
 import MainFrame.View.MainPanel;
 import User.Model.User;
@@ -171,6 +172,8 @@ public class ChatsPanel extends JPanel implements ActionListener {
                 ioException.printStackTrace();
             } catch (ClassNotFoundException classNotFoundException) {
                 classNotFoundException.printStackTrace();
+            } catch (CouldNotConnectToServerException couldNotConnectToServerException) {
+                couldNotConnectToServerException.printStackTrace();
             }
         }
         else if(e.getSource() == pVVewiBtn ){
@@ -185,6 +188,8 @@ public class ChatsPanel extends JPanel implements ActionListener {
                 ioException.printStackTrace();
             } catch (ClassNotFoundException classNotFoundException) {
                 classNotFoundException.printStackTrace();
+            } catch (InterruptedException interruptedException) {
+                interruptedException.printStackTrace();
             }
         }
     }

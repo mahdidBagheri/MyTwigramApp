@@ -39,6 +39,7 @@ public class ServerSearchListener {
                 serverRequest = new ServerRequest(clientRequest.getUsername(),"notfound",null);
             }
         }
+        connectionToDataBase.Disconect();
         serverConnection.execute(serverRequest);
     }
 }

@@ -12,7 +12,7 @@ public class ServerLoginController {
         ConnectionToDataBase connectionToDataBase = new ConnectionToDataBase();
         String sql = String.format("select * from \"UsersTable\" where \"UserName\" = '%s' and \"Pass\" = '%s' ;",username,password);
         ResultSet rs = connectionToDataBase.executeQuery(sql);
-
+        connectionToDataBase.Disconect();
         if(rs != null){
             if(rs.next()){
                 return true;
@@ -31,6 +31,7 @@ public class ServerLoginController {
         ConnectionToDataBase connectionToDataBase = new ConnectionToDataBase();
         String sql = String.format("update \"UsersTable\" set \"Session\" = '%s' where \"UserName\" = '%s' ;",username,session);
         connectionToDataBase.executeUpdate(sql);
+        connectionToDataBase.Disconect();
         return session;
     }
 }

@@ -1,5 +1,6 @@
 package NewTwitt.Listener;
 
+import Connection.Exceptions.CouldNotConnectToServerException;
 import MainFrame.View.MainPanel;
 import NewTwitt.Controller.NewTwittController;
 import NewTwitt.Controller.NewTwittValidation;
@@ -19,7 +20,7 @@ public class NewTwittListener {
         this.mainPanel = mainPanel;
     }
 
-    public void listen(NewTwittEvent newTwittEvent) throws NewTwittException, SQLException, IOException, ClassNotFoundException {
+    public void listen(NewTwittEvent newTwittEvent) throws NewTwittException, SQLException, IOException, ClassNotFoundException, CouldNotConnectToServerException {
         newTwittValidation.Validate(newTwittEvent);
         newTwittController.newTwitt(newTwittEvent);
     }

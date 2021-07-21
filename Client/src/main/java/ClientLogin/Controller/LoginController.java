@@ -6,6 +6,7 @@ import Connection.Client.ClientPayLoad;
 import Connection.Client.ClientRequest;
 import Connection.Client.ClientWaitForInput;
 import Connection.ClientConnection;
+import Connection.Exceptions.CouldNotConnectToServerException;
 import Connection.Exceptions.UserPassNotMatchException;
 import Connection.Server.ServerRequest;
 import LocalDataBase.ConnectionToLocalDataBase;
@@ -26,7 +27,7 @@ public class LoginController {
 
     }
 
-    public void loginUser(LoginEvent loginEvent) throws IOException, ClassNotFoundException, UserPassNotMatchException, SQLException {
+    public void loginUser(LoginEvent loginEvent) throws IOException, ClassNotFoundException, UserPassNotMatchException, SQLException, CouldNotConnectToServerException {
         ClientConnection clientConnection = new ClientConnection();
         ClientPayLoad clientPayLoad = new ClientPayLoad();
         clientPayLoad.getStringStringHashMap().put("username",loginEvent.getUsername());
@@ -52,6 +53,7 @@ public class LoginController {
         ConnectionToLocalDataBase connectionToLocalDataBase = new ConnectionToLocalDataBase();
         String sql = String.format("update \"UserInfo\" set\"Session\" = '%s';",session);
         connectionToLocalDataBase.executeUpdate(sql);
+        connectionToLocalDataBase.Disconect();
     }
 
 

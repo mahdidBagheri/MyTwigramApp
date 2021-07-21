@@ -136,6 +136,11 @@ public class ServerNewTwittController {
 
     }
 
+    public void finalize() throws Throwable {
+        connectionToDataBase.Disconect();
+        super.finalize();
+    }
+
 
 
 }

@@ -12,7 +12,7 @@ public class UserViewEvent {
     User mainUser;
     MainPanel mainPanel;
 
-    public UserViewEvent(User user, MainPanel mainPanel) throws SQLException, IOException, ClassNotFoundException {
+    public UserViewEvent(User user, MainPanel mainPanel) throws SQLException, IOException, ClassNotFoundException, CouldNotConnectToServerException {
         this.user = user;
         User mainUser = new User();
         UserController userController = new UserController(mainUser);
