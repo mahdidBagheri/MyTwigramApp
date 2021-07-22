@@ -1,7 +1,9 @@
 package Chats.Group.Listeners;
 
+import Chats.Group.Controller.GroupController;
 import Connection.Client.ClientPayLoad;
 import Connection.Client.ClientRequest;
+import Connection.DataBaseConnection.ConnectionToDataBase;
 import Connection.Server.ServerConnection;
 import Connection.Server.ServerPayLoad;
 import Connection.Server.ServerRequest;
@@ -35,6 +37,11 @@ public class ServerGroupListener {
 
             ServerRequest serverRequest = new ServerRequest(clientRequest.getUsername(),"readGroups",serverPayLoad);
             serverConnection.execute(serverRequest);
+        }
+        else if(clientRequest.getCommand().equals("sendMessage")){
+            GroupController groupController = new GroupController(serverConnection);
+            groupController.sendMessage(clientRequest);
+
         }
     }
 }

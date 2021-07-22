@@ -1,5 +1,6 @@
 package Chats.Group.Controller;
 
+import Connection.Client.ClientRequest;
 import Connection.DataBaseConnection.ConnectionToDataBase;
 import Connection.Server.ServerConnection;
 import User.Controller.ServerUserController;
@@ -51,5 +52,24 @@ public class GroupController {
 
         connectionToServer.Disconect();
 
+    }
+
+    public void sendMessage(ClientRequest clientRequest) throws SQLException {
+        ConnectionToDataBase connectionToDataBase = new ConnectionToDataBase();
+        String groupAddressTable = clientRequest.getClientPayLoad().getStringStringHashMap().get("groupTableAddress");
+        String username = clientRequest.getClientPayLoad().getStringStringHashMap().get("username");
+        String text = clientRequest.getClientPayLoad().getStringStringHashMap().get("text");
+        String picAddress = clientRequest.getClientPayLoad().getStringStringHashMap().get("imageAddress");
+        String date = clientRequest.getClientPayLoad().getStringStringHashMap().get("date");
+        String sql;
+        if(picAddress != null){
+            sql = String.format("insert into \"%s\" (\"Message\",\"Author\",\"ImageAddress\",\"Date\") values ('%s','%s','%s','%s');",groupAddressTable + "Messages",text,username,picAddress,date);
+        }
+        else {
+            sql = String.format("insert into \"%s\" (\"Message\",\"Author\",\"Date\") values ('%s','%s','%s');",groupAddressTable + "Messages",text,username,date);
+
+        }
+        connectionToDataBase.executeUpdate(sql);
+        connectionToDataBase.Disconect();
     }
 }

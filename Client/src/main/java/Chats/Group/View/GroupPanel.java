@@ -1,9 +1,13 @@
 package Chats.Group.View;
 
+import Chats.Common.Message.Events.SendMessageEvent;
+import Chats.Common.Message.Model.Message;
 import Chats.Common.Message.View.MessagePanel;
 import Chats.Group.Listener.SendMessageListener;
 import Chats.Group.Listener.UpOrDownBtnListener;
 import Chats.Group.Model.Group;
+import Chats.Group.Threads.GroupThreadServerListener;
+import Chats.PV.Exceptions.MessageSavedAndNotSent;
 import Config.ColorConfig.ColorConfig;
 import Config.FrameConfig.FrameConfig;
 import MainFrame.View.MainPanel;
@@ -12,6 +16,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.sql.SQLException;
 
 public class GroupPanel extends JPanel implements ActionListener {
     public static GroupPanel instance = null;
@@ -36,6 +41,8 @@ public class GroupPanel extends JPanel implements ActionListener {
 
     SendMessageListener sendMessageListener;
     UpOrDownBtnListener upOrDownBtnListener;
+
+    GroupThreadServerListener groupThreadServerListener;
 
     Group group;
 
@@ -145,6 +152,10 @@ public class GroupPanel extends JPanel implements ActionListener {
 
         instance = this;
 
+        this.sendMessageListener = new SendMessageListener(this);
+        this.upOrDownBtnListener = new UpOrDownBtnListener(this);
+
+        this.groupThreadServerListener = new GroupThreadServerListener(this);
     }
 
     private void addAll(){
@@ -166,6 +177,65 @@ public class GroupPanel extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if(e.getSource() == backBtn){
+            mainPanel.back();
+        }
+        else if(e.getSource() == sendMessageBtn){
+            SendMessageEvent sendMessageEvent = new SendMessageEvent(messageField.getText());
+            try {
+                sendMessageListener.listen(sendMessageEvent);
+            } catch (MessageSavedAndNotSent messageSavedAndNotSent) {
+                messageSavedAndNotSent.printStackTrace();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            } catch (ClassNotFoundException classNotFoundException) {
+                classNotFoundException.printStackTrace();
+            }
+        }
+        else if(e.getSource() == upBtn){
+            try {
+                upOrDownBtnListener.listen("up");
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        }
+        else if(e.getSource() == downBtn){
+            try {
+                upOrDownBtnListener.listen("down");
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        }
+    }
 
+    public Group getGroup() {
+        return group;
+    }
+
+    public int getMessageNumber() {
+        return messageNumber;
+    }
+
+    public void decreaseMessageNumber() {
+        this.messageNumber--;
+    }
+
+    public void increaseMessageNumber() {
+        this.messageNumber++;
+    }
+
+    public void setMessage(Message message) throws IOException {
+        this.removeAll();
+        this.messagePanel = new MessagePanel(message);
+        addAll();
+
+        this.revalidate();
+        this.repaint();
+    }
+
+    public void finalize(){
+        groupThreadServerListener.setRunning(false);
     }
 }

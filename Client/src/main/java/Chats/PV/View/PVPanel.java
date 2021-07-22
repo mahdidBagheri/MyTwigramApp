@@ -232,5 +232,9 @@ public class PVPanel extends JPanel implements ActionListener {
         this.repaint();
     }
 
+    public void finalize(){
+        pvThreadServerListener.setRunning(false);
+    }
+
 
 }
