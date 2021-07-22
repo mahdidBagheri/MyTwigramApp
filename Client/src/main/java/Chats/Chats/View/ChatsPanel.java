@@ -1,7 +1,9 @@
 package Chats.Chats.View;
 
+import Chats.Group.Event.GroupViewEvent;
 import Chats.Group.Listener.AddMemmberListener;
 import Chats.Group.Listener.CreateNewGroupListener;
+import Chats.Group.Listener.GroupViewListener;
 import Chats.Group.Model.Group;
 import Chats.PV.Listener.ClientNewChatListener;
 import Chats.Chats.Events.NewChatEvent;
@@ -49,6 +51,7 @@ public class ChatsPanel extends JPanel implements ActionListener {
     ClientPVViewListener clientPVViewListener;
     AddMemmberListener addMemmberListener;
     CreateNewGroupListener createNewGroupListener;
+    GroupViewListener groupViewListener;
 
     LinkedList<User> memmbersToAdd = new LinkedList<>();
 
@@ -59,6 +62,7 @@ public class ChatsPanel extends JPanel implements ActionListener {
         this.clientPVViewListener = new ClientPVViewListener(mainPanel);
         this.addMemmberListener = new AddMemmberListener(this);
         this.createNewGroupListener = new CreateNewGroupListener(this);
+        this.groupViewListener = new GroupViewListener(mainPanel);
 
         this.setLayout(null);
 
@@ -225,6 +229,18 @@ public class ChatsPanel extends JPanel implements ActionListener {
                 couldNotConnectToServerException.printStackTrace();
             } catch (EmptyFieldException emptyFieldException) {
                 emptyFieldException.printStackTrace();
+            }
+        } else if(e.getSource() == groupViewBtn){
+            String groupName = groupsCombo.getSelectedItem().toString();
+            GroupViewEvent groupViewEvent = new GroupViewEvent(groupName);
+            try {
+                groupViewListener.listen(groupViewEvent);
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            } catch (ClassNotFoundException classNotFoundException) {
+                classNotFoundException.printStackTrace();
             }
         }
     }

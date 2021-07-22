@@ -1,5 +1,7 @@
 package MainFrame.View;
 
+import Chats.Group.Model.Group;
+import Chats.Group.View.GroupPanel;
 import Chats.PV.Model.PV;
 import Chats.Chats.View.ChatsPanel;
 import Chats.PV.View.PVPanel;
@@ -158,5 +160,18 @@ public class MainPanel extends JPanel {
 
         this.clear();
         this.add(new PVPanel(pv, mainPanel));
+    }
+
+    public void addGroupPanel(Group group) throws IOException {
+        if(panels.size() == 2){
+            panelsTrace.add(panels.get(0));
+            panelsTrace.add(panels.get(1));
+        }
+        else {
+            panelsTrace.add(panels.getLast());
+        }
+
+        this.clear();
+        this.add(new GroupPanel(group, mainPanel));
     }
 }
