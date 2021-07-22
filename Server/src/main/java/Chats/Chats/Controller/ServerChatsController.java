@@ -1,6 +1,6 @@
-package Chats.Chats;
+package Chats.Chats.Controller;
 
-import Chats.Chats.Chats;
+import Chats.Chats.Model.Chats;
 import Connection.DataBaseConnection.ConnectionToDataBase;
 
 public class ServerChatsController {

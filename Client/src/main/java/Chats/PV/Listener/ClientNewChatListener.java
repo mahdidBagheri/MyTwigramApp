@@ -1,5 +1,9 @@
-package Chats.Chats;
+package Chats.PV.Listener;
 
+import Chats.Chats.Events.NewChatEvent;
+import Chats.Chats.Controller.NewChatController;
+import Chats.Chats.View.ChatsPanel;
+import Chats.PV.Exceptions.ExistingPVException;
 import Connection.Client.ClientPayLoad;
 import Connection.Client.ClientRequest;
 import Connection.Client.ClientWaitForInput;
@@ -8,13 +12,21 @@ import Connection.Exceptions.CouldNotConnectToServerException;
 import Connection.Server.ServerRequest;
 import User.Controller.ClientUserController;
 import User.Model.User;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.sql.SQLException;
 
 public class ClientNewChatListener {
-    public void listen(NewChatEvent newChatEvent) throws SQLException, IOException, ClassNotFoundException, CouldNotConnectToServerException {
+    ChatsPanel chatsPanel;
+    public ClientNewChatListener(ChatsPanel chatsPanel) {
+        this.chatsPanel = chatsPanel;
+    }
+
+    public void listen(NewChatEvent newChatEvent) throws SQLException, IOException, ClassNotFoundException, CouldNotConnectToServerException, ExistingPVException {
+        if(isRepeatedPV(newChatEvent.getUser())){
+            throw new ExistingPVException("PV exists");
+        }
+
         User mainUser = new User();
         ClientUserController clientUserController = new ClientUserController(mainUser);
         clientUserController.setAsMain();
@@ -37,6 +49,16 @@ public class ClientNewChatListener {
         NewChatController newChatController = new NewChatController();
 
         newChatController.saveChatToLocalDataBase(chatAddress,newChatEvent.getUser().getUserName() );
+    }
+
+    private boolean isRepeatedPV(User user) {
+        for (int i = 0; i < chatsPanel.getFollowersCombo().getItemCount(); i++) {
+            String username = chatsPanel.getFollowersCombo().getItemAt(i).toString();
+            if (username.equals(user.getUserName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 

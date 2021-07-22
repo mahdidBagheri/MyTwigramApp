@@ -1,4 +1,4 @@
-package Chats.Chats;
+package Chats.Chats.Controller;
 
 import Chats.PV.Controller.ServerPVController;
 import Chats.PV.Model.PV;

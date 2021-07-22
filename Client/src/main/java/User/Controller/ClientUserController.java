@@ -68,7 +68,6 @@ public class UserController {
 
     private void readPVs() throws SQLException, IOException, ClassNotFoundException {
         user.getChats().clear();
-
         String sql = String.format("select * from \"ChatsTable\";");
         ConnectionToLocalDataBase connectionToLocalDataBase = new ConnectionToLocalDataBase();
         ResultSet rs = connectionToLocalDataBase.executeQuery(sql);
@@ -91,6 +90,7 @@ public class UserController {
         }
         connectionToLocalDataBase.Disconect();
     }
+
 
     private void readFollowers() throws SQLException, IOException, ClassNotFoundException {
         user.setFollowers(new LinkedList<User>());

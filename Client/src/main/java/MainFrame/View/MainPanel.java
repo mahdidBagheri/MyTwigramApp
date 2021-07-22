@@ -1,7 +1,7 @@
 package MainFrame.View;
 
 import Chats.PV.Model.PV;
-import Chats.Chats.ChatsPanel;
+import Chats.Chats.View.ChatsPanel;
 import Chats.PV.View.PVPanel;
 import ClientLogin.View.LoginPanel;
 import ClientSearch.View.SearchPanel;

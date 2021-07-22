@@ -161,7 +161,7 @@ public class SyncLocalDataBase {
         ServerRequest serverRequest = (ServerRequest) objectInputStream.readObject();
         User mainUser = serverRequest.getPayLoad().getUser();
 
-        String addfollowings;
+        String addChat;
 
         String existingPVs = String.format("select * from \"ChatsTable\";");
         ResultSet rs = connectionToLocalDataBase.executeQuery(existingPVs);
@@ -177,13 +177,21 @@ public class SyncLocalDataBase {
                     }
                 }
                 if(!isExist){
-                    addfollowings = String.format("insert into \"ChatsTable\" ( \"ChatAddress\" , \"Username\" , \"Date\",\"sync\") values ('%s','%s','%s','%s');", pv.getPVTableName(), pv.getContact().getUserName(),null, "true");
-                    connectionToLocalDataBase.executeUpdate(addfollowings);
+                    DateTime dateTime = new DateTime();
+                    addChat = String.format("insert into \"ChatsTable\" ( \"ChatAddress\" , \"Username\" , \"Date\",\"sync\") values ('%s','%s','%s','%s');", pv.getPVTableName(), pv.getContact().getUserName(),dateTime.Now(), "true");
+                    createPVTable(pv.getPVTableName());
+                    connectionToLocalDataBase.executeUpdate(addChat);
                 }
             }
         }
 
         //TODO sync groups
+
+    }
+
+    private void createPVTable(String pvTableName) throws SQLException {
+        String sql = String.format("create table \"%s\"(\"ID\" BIGSERIAL NOT NULL PRIMARY KEY,\"Message\" text,\"Author\" character varying (50), \"ImageAddress\" character varying (200) ,\"Date\" timestamp without time zone,\"sync\" character varying (6));",pvTableName);
+        connectionToLocalDataBase.executeUpdate(sql);
 
     }
 

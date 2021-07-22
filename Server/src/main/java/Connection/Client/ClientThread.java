@@ -1,6 +1,6 @@
 package Connection.Client;
 
-import Chats.Chats.ServerChatsListener;
+import Chats.Chats.Listener.ServerChatsListener;
 import Chats.PV.Listener.ServerPVListener;
 import Connection.Server.ServerConnection;
 import Connection.Server.ServerRequest;

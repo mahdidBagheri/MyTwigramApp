@@ -1,7 +1,7 @@
 package User.Controller;
 
 import Chats.PV.Controller.ServerPVController;
-import Chats.Chats.Chats;
+import Chats.Chats.Model.Chats;
 import Chats.PV.Model.PV;
 import Connection.DataBaseConnection.ConnectionToDataBase;
 import Connection.Utils.DataBaseUtils;

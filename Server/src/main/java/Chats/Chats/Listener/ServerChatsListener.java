@@ -1,5 +1,6 @@
-package Chats.Chats;
+package Chats.Chats.Listener;
 
+import Chats.Chats.Controller.ServerNewChatController;
 import Connection.Client.ClientRequest;
 import Connection.Server.ServerConnection;
 import Connection.Server.ServerPayLoad;

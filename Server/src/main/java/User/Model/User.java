@@ -1,6 +1,6 @@
 package User.Model;
 
-import Chats.Chats.Chats;
+import Chats.Chats.Model.Chats;
 import Chats.PV.Model.PV;
 import Groups.Model.Group;
 import Notification.Model.NewFollowerNotif;

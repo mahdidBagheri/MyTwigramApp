@@ -1,4 +1,4 @@
-package Chats.Chats;
+package Chats.Chats.Events;
 
 import User.Model.User;
 

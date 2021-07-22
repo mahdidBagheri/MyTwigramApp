@@ -1,4 +1,4 @@
-package Chats.Chats;
+package Chats.Chats.Model;
 
 import Chats.PV.Model.PV;
 import Groups.Model.Group;

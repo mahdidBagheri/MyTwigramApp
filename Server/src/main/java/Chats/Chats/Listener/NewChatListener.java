@@ -1,4 +1,4 @@
-package Chats.Chats;
+package Chats.Chats.Listener;
 
 import Connection.Client.ClientRequest;
 import Connection.Server.ServerConnection;
