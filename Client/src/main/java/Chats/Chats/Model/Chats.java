@@ -1,7 +1,7 @@
 package Chats.Chats.Model;
 
+import Chats.Group.Model.Group;
 import Chats.PV.Model.PV;
-import Groups.Model.Group;
 import User.Model.User;
 
 import java.io.Serializable;

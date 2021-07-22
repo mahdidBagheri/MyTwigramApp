@@ -1,6 +1,7 @@
 package LocalDataBase;
 
 import Chats.Common.Message.Model.Message;
+import Chats.Group.Model.Group;
 import Chats.PV.Model.PV;
 import Connection.Client.ClientPayLoad;
 import Connection.Client.ClientRequest;
@@ -185,8 +186,6 @@ public class SyncLocalDataBase {
             }
         }
 
-        //TODO sync groups
-
     }
 
     private void createPVTable(String pvTableName) throws SQLException {
@@ -196,13 +195,13 @@ public class SyncLocalDataBase {
     }
 
     public void syncPV(String PVTableName) throws SQLException, CouldNotConnectToServerException, IOException, ClassNotFoundException {
-        sendQueuedMessages(PVTableName);
+        sendPVQueuedMessages(PVTableName);
         requestChatFromServer(PVTableName);
     }
 
 
 
-    private void sendQueuedMessages(String PVTableName) throws SQLException, IOException, ClassNotFoundException, CouldNotConnectToServerException {
+    private void sendPVQueuedMessages(String PVTableName) throws SQLException, IOException, ClassNotFoundException, CouldNotConnectToServerException {
         String sql = String.format("select * from \"%s\";",PVTableName);
         ResultSet rs = connectionToLocalDataBase.executeQuery(sql);
         User mainUser = new User();
@@ -270,8 +269,129 @@ public class SyncLocalDataBase {
         connectionToLocalDataBase.Disconect();
     }
 
-    public void syncGroups() {
-        //TODO
+    public void syncGroups() throws CouldNotConnectToServerException, IOException, ClassNotFoundException, SQLException {
+        ClientConnection clientConnection = new ClientConnection();
+
+
+        ClientPayLoad clientPayLoad = new ClientPayLoad();
+        clientPayLoad.getStringStringHashMap().put("username", mainUser.getUserName());
+        ClientRequest clientRequest = new ClientRequest("group", clientPayLoad, mainUser.getSession(), "readGroups", mainUser.getUserName(), mainUser.getPassWord());
+
+        clientConnection.execute(clientRequest);
+
+        ClientWaitForInput.waitForInput(clientConnection.getSocket());
+        ObjectInputStream objectInputStream = new ObjectInputStream(clientConnection.getSocket().getInputStream());
+
+        ServerRequest serverRequest = (ServerRequest) objectInputStream.readObject();
+        User mainUser = serverRequest.getPayLoad().getUser();
+
+        String addChat;
+
+        String existingPVs = String.format("select * from \"GroupsTable\";");
+        ResultSet rs = connectionToLocalDataBase.executeQuery(existingPVs);
+
+        boolean isExist = false;
+        for (Group group : mainUser.getGroups()) {
+            isExist = false;
+            if(rs != null){
+                while (rs.next()){
+                    if(group.getGroupTableAddress().equals(rs.getString(1))){
+                        isExist = true;
+                        break;
+                    }
+                }
+                if(!isExist){
+                    DateTime dateTime = new DateTime();
+                    addChat = String.format("insert into \"GroupsTable\" ( \"ChatAddress\" , \"GroupName\" , \"Date\",\"sync\") values ('%s','%s','%s','%s');", group.getGroupTableAddress(), group.getGroupName(),dateTime.Now(), "true");
+                    createGroupTable(group.getGroupTableAddress());
+                    connectionToLocalDataBase.executeUpdate(addChat);
+                }
+            }
+        }
+
+    }
+
+    private void createGroupTable(String groupTableAddress) throws SQLException {
+        //groupMemmbersTables
+        String sql = String.format("create table \"%s\"(\"ID\" BIGSERIAL NOT NULL PRIMARY KEY,\"Memmbers\" character varying (50),\"sync\" character varying (6));",groupTableAddress + "Memmbers");
+        connectionToLocalDataBase.executeUpdate(sql);
+
+        //groupMessagesTable
+        String sql1 = String.format("create table \"%s\"(\"ID\" BIGSERIAL NOT NULL PRIMARY KEY,\"Message\" text,\"Author\" character varying (50), \"ImageAddress\" character varying (200) ,\"Date\" timestamp without time zone,\"sync\" character varying (6));",groupTableAddress);
+        connectionToLocalDataBase.executeUpdate(sql1);
+    }
+
+    public void syncGroupMessagesAndMemmbers(String groupTableName) throws ClassNotFoundException, SQLException, CouldNotConnectToServerException, IOException {
+        sendGroupQueuedMessages(groupTableName);
+        requestGroupFromServer(groupTableName);
+    }
+
+    private void sendGroupQueuedMessages(String groupTableName) throws SQLException, IOException, ClassNotFoundException, CouldNotConnectToServerException {
+        String sql = String.format("select * from \"%s\";",groupTableName);
+        ResultSet rs = connectionToLocalDataBase.executeQuery(sql);
+        User mainUser = new User();
+        ClientUserController clientUserController = new ClientUserController(mainUser);
+        clientUserController.setAsMain();
+
+        if(rs != null){
+            while (rs.next()){
+                if(rs.getString(6).equals("false")){
+                    ClientConnection clientConnection = new ClientConnection();
+                    ClientPayLoad clientPayLoad = new ClientPayLoad();
+                    clientPayLoad.getStringStringHashMap().put("PVAddress",groupTableName);
+                    clientPayLoad.getStringStringHashMap().put("username",mainUser.getUserName());
+                    clientPayLoad.getStringStringHashMap().put("text",rs.getString(2));
+                    clientPayLoad.getStringStringHashMap().put("picAddress",rs.getString(4));
+                    clientPayLoad.getStringStringHashMap().put("date",rs.getString(5));
+                    clientPayLoad.setFile(new File(rs.getString(4)));
+                    ClientRequest clientRequest = new ClientRequest("PV",clientPayLoad,mainUser.getSession(),"sendMessage",mainUser.getUserName(),mainUser.getPassWord());
+                    clientConnection.execute(clientRequest);
+                    String updateMessage = String.format("update \"%s\" set sync = true where \"Date\" = '%s' and \"Author\" = '%s';",groupTableName,rs.getString(5),rs.getString(3));
+                    connectionToLocalDataBase.executeUpdate(updateMessage);
+                }
+            }
+        }
+    }
+
+    private void requestGroupFromServer(String groupTableName) throws CouldNotConnectToServerException, SQLException, IOException, ClassNotFoundException {
+        ClientConnection clientConnection = new ClientConnection();
+
+        User mainUser = new User();
+        ClientUserController clientUserController = new ClientUserController(mainUser);
+        clientUserController.setAsMain();
+        ClientPayLoad clientPayLoad = new ClientPayLoad();
+        clientPayLoad.getStringStringHashMap().put("PVTableName",groupTableName);
+
+        ClientRequest clientRequest = new ClientRequest("pv",clientPayLoad,mainUser.getSession(),"requestPV",mainUser.getUserName(),mainUser.getPassWord());
+        clientConnection.execute(clientRequest);
+
+        ClientWaitForInput.waitForInput(clientConnection.getSocket());
+        ObjectInputStream objectInputStream = new ObjectInputStream(clientConnection.getSocket().getInputStream());
+
+        ServerRequest serverRequest = (ServerRequest) objectInputStream.readObject();
+        Group group = serverRequest.getPayLoad().getGroup();
+
+        String sql;
+        ConnectionToLocalDataBase connectionToLocalDataBase = new ConnectionToLocalDataBase();
+        sql = String.format("delete from \"%s\";",group.getGroupTableAddress());
+        connectionToLocalDataBase.executeUpdate(sql);
+
+        sql = String.format("ALTER SEQUENCE \"%s_ID_seq\" RESTART WITH 1;",groupTableName);
+        connectionToLocalDataBase.executeUpdate(sql);
+
+        for(Message message:group.getMessages()){
+            if(message.getPic() != null){
+                // TODO pic address
+                sql = String.format("insert into \"%s\" (\"Message\",\"Author\",\"ImageAddress\",\"Date\",\"sync\") values ('%s','%s','%s','%s','true');",group.getGroupTableAddress(),message.getText(),message.getAuthor().getUserName(),"picaddress",message.getDate());
+                connectionToLocalDataBase.executeUpdate(sql);
+            }
+            else {
+                sql = String.format("insert into \"%s\" (\"Message\",\"Author\",\"Date\",\"sync\") values ('%s','%s','%s','true');",group.getGroupTableAddress(),message.getText(),message.getAuthor().getUserName(),message.getDate());
+                connectionToLocalDataBase.executeUpdate(sql);
+            }
+        }
+
+        connectionToLocalDataBase.Disconect();
     }
 
     public void syncTwitts() {
@@ -282,15 +402,6 @@ public class SyncLocalDataBase {
         //TODO
     }
 
-
-
-    public void syncTablesPointToTwitt(String tableName) {
-
-    }
-
-    public void syncTablesPointToMessage(String tableName) {
-
-    }
 
     public void finalize() throws Throwable {
         connectionToLocalDataBase.Disconect();

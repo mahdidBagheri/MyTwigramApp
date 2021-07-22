@@ -1,6 +1,7 @@
 package Connection.Client;
 
 import Chats.Chats.Listener.ServerChatsListener;
+import Chats.Group.Listeners.ServerGroupListener;
 import Chats.PV.Listener.ServerPVListener;
 import Connection.Server.ServerConnection;
 import Connection.Server.ServerRequest;
@@ -85,6 +86,10 @@ public class ClientThread extends Thread{
             if (clientRequest.getSource().equals("pv")) {
                 ServerPVListener serverPVListener = new ServerPVListener(serverConnection);
                 serverPVListener.listen(clientRequest);
+            }
+            if (clientRequest.getSource().equals("group")) {
+                ServerGroupListener serverGroupListener = new ServerGroupListener(serverConnection);
+                serverGroupListener.listen(clientRequest);
             }
         }catch (IOException | ClassNotFoundException | SQLException e){
             try {

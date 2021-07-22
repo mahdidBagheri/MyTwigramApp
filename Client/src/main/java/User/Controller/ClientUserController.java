@@ -1,5 +1,6 @@
 package User.Controller;
 
+import Chats.Group.Model.Group;
 import Chats.PV.Controller.PVController;
 import Chats.PV.Model.PV;
 import Config.PathConfig.PathConfig;
@@ -63,7 +64,34 @@ public class UserController {
         connectionToLocalDataBase.Disconect();
     }
 
-    private void readGroups() {
+    private void readGroups() throws SQLException, IOException, ClassNotFoundException {
+        user.getGroups().clear();
+        String sql = String.format("select * from \"GroupsTable\";");
+        ConnectionToLocalDataBase connectionToLocalDataBase = new ConnectionToLocalDataBase();
+        ResultSet rs = connectionToLocalDataBase.executeQuery(sql);
+
+        if(rs != null){
+            while (rs.next()){
+                Group group = new Group();
+                group.setMainUser(user);
+                group.setGroupTableAddress(rs.getString(1));
+                group.setGroupName(rs.getString(2));
+                user.getGroups().add(group);
+            }
+        }
+        for(Group group:user.getGroups()){
+            String memmberQuery = String.format("select * from \"%s\";",group.getGroupTableAddress() + "Memmbers");
+            ResultSet rs1 = connectionToLocalDataBase.executeQuery(memmberQuery);
+            if(rs1 != null){
+                while (rs1.next()) {
+                    User member = new User();
+                    member.setUserName(rs1.getString(2));
+                    group.getMemmbers().add(member);
+                }
+            }
+
+        }
+        connectionToLocalDataBase.Disconect();
     }
 
     private void readPVs() throws SQLException, IOException, ClassNotFoundException {

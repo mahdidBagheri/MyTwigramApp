@@ -1,11 +1,12 @@
 package User.Controller;
 
+import Chats.Group.Controller.GroupController;
+import Chats.Group.Model.Group;
 import Chats.PV.Controller.ServerPVController;
 import Chats.Chats.Model.Chats;
 import Chats.PV.Model.PV;
 import Connection.DataBaseConnection.ConnectionToDataBase;
 import Connection.Utils.DataBaseUtils;
-import Groups.Model.Group;
 import Notification.Model.Notification;
 import Twitt.Controller.ServerTwittsController;
 import Twitt.Exceptions.TwittReadDataException;
@@ -1125,7 +1126,7 @@ public class ServerUserController {
                 while (rs.next()) {
                     Group group = new Group();
 
-                    group.setgroupName(rs.getString(3));
+                    group.setGroupName(rs.getString(3));
                     group.setGroupTableAddress(rs.getString(2));
                     user.addGrouop(group);
 

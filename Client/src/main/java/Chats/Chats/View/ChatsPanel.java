@@ -1,16 +1,18 @@
 package Chats.Chats.View;
 
 import Chats.Group.Listener.AddMemmberListener;
+import Chats.Group.Listener.CreateNewGroupListener;
+import Chats.Group.Model.Group;
 import Chats.PV.Listener.ClientNewChatListener;
 import Chats.Chats.Events.NewChatEvent;
 import Chats.PV.Events.ClientPVViewEvent;
 import Chats.PV.Exceptions.ExistingPVException;
 import Chats.PV.Listener.ClientPVViewListener;
 import Chats.PV.Model.PV;
+import ClientLogin.Exceptions.EmptyFieldException;
 import Config.ColorConfig.ColorConfig;
 import Config.FrameConfig.FrameConfig;
 import Connection.Exceptions.CouldNotConnectToServerException;
-import Groups.Model.Group;
 import MainFrame.View.MainPanel;
 import User.Model.User;
 
@@ -46,6 +48,7 @@ public class ChatsPanel extends JPanel implements ActionListener {
     ClientNewChatListener newChatListener;
     ClientPVViewListener clientPVViewListener;
     AddMemmberListener addMemmberListener;
+    CreateNewGroupListener createNewGroupListener;
 
     LinkedList<User> memmbersToAdd = new LinkedList<>();
 
@@ -55,6 +58,7 @@ public class ChatsPanel extends JPanel implements ActionListener {
         this.newChatListener = new ClientNewChatListener(this);
         this.clientPVViewListener = new ClientPVViewListener(mainPanel);
         this.addMemmberListener = new AddMemmberListener(this);
+        this.createNewGroupListener = new CreateNewGroupListener(this);
 
         this.setLayout(null);
 
@@ -208,6 +212,20 @@ public class ChatsPanel extends JPanel implements ActionListener {
             }
         } else if(e.getSource() == removeAllBtn){
             newGroupMembersCombo.removeAllItems();
+        } else if (e.getSource() == newGroupBtn){
+            try {
+                createNewGroupListener.listen();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            } catch (ClassNotFoundException classNotFoundException) {
+                classNotFoundException.printStackTrace();
+            } catch (CouldNotConnectToServerException couldNotConnectToServerException) {
+                couldNotConnectToServerException.printStackTrace();
+            } catch (EmptyFieldException emptyFieldException) {
+                emptyFieldException.printStackTrace();
+            }
         }
     }
 
@@ -232,5 +250,13 @@ public class ChatsPanel extends JPanel implements ActionListener {
 
     public JComboBox<String> getGroupsCombo() {
         return groupsCombo;
+    }
+
+    public JTextArea getGroupNameField() {
+        return groupNameField;
+    }
+
+    public void setGroupNameField(JTextArea groupNameField) {
+        this.groupNameField = groupNameField;
     }
 }

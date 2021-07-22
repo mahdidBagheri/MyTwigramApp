@@ -3,9 +3,10 @@ package Chats.Group.Model;
 import Chats.Common.Message.Model.Message;
 import User.Model.User;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 
-public class Group {
+public class Group implements Serializable {
     public String groupName;
     public String groupTableAddress;
     public LinkedList<User> memmbers = new LinkedList<>();

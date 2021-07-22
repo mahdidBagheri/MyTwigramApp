@@ -1,5 +1,6 @@
 package Connection.Server;
 
+import Chats.Group.Model.Group;
 import Chats.PV.Model.PV;
 import TimeLine.Model.TimeLine;
 import User.Model.User;
@@ -15,6 +16,7 @@ public class ServerPayLoad implements Serializable {
     User user;
     TimeLine timeLine;
     PV pv;
+    Group group;
 
     public User getUser() {
         return user;
@@ -46,5 +48,13 @@ public class ServerPayLoad implements Serializable {
 
     public void setPv(PV pv) {
         this.pv = pv;
+    }
+
+    public Group getGroup() {
+        return group;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
     }
 }

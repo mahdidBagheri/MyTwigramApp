@@ -1,5 +1,6 @@
 package Connection.Client;
 
+import Chats.Group.Model.Group;
 import Twitt.Model.Twitt;
 import User.Model.User;
 
@@ -13,6 +14,7 @@ public class ClientPayLoad implements Serializable {
     User user;
     Twitt twitt;
     File file;
+    Group group;
 
     public HashMap<String, String> getStringStringHashMap() {
         return stringStringHashMap;
@@ -43,5 +45,13 @@ public class ClientPayLoad implements Serializable {
 
     public void setFile(File file) {
         this.file = file;
+    }
+
+    public Group getGroup() {
+        return group;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
     }
 }
