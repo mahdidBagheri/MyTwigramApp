@@ -21,7 +21,7 @@ public class WelcomePanel extends JPanel {
         this.setBounds(0,79,(int)(frameConfig.getWidth()),(int)frameConfig.getHeight()-80);
 
         welcomeText = new ImprovedJLabel();
-        welcomeText.setText("salam @m hale@khoobe besalamati @are@khoobe");
+        welcomeText.setText("welcome");
         welcomeText.setBounds(170,20,400,20);
         welcomeText.setVisible(true);
         welcomeText.setMainPanel(mainPanel);

@@ -66,9 +66,9 @@ public class GroupPanel extends JPanel implements ActionListener {
         this.setBackground(colorConfig.getColor01());
         this.setVisible(true);
         if (group.getMessages().size() > 0) {
-            messagePanel = new MessagePanel(group.getMessages().get(messageNumber));
+            messagePanel = new MessagePanel(group.getMessages().get(messageNumber),mainPanel);
         } else {
-            messagePanel = new MessagePanel();
+            messagePanel = new MessagePanel(mainPanel);
         }
 
         upBtn = new JButton();
@@ -228,7 +228,7 @@ public class GroupPanel extends JPanel implements ActionListener {
 
     public void setMessage(Message message) throws IOException {
         this.removeAll();
-        this.messagePanel = new MessagePanel(message);
+        this.messagePanel = new MessagePanel(message,mainPanel);
         addAll();
 
         this.revalidate();

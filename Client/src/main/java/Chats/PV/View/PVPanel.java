@@ -68,9 +68,9 @@ public class PVPanel extends JPanel implements ActionListener {
         this.setVisible(true);
 
         if (pv.getMessages().size() > 0) {
-            messagePanel = new MessagePanel(pv.getMessages().get(messageNumber));
+            messagePanel = new MessagePanel(pv.getMessages().get(messageNumber),mainPanel);
         } else {
-            messagePanel = new MessagePanel();
+            messagePanel = new MessagePanel(mainPanel);
         }
 
         upBtn = new JButton();
@@ -207,7 +207,7 @@ public class PVPanel extends JPanel implements ActionListener {
 
 
     public void updatePV() throws IOException {
-        messagePanel = new MessagePanel(pv.getMessages().get(messageNumber));
+        messagePanel = new MessagePanel(pv.getMessages().get(messageNumber),mainPanel);
         this.repaint();
     }
 
@@ -225,7 +225,7 @@ public class PVPanel extends JPanel implements ActionListener {
 
     public void setMessage(Message message) throws IOException {
         this.removeAll();
-        this.messagePanel = new MessagePanel(message);
+        this.messagePanel = new MessagePanel(message,mainPanel);
         addAll();
 
         this.revalidate();

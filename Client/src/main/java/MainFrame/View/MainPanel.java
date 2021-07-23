@@ -128,6 +128,7 @@ public class MainPanel extends JPanel {
         }
         else {
             this.add(panelsTrace.getLast());
+            panelsTrace.removeLast();
         }
     }
 

@@ -5,6 +5,7 @@ import Config.ColorConfig.ColorConfig;
 import Config.FrameConfig.FrameConfig;
 import Connection.Exceptions.CouldNotConnectToServerException;
 import Constants.Constants;
+import HyperLink.Model.ImprovedJLabel;
 import MainFrame.View.MainPanel;
 import TimeLine.Controller.ClientTimeLineController;
 import TimeLine.Events.ReplyEvent;
@@ -27,7 +28,7 @@ public class TimeLinePanel extends JPanel implements ActionListener {
     public JButton downBotton;
 
     public JLabel textLable;
-    public JLabel titrLable;
+    public ImprovedJLabel titrLable;
     public JLabel likesLable;
     public JLabel reTwittsLable;
     public JLabel repliesLable;
@@ -53,7 +54,7 @@ public class TimeLinePanel extends JPanel implements ActionListener {
     public JButton viewSelectedLikeBtn;
     public JButton viewSelectedRetBtn;
 
-    public JLabel replyText;
+    public ImprovedJLabel replyText;
 
     public MainPanel mainPanel;
     public TimeLine timeLine;
@@ -97,9 +98,10 @@ public class TimeLinePanel extends JPanel implements ActionListener {
         downBotton.addActionListener(this);
 
 
-        titrLable = new JLabel();
+        titrLable = new ImprovedJLabel();
         titrLable.setBounds(5, 5, 300, 100);
         titrLable.setVisible(true);
+        titrLable.setMainPanel(mainPanel);
 
         textLable = new JLabel();
         textLable.setBounds(5, 20, 300, 100);
@@ -180,9 +182,10 @@ public class TimeLinePanel extends JPanel implements ActionListener {
         prevReplyBtn.setVisible(true);
         prevReplyBtn.addActionListener(this);
 
-        replyText = new JLabel();
+        replyText = new ImprovedJLabel();
         replyText.setBounds(60, 360, 220, 150);
         replyText.setVisible(true);
+        replyText.setMainPanel(mainPanel);
 
         goAuthorProfileBtn = new JButton("goAuthurProf");
         goAuthorProfileBtn.setText("goAuthurProf");

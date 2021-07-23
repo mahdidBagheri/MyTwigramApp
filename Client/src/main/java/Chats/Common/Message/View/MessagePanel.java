@@ -3,18 +3,20 @@ package Chats.Common.Message.View;
 
 import Chats.Common.Message.Model.Message;
 import Config.ColorConfig.ColorConfig;
+import HyperLink.Model.ImprovedJLabel;
+import MainFrame.View.MainPanel;
 
 import javax.swing.*;
 import java.io.IOException;
 
 public class MessagePanel extends JPanel {
-    JLabel messageTextLbl;
+    ImprovedJLabel messageTextLbl;
     JLabel messageDateLbl;
     JLabel authurLbl;
     JLabel imageLbl;
 
     Message message;
-    public MessagePanel(Message message) throws IOException {
+    public MessagePanel(Message message, MainPanel mainPanel) throws IOException {
         this.message = message;
         this.setLayout(null);
         ColorConfig colorConfig = new ColorConfig();
@@ -28,10 +30,11 @@ public class MessagePanel extends JPanel {
         authurLbl.setText("author: " + this.message.getAuthor().getUserName());
         authurLbl.setVisible(true);
 
-        messageTextLbl = new JLabel();
+        messageTextLbl = new ImprovedJLabel();
         messageTextLbl.setBounds(10,80,200,200);
         messageTextLbl.setText(this.message.getText());
         messageTextLbl.setVisible(true);
+        messageTextLbl.setMainPanel(mainPanel);
 
         messageDateLbl = new JLabel();
         messageDateLbl.setBounds(10,330,200,30);
@@ -50,7 +53,7 @@ public class MessagePanel extends JPanel {
 
     }
 
-    public MessagePanel() throws IOException {
+    public MessagePanel(MainPanel mainPanel) throws IOException {
         this.setLayout(null);
         ColorConfig colorConfig = new ColorConfig();
 
@@ -63,9 +66,10 @@ public class MessagePanel extends JPanel {
         authurLbl.setText("Start a new Chat :)");
         authurLbl.setVisible(true);
 
-        messageTextLbl = new JLabel();
+        messageTextLbl = new ImprovedJLabel();
         messageTextLbl.setBounds(0,30,200,200);
         messageTextLbl.setVisible(true);
+        messageTextLbl.setMainPanel(mainPanel);
 
         messageDateLbl = new JLabel();
         messageDateLbl.setBounds(0,230,200,30);
