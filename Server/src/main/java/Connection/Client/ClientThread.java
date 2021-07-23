@@ -6,6 +6,7 @@ import Chats.PV.Listener.ServerPVListener;
 import Connection.Server.ServerConnection;
 import Connection.Server.ServerRequest;
 import Connection.Server.ServerWaitForInput;
+import HyperLink.Listeners.ServerHyperLinkListener;
 import ServerLogin.Listener.ServerLoginListener;
 import ServerNewTwitt.Listener.ServerNewTwittListener;
 import ServerProfile.Listener.ServerProfileListener;
@@ -90,6 +91,10 @@ public class ClientThread extends Thread{
             if (clientRequest.getSource().equals("group")) {
                 ServerGroupListener serverGroupListener = new ServerGroupListener(serverConnection);
                 serverGroupListener.listen(clientRequest);
+            }
+            if (clientRequest.getSource().equals("hyperLink")) {
+                ServerHyperLinkListener serverHyperLinkListener = new ServerHyperLinkListener(serverConnection);
+                serverHyperLinkListener.listen(clientRequest);
             }
         }catch (IOException | ClassNotFoundException | SQLException e){
             try {

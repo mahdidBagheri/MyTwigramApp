@@ -1,71 +1,68 @@
-package HyperLink.View;
+package HyperLink.Model;
+
+import HyperLink.Listeners.MouseClickListener;
+import MainFrame.View.MainPanel;
 
 import javax.swing.*;
+import javax.swing.event.HyperlinkListener;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.LinkedList;
 
-public class ImprovedJLabel extends JLabel implements MouseListener {
+public class ImprovedJLabel extends JLabel {
+    LinkedList<String> hyperlinks = new LinkedList<>();
+    MouseClickListener mouseClickListener;
+    MainPanel mainPanel;
+
+    public ImprovedJLabel() {
+        super();
+        mouseClickListener = new MouseClickListener(this);
+        this.addMouseListener(new MouseClickListener(this));
+    }
+
     public ImprovedJLabel(String text, Icon icon, int horizontalAlignment) {
         super(text, icon, horizontalAlignment);
         this.setText(findHyperlinks(text));
+        mouseClickListener = new MouseClickListener(this);
+        this.addMouseListener(new MouseClickListener(this));
     }
 
     public ImprovedJLabel(String text, int horizontalAlignment) {
         super(text, horizontalAlignment);
         this.setText(findHyperlinks(text));
+        mouseClickListener = new MouseClickListener(this);
+        this.addMouseListener(new MouseClickListener(this));
     }
 
     public ImprovedJLabel(String text) {
         super(text);
         this.setText(findHyperlinks(text));
+        mouseClickListener = new MouseClickListener(this);
+        this.addMouseListener(new MouseClickListener(this));
     }
 
     public ImprovedJLabel(Icon image, int horizontalAlignment) {
         super(image, horizontalAlignment);
+        mouseClickListener = new MouseClickListener(this);
+        this.addMouseListener(new MouseClickListener(this));
     }
 
     public ImprovedJLabel(Icon image) {
         super(image);
+        mouseClickListener = new MouseClickListener(this);
+        this.addMouseListener(new MouseClickListener(this));
     }
 
-    public ImprovedJLabel() {
-        super();
-
-    }
-
-    @Override
     public void setText(String text){
-        String resultText = findHyperlinks(text);
-        super.setText(resultText);
-
+        String resText = findHyperlinks(text);
+        super.setText(resText);
     }
 
-    @Override
-    public void mouseClicked(MouseEvent e) {
-
+    public void setMainPanel(MainPanel mainPanel){
+        this.mainPanel = mainPanel;
     }
 
-    @Override
-    public void mousePressed(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-
-    }
 
     public String findHyperlinks(String text){
         LinkedList<String> stringParts = new LinkedList<>();
@@ -78,25 +75,34 @@ public class ImprovedJLabel extends JLabel implements MouseListener {
             start = i;
             int stop = i+1;
             if(addHTML.charAt(i) == '@' ){
-                while (addHTML.charAt(stop) == ' '){
+                while (addHTML.charAt(stop) != ' ' && addHTML.charAt(stop) != '@'){
                     stop++;
                 }
                 stringParts.add(addHTML.substring(lastStop,start));
                 stringParts.add(addHTML.substring(start,stop));
                 lastStop = stop;
-                i = stop;
+                i = stop-1;
             }
         }
         stringParts.add(addHTML.substring(lastStop,addHTML.length()));
 
         String resultString = "";
         for (String subS : stringParts){
-            if(subS.charAt(0) == '@'){
+            if(subS.length() > 1 && subS.charAt(0) == '@'){
+                hyperlinks.add(subS);
                 subS = "<font color=blue><u>" + subS + "</u></font>" ;
             }
             resultString = resultString.concat(subS);
         }
 
         return resultString;
+    }
+
+    public LinkedList<String> getHyperlinks() {
+        return hyperlinks;
+    }
+
+    public MainPanel getMainPanel() {
+        return mainPanel;
     }
 }

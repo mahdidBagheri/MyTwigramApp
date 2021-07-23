@@ -1259,4 +1259,17 @@ public class ServerUserController {
         connectionToServer.executeUpdate(sql);
         connectionToServer.Disconect();
     }
+
+    public boolean isExist() throws SQLException {
+        ConnectionToDataBase connectionToServer = new ConnectionToDataBase();
+        String sql = String.format("select * from  \"UsersTable\"  where  \"UserName\" = '%s';", user.getUserName());
+        ResultSet rs = connectionToServer.executeQuery(sql);
+        connectionToServer.Disconect();
+        if (rs != null) {
+            if (rs.next()) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

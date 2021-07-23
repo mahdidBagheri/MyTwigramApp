@@ -48,7 +48,7 @@ public class MainPanel extends JPanel {
     public void addWelcomePanel() throws IOException {
         this.clear();
         this.panelsTrace.clear();
-        this.add(new WelcomePanel());
+        this.add(new WelcomePanel(mainPanel));
         this.add(new TopPanel(mainPanel));
     }
 

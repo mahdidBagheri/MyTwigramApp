@@ -1,4 +1,5 @@
 package Connection.Client;
+
 import Chats.Group.Model.Group;
 import Twitt.Model.Twitt;
 import User.Model.User;
@@ -53,4 +54,5 @@ public class ClientPayLoad implements Serializable {
     public void setGroup(Group group) {
         this.group = group;
     }
+
 }

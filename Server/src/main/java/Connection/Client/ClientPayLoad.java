@@ -54,4 +54,5 @@ public class ClientPayLoad implements Serializable {
     public void setGroup(Group group) {
         this.group = group;
     }
+
 }
