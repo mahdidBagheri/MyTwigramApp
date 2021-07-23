@@ -246,6 +246,7 @@ public class TimeLinePanel extends JPanel implements ActionListener {
         clientMoveTwittListener = new ClientMoveTwittListener(timeLine, this);
         clientReplyListener = new ClientReplyListener(this,timeLine);
         clientLikeListener = new ClientLikeListener(this);
+        clientRetwittListener = new ClientRetwittListener(this);
     }
 
     @Override
@@ -286,6 +287,16 @@ public class TimeLinePanel extends JPanel implements ActionListener {
                 serverException.printStackTrace();
             }
         }
+        else if(e.getSource() == reTwittBtn){
+            try {
+                clientRetwittListener.listen();
+            } catch (CouldNotConnectToServerException | SQLException | IOException | ClassNotFoundException couldNotConnectToServerException) {
+                couldNotConnectToServerException.printStackTrace();
+            } catch (ServerException serverException) {
+                JOptionPane.showMessageDialog(this,"already retwitted");
+                serverException.printStackTrace();
+            }
+        }
     }
 
 
@@ -323,8 +334,8 @@ public class TimeLinePanel extends JPanel implements ActionListener {
 
     public void addTwittRetwitts() {
         retwittsComboBox.removeAllItems();
-        for(int i = 0; i < timeLine.getTwitts().get(getTwittNum()).getReTwitts().size() ; i++){
-            retwittsComboBox.addItem(timeLine.getTwitts().get(getTwittNum()).getLikes().get(i));
+        for(int i = 0; i < timeLine.getTwitts().get(getTwittNum()).getTwittReTwittersList().size() ; i++){
+            retwittsComboBox.addItem(timeLine.getTwitts().get(getTwittNum()).getTwittReTwittersList().get(i).getUserName());
         }
     }
 

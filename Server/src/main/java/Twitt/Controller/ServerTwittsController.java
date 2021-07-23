@@ -45,8 +45,9 @@ public class ServerTwittsController {
         }
     }
 
-    public void readReTwitts() throws SQLException, TwittReadDataException {
+    public void readReTwitts() throws SQLException, TwittReadDataException, unsuccessfullReadDataFromDatabase {
         LinkedList<String> twittReTwittsList = new LinkedList<>();
+        LinkedList<User> twittReTwittersList = new LinkedList<>();
 
         if (!DataBaseUtils.isEmptyTable("Twitt" + twitt.getTwittUUID() + "Retwitts")) {
             String sql = String.format("select * from \"Twitt%sRetwitts\";", twitt.getTwittUUID());
@@ -54,8 +55,15 @@ public class ServerTwittsController {
             if (rs != null) {
                 while (rs.next()) {
                     twittReTwittsList.add(rs.getString(2));
+                    Twitt chileTwitt = new Twitt();
+                    chileTwitt.setTwittUUID(rs.getString(2));
+                    ServerTwittsController serverTwittsController = new ServerTwittsController(chileTwitt);
+                    serverTwittsController.readAuthor();
+                    twittReTwittersList.add(chileTwitt.getAuthor());
+
                 }
                 twitt.setReTwitts(twittReTwittsList);
+                twitt.setTwittReTwittersList(twittReTwittersList);
             }
             else {
                 throw new TwittReadDataException("could not load retwitts");

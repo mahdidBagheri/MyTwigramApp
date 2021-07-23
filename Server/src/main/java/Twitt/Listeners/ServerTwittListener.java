@@ -4,6 +4,8 @@ import Connection.Client.ClientRequest;
 import Connection.Server.ServerConnection;
 import Connection.Server.ServerRequest;
 import Twitt.Controller.ServerLikeController;
+import Twitt.Controller.ServerRetwittController;
+import Twitt.Exceptions.AlreadyRetwittedException;
 import Twitt.Exceptions.TwittReadDataException;
 import User.Exceptions.unsuccessfullReadDataFromDatabase;
 
@@ -22,6 +24,18 @@ public class ServerTwittListener {
             serverLikeController.change_Like_OR_noLike();
 
             ServerRequest serverRequest = new ServerRequest(clientRequest.getUsername(),"true",null);
+            serverConnection.execute(serverRequest);
+        }
+        else if (clientRequest.getCommand().equals("retwitt")) {
+            ServerRetwittController serverRetwittController = new ServerRetwittController(clientRequest);
+            ServerRequest serverRequest;
+            try {
+                serverRetwittController.retwitt();
+                serverRequest = new ServerRequest(clientRequest.getUsername(),"true",null);
+            } catch (AlreadyRetwittedException e) {
+                serverRequest = new ServerRequest(clientRequest.getUsername(),"false",null);
+            }
+
             serverConnection.execute(serverRequest);
         }
     }

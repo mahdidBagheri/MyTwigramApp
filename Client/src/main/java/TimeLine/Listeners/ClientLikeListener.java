@@ -38,7 +38,7 @@ public class ClientLikeListener {
         clientPayLoad.setTwitt(twitt);
         ClientRequest clientRequest = new ClientRequest("twitt",clientPayLoad,mainUser.getSession(),"like",mainUser.getUserName(),mainUser.getPassWord());
         boolean res = clientConnection.executeBoolean(clientRequest);
-        if(res = true){
+        if(res == true){
             updateGraphics();
         }
         else {

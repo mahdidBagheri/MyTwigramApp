@@ -15,6 +15,7 @@ public class Twitt implements Serializable {
     String authorUUID;
     LinkedList<String> likes = new LinkedList<String>();
     LinkedList<String> reTwitts = new LinkedList<String>();
+    LinkedList<User> twittReTwittersList = new LinkedList<>();
     LinkedList<Twitt> replies= new LinkedList<Twitt>();
     LinkedList<String> reports= new LinkedList<String>();
     String date;
@@ -152,5 +153,13 @@ public class Twitt implements Serializable {
 
     public String getText() {
         return text;
+    }
+
+    public LinkedList<User> getTwittReTwittersList() {
+        return twittReTwittersList;
+    }
+
+    public void setTwittReTwittersList(LinkedList<User> twittReTwittersList) {
+        this.twittReTwittersList = twittReTwittersList;
     }
 }
