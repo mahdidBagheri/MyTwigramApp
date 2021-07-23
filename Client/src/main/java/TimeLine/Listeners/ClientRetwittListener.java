@@ -48,9 +48,9 @@ public class ClientRetwittListener {
     }
 
     private void updateGraphics() {
-            timeLinePanel.getLikeBtn().setText("removeLike");
-            mainUser.getLikes().add(twitt.getTwittUUID());
-            twitt.getLikes().add(mainUser.getUserName());
+            mainUser.getReTwitts().add(twitt.getTwittUUID());
+            twitt.getReTwitts().add(mainUser.getUserName());
+            twitt.getTwittReTwittersList().add(mainUser);
             timeLinePanel.addTwittLikes();
             timeLinePanel.addTwittRetwitts();
             timeLinePanel.getLikesLable().setText("Likes: " + twitt.getLikes().size());

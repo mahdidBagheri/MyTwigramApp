@@ -38,6 +38,9 @@ public class HyperLinkChooseFrame {
         linksCombo.setVisible(true);
         linksCombo.setBounds(10,40,150,50);
         addItems();
+        if(linksCombo.getItemCount() == 0){
+            OKBtn.setEnabled(false);
+        }
 
         dialog = new JDialog(f , "Dialog Example" );
         dialog.setLocation(150+frameConfig.getFrameXLoc(),100+frameConfig.getFrameYLoc());
@@ -82,6 +85,11 @@ public class HyperLinkChooseFrame {
     }
 
     public String getSelectedLink(){
-        return Objects.requireNonNull(linksCombo.getSelectedItem()).toString();
+        if(linksCombo.getSelectedItem().toString() != null){
+            return linksCombo.getSelectedItem().toString();
+        }
+        else {
+            return null;
+        }
     }
 }

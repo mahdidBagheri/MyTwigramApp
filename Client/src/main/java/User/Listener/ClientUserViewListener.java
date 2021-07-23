@@ -28,7 +28,7 @@ public class ClientUserViewListener {
         clientUserController.readAllByUsername();
 
 
-        UserViewEvent userViewEvent1 = new UserViewEvent(user, mainPanel);
+        UserViewEvent userViewEvent1 = new UserViewEvent(clientUserController.getUser(), mainPanel);
         mainPanel.addUserPanel(userViewEvent1);
 
     }

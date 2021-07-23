@@ -25,6 +25,8 @@ public class ClientMoveTwittListener {
                 timeLinePanel.likesLable.setText("Likes: " + Integer.toString(timeLine.getTwitts().get(timeLinePanel.twittNum).getLikes().size()));
                 timeLinePanel.reTwittsLable.setText("Retwitts: " + Integer.toString(timeLine.getTwitts().get(timeLinePanel.twittNum).getReTwitts().size()));
                 timeLinePanel.repliesLable.setText("Replies: " + timeLine.getTwitts().get(timeLinePanel.twittNum).getReplies().size());
+                timeLinePanel.addTwittRetwitts();
+                timeLinePanel.addTwittLikes();
                 if(timeLine.getTwitts().get(timeLinePanel.twittNum).getReplies().size()!= 0){
                     timeLinePanel.replyText.setText(timeLine.getTwitts().getLast().getReplies().getFirst().getText());
                 }
@@ -51,6 +53,8 @@ public class ClientMoveTwittListener {
                 timeLinePanel.likesLable.setText("Likes: " + Integer.toString(timeLine.getTwitts().get(timeLinePanel.twittNum).getLikes().size()));
                 timeLinePanel.reTwittsLable.setText("Retwitts: " + Integer.toString(timeLine.getTwitts().get(timeLinePanel.twittNum).getReTwitts().size()));
                 timeLinePanel.repliesLable.setText("Replies: " + timeLine.getTwitts().get(timeLinePanel.twittNum).getReplies().size());
+                timeLinePanel.addTwittRetwitts();
+                timeLinePanel.addTwittLikes();
                 if(timeLine.getTwitts().get(timeLinePanel.twittNum).getReplies().size()!= 0){
                     timeLinePanel.replyText.setText(timeLine.getTwitts().get(timeLinePanel.twittNum).getReplies().getFirst().getText());
                 }

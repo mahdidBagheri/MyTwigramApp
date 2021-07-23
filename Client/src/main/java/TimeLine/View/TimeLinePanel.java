@@ -13,7 +13,9 @@ import TimeLine.Events.ReplyEvent;
 import TimeLine.Listeners.*;
 import TimeLine.Model.TimeLine;
 import Twitt.Model.Twitt;
+import User.Events.UserViewEvent;
 import User.Listener.ClientUserViewListener;
+import User.Model.User;
 
 import javax.swing.*;
 import java.awt.*;
@@ -71,6 +73,7 @@ public class TimeLinePanel extends JPanel implements ActionListener {
     ClientTwittViewListener clientTwittViewListener;
     ClientUserViewListener clientUserViewListener;
     ClientLikeListener clientLikeListener;
+    ClientGoAuthorListener clientGoAuthorListener;
 
     public TimeLinePanel(MainPanel mainPanel, TimeLine timeLine) throws IOException {
         this.setLayout(null);
@@ -247,6 +250,8 @@ public class TimeLinePanel extends JPanel implements ActionListener {
         clientReplyListener = new ClientReplyListener(this,timeLine);
         clientLikeListener = new ClientLikeListener(this);
         clientRetwittListener = new ClientRetwittListener(this);
+        clientGoAuthorListener = new ClientGoAuthorListener(this,mainPanel);
+        clientUserViewListener = new ClientUserViewListener(mainPanel);
     }
 
     @Override
@@ -295,6 +300,65 @@ public class TimeLinePanel extends JPanel implements ActionListener {
             } catch (ServerException serverException) {
                 JOptionPane.showMessageDialog(this,"already retwitted");
                 serverException.printStackTrace();
+            }
+        }
+        else if(e.getSource() == goAuthorProfileBtn){
+            try {
+                int idx = getTwittNum();
+                Twitt twitt = getTimeLine().getTwitts().get(idx);
+
+                UserViewEvent userViewEvent = new UserViewEvent(twitt.getAuthor(),mainPanel);
+                clientUserViewListener.listen(userViewEvent);
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            } catch (ClassNotFoundException classNotFoundException) {
+                classNotFoundException.printStackTrace();
+            } catch (CouldNotConnectToServerException couldNotConnectToServerException) {
+                couldNotConnectToServerException.printStackTrace();
+            }
+        }
+        else if(e.getSource() == viewSelectedLikeBtn){
+            try {
+
+                User user = new User();
+                String username = likesComboBox.getSelectedItem().toString();
+                if(username != null) {
+                    user.setUserName(username);
+
+                    UserViewEvent userViewEvent = new UserViewEvent(user, mainPanel);
+                    clientUserViewListener.listen(userViewEvent);
+                }
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            } catch (ClassNotFoundException classNotFoundException) {
+                classNotFoundException.printStackTrace();
+            } catch (CouldNotConnectToServerException couldNotConnectToServerException) {
+                couldNotConnectToServerException.printStackTrace();
+            }
+        }
+        else if(e.getSource() == viewSelectedRetBtn){
+            try {
+
+                User user = new User();
+                String username = retwittsComboBox.getSelectedItem().toString();
+                if(user!= null) {
+                    user.setUserName(username);
+
+                    UserViewEvent userViewEvent = new UserViewEvent(user, mainPanel);
+                    clientUserViewListener.listen(userViewEvent);
+                }
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            } catch (ClassNotFoundException classNotFoundException) {
+                classNotFoundException.printStackTrace();
+            } catch (CouldNotConnectToServerException couldNotConnectToServerException) {
+                couldNotConnectToServerException.printStackTrace();
             }
         }
     }
