@@ -80,7 +80,7 @@ public class ServerNewTwittController {
         tablesPointToUsers.add("Reports");
 
         for (int i = 0; i < tablesPointToUsers.size(); i++) {
-            String CreatetablesPointToUsersQuery = String.format("create table \"Twitt%s%s\"(\"UUID\" uuid NOT NULL PRIMARY KEY, \"UserUUIDs\" uuid references \"UsersTable\"(\"UserUUID\"), \"Date\" timestamp without time zone);", twittUUID, tablesPointToUsers.get(i));
+            String CreatetablesPointToUsersQuery = String.format("create table \"Twitt%s%s\"(\"UUID\" uuid NOT NULL PRIMARY KEY, \"Username\" character varying (50), \"Date\" timestamp without time zone);", twittUUID, tablesPointToUsers.get(i));
             connectionToDataBase.executeUpdate(CreatetablesPointToUsersQuery);
         }
     }

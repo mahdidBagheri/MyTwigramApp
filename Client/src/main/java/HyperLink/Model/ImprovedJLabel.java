@@ -11,18 +11,20 @@ import java.awt.event.MouseListener;
 import java.util.LinkedList;
 
 public class ImprovedJLabel extends JLabel {
-    LinkedList<String> hyperlinks = new LinkedList<>();
+    LinkedList<String> hyperlinks ;
     MouseClickListener mouseClickListener;
     MainPanel mainPanel;
 
     public ImprovedJLabel() {
         super();
+        hyperlinks = new LinkedList<>();
         mouseClickListener = new MouseClickListener(this);
         this.addMouseListener(new MouseClickListener(this));
     }
 
     public ImprovedJLabel(String text, Icon icon, int horizontalAlignment) {
         super(text, icon, horizontalAlignment);
+        hyperlinks = new LinkedList<>();
         this.setText(findHyperlinks(text));
         mouseClickListener = new MouseClickListener(this);
         this.addMouseListener(new MouseClickListener(this));
@@ -30,6 +32,7 @@ public class ImprovedJLabel extends JLabel {
 
     public ImprovedJLabel(String text, int horizontalAlignment) {
         super(text, horizontalAlignment);
+        hyperlinks = new LinkedList<>();
         this.setText(findHyperlinks(text));
         mouseClickListener = new MouseClickListener(this);
         this.addMouseListener(new MouseClickListener(this));
@@ -37,6 +40,7 @@ public class ImprovedJLabel extends JLabel {
 
     public ImprovedJLabel(String text) {
         super(text);
+        hyperlinks = new LinkedList<>();
         this.setText(findHyperlinks(text));
         mouseClickListener = new MouseClickListener(this);
         this.addMouseListener(new MouseClickListener(this));
@@ -44,12 +48,14 @@ public class ImprovedJLabel extends JLabel {
 
     public ImprovedJLabel(Icon image, int horizontalAlignment) {
         super(image, horizontalAlignment);
+        hyperlinks = new LinkedList<>();
         mouseClickListener = new MouseClickListener(this);
         this.addMouseListener(new MouseClickListener(this));
     }
 
     public ImprovedJLabel(Icon image) {
         super(image);
+        hyperlinks = new LinkedList<>();
         mouseClickListener = new MouseClickListener(this);
         this.addMouseListener(new MouseClickListener(this));
     }
@@ -66,6 +72,7 @@ public class ImprovedJLabel extends JLabel {
 
     public String findHyperlinks(String text){
         LinkedList<String> stringParts = new LinkedList<>();
+        hyperlinks = new LinkedList<>();
 
         String addHTML = "<html> " + text + " </html>";
         int lastStop = 0;

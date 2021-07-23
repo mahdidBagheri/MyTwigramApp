@@ -93,7 +93,6 @@ public class ProfilePanel extends JPanel implements ActionListener {
         phoneNumber.setBounds(10, 165, 300, 20);
         phoneNumber.setVisible(true);
 
-
         changePicBotton = new JButton("ChangePicBotton");
         changePicBotton.setText("ChangePicBotton");
         changePicBotton.setBounds(160, 175, 150, 40);

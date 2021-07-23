@@ -275,14 +275,14 @@ public class SignupPanel extends JPanel implements ActionListener {
     }
 
     private void clearAllFields() {
-        firstNameText.setText(" ");
-        lastNameText.setText(" ");
-        emailText.setText(" ");
-        phoneText.setText(" ");
-        userNameText.setText(" ");
-        password1Text.setText(" ");
-        password2Text.setText(" ");
-        bioText.setText(" ");
+        firstNameText.setText("");
+        lastNameText.setText("");
+        emailText.setText("");
+        phoneText.setText("");
+        userNameText.setText("");
+        password1Text.setText("");
+        password2Text.setText("");
+        bioText.setText("");
     }
 
 

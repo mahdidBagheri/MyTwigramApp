@@ -20,6 +20,11 @@ public class TwittsController {
         this.twitt = twitt;
     }
 
+
+
+
+
+
     public void readText() {
     }
 

@@ -61,7 +61,7 @@ public class ServerTimeLineController {
                     if(activity.getType().equals("Like")){
                         Twitt likedTwitts = new Twitt();
                         likedTwitts.setUserWhoLiked(followingUserObj);
-                        likedTwitts.setTwittUUID(activity.getUUID());
+                        likedTwitts.setTwittUUID(activity.getTwitt().getTwittUUID());
                         ServerTwittsController twittsController = new ServerTwittsController(likedTwitts);
                         twittsController.readDataFromDataBaseByUUID();
                         if(likedTwitts.getText().equals("Deleted Twitt!")){
@@ -73,7 +73,7 @@ public class ServerTimeLineController {
                     }
                     else if(activity.getType().equals("Twitt")){
                         Twitt twitt = new Twitt();
-                        twitt.setTwittUUID(activity.getUUID());
+                        twitt.setTwittUUID(activity.getTwitt().getTwittUUID());
                         ServerTwittsController twittsController = new ServerTwittsController(twitt);
                         twittsController.readDataFromDataBaseByUUID();
                         if(twitt.getText().equals("Deleted Twitt!")){
@@ -84,7 +84,7 @@ public class ServerTimeLineController {
                     }
                     else if(activity.getType().equals("ReTwitt")){
                         Twitt reTwitt = new Twitt();
-                        reTwitt.setTwittUUID(activity.getUUID());
+                        reTwitt.setTwittUUID(activity.getTwitt().getTwittUUID());
                         ServerTwittsController twittsController = new ServerTwittsController(reTwitt);
                         twittsController.readDataFromDataBaseByUUID();
                         twittsController.readParentRetwitt();
@@ -96,7 +96,7 @@ public class ServerTimeLineController {
                     }
                     else if(activity.getType().equals("Reply")){
                         Twitt reply  = new Twitt();
-                        reply.setTwittUUID(activity.getUUID());
+                        reply.setTwittUUID(activity.getTwitt().getTwittUUID());
                         ServerTwittsController twittsController = new ServerTwittsController(reply);
                         twittsController.readDataFromDataBaseByUUID();
                         twittsController.readParentReply();

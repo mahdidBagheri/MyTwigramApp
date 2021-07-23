@@ -14,7 +14,9 @@ import ServerSearch.Listener.ServerSearchListener;
 import ServerSignup.Listener.ServerSignupListener;
 import ServerSync.Listeners.ServerSyncListener;
 import TimeLine.ServerListener.ServerTimeLineListener;
+import Twitt.Controller.ServerLikeController;
 import Twitt.Exceptions.TwittReadDataException;
+import Twitt.Listeners.ServerTwittListener;
 import User.Exceptions.alreadyFollowedException;
 import User.Exceptions.notFollowingUserException;
 import User.Exceptions.selfFollowException;
@@ -74,6 +76,10 @@ public class ClientThread extends Thread{
             }
             if (clientRequest.getSource().equals("newTwitt")) {
                 ServerNewTwittListener serverTwittListener = new ServerNewTwittListener(serverConnection);
+                serverTwittListener.listen(clientRequest);
+            }
+            if (clientRequest.getSource().equals("twitt")) {
+                ServerTwittListener serverTwittListener = new ServerTwittListener(serverConnection);
                 serverTwittListener.listen(clientRequest);
             }
             if (clientRequest.getSource().equals("timeLine")) {

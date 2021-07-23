@@ -60,8 +60,17 @@ public class UserController {
         readBlackList();
         readPVs();
         readGroups();
-
+        readTwitt();
         connectionToLocalDataBase.Disconect();
+    }
+
+    private void readTwitt() throws SQLException, IOException, ClassNotFoundException {
+        user.getTwitts().clear();
+        String sql = String.format("select * from \"twitts\";");
+        ConnectionToLocalDataBase connectionToLocalDataBase = new ConnectionToLocalDataBase();
+        ResultSet rs = connectionToLocalDataBase.executeQuery(sql);
+
+
     }
 
     private void readGroups() throws SQLException, IOException, ClassNotFoundException {

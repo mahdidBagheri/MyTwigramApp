@@ -1,6 +1,7 @@
 package TimeLine.View;
 
 import ClientLogin.Exceptions.EmptyFieldException;
+import CommonClasses.Exceptions.ServerException;
 import Config.ColorConfig.ColorConfig;
 import Config.FrameConfig.FrameConfig;
 import Connection.Exceptions.CouldNotConnectToServerException;
@@ -27,8 +28,8 @@ public class TimeLinePanel extends JPanel implements ActionListener {
     public JButton upBotton;
     public JButton downBotton;
 
-    public JLabel textLable;
-    public ImprovedJLabel titrLable;
+    public ImprovedJLabel textLable;
+    public JLabel titrLable;
     public JLabel likesLable;
     public JLabel reTwittsLable;
     public JLabel repliesLable;
@@ -69,6 +70,7 @@ public class TimeLinePanel extends JPanel implements ActionListener {
     ClientRetwittListener clientRetwittListener;
     ClientTwittViewListener clientTwittViewListener;
     ClientUserViewListener clientUserViewListener;
+    ClientLikeListener clientLikeListener;
 
     public TimeLinePanel(MainPanel mainPanel, TimeLine timeLine) throws IOException {
         this.setLayout(null);
@@ -99,15 +101,15 @@ public class TimeLinePanel extends JPanel implements ActionListener {
 
 
         titrLable = new ImprovedJLabel();
-        titrLable.setBounds(5, 5, 300, 100);
+        titrLable.setBounds(5, 30, 300, 20);
         titrLable.setVisible(true);
-        titrLable.setMainPanel(mainPanel);
 
-        textLable = new JLabel();
+        textLable = new ImprovedJLabel();
         textLable.setBounds(5, 20, 300, 100);
         textLable.setAlignmentX(TextArea.LEFT_ALIGNMENT);
         textLable.setAlignmentY(TextArea.TOP_ALIGNMENT);
         textLable.setVisible(true);
+        textLable.setMainPanel(mainPanel);
 
         likesLable = new JLabel();
         likesLable.setBounds(5, 170, 100, 50);
@@ -118,8 +120,8 @@ public class TimeLinePanel extends JPanel implements ActionListener {
         imageLabel.setVisible(true);
 
 
-        likeBtn = new JButton("Like");
-        likeBtn.setText("Like");
+        likeBtn = new JButton("like");
+        likeBtn.setText("like");
         likeBtn.setBounds(5, 270, 100, 40);
         likeBtn.setVisible(true);
         likeBtn.addActionListener(this);
@@ -243,7 +245,7 @@ public class TimeLinePanel extends JPanel implements ActionListener {
 
         clientMoveTwittListener = new ClientMoveTwittListener(timeLine, this);
         clientReplyListener = new ClientReplyListener(this,timeLine);
-
+        clientLikeListener = new ClientLikeListener(this);
     }
 
     @Override
@@ -275,7 +277,18 @@ public class TimeLinePanel extends JPanel implements ActionListener {
         else if(e.getSource() == nextReplyBtn){
             clientMoveReplyListener.listen("next");
         }
+        else if(e.getSource() == likeBtn){
+            try {
+                clientLikeListener.listen();
+            } catch (CouldNotConnectToServerException | SQLException | IOException | ClassNotFoundException couldNotConnectToServerException) {
+                couldNotConnectToServerException.printStackTrace();
+            } catch (ServerException serverException) {
+                serverException.printStackTrace();
+            }
+        }
     }
+
+
 
     public void updateReply(Twitt twitt) {
         timeLine.getTwitts().get(twittNum).getReplies().add(twitt);
@@ -288,6 +301,8 @@ public class TimeLinePanel extends JPanel implements ActionListener {
 
     public void initialize() throws IOException {
         if(timeLine.getTwitts().size() > 0) {
+            addTwittLikes();
+            addTwittRetwitts();
             ClientTimeLineController clientTimeLineController = new ClientTimeLineController(timeLine);
             clientTimeLineController.saveAndSetStreams();
             titrLable.setText(timeLine.getTwitts().getLast().getAuthor().getUserName());
@@ -306,6 +321,20 @@ public class TimeLinePanel extends JPanel implements ActionListener {
         }
     }
 
+    public void addTwittRetwitts() {
+        retwittsComboBox.removeAllItems();
+        for(int i = 0; i < timeLine.getTwitts().get(getTwittNum()).getReTwitts().size() ; i++){
+            retwittsComboBox.addItem(timeLine.getTwitts().get(getTwittNum()).getLikes().get(i));
+        }
+    }
+
+    public void addTwittLikes() {
+        getLikesComboBox().removeAllItems();
+        for(int i = 0; i < timeLine.getTwitts().get(getTwittNum()).getLikes().size() ; i++){
+            likesComboBox.addItem(timeLine.getTwitts().get(getTwittNum()).getLikes().get(i));
+        }
+    }
+
     public void setImageLabel(ImageIcon imageIcon){
         instance.imageLabel.setIcon(imageIcon);
         instance.imageLabel.revalidate();
@@ -315,5 +344,47 @@ public class TimeLinePanel extends JPanel implements ActionListener {
         int a = 0;
     }
 
+    public JButton getLikeBtn() {
+        return likeBtn;
+    }
 
+    public JComboBox<String> getLikesComboBox() {
+        return likesComboBox;
+    }
+
+    public int getTwittNum() {
+        return twittNum;
+    }
+
+    public int getReplyNum() {
+        return replyNum;
+    }
+
+    public TimeLine getTimeLine() {
+        return timeLine;
+    }
+
+    public JLabel getLikesLable() {
+        return likesLable;
+    }
+
+    public void setLikesLable(JLabel likesLable) {
+        this.likesLable = likesLable;
+    }
+
+    public JLabel getReTwittsLable() {
+        return reTwittsLable;
+    }
+
+    public void setReTwittsLable(JLabel reTwittsLable) {
+        this.reTwittsLable = reTwittsLable;
+    }
+
+    public JLabel getRepliesLable() {
+        return repliesLable;
+    }
+
+    public void setRepliesLable(JLabel repliesLable) {
+        this.repliesLable = repliesLable;
+    }
 }

@@ -90,7 +90,7 @@ public class ServerTwittsController {
     public void readReports() throws SQLException, TwittReadDataException {
         LinkedList<String> twittReportList = new LinkedList<>();
 
-        String sql = String.format("select \"UserUUIDs\" from \"Twitt%sReports\"; ",twitt.getTwittUUID() );
+        String sql = String.format("select \"Username\" from \"Twitt%sReports\"; ",twitt.getTwittUUID() );
 
         ResultSet rs = connectionToDataBase.executeQuery(sql);
         if (!DataBaseUtils.isEmptyTable("Twitt" + twitt.getTwittUUID() + "Reports")) {
@@ -280,6 +280,8 @@ public class ServerTwittsController {
         connectionToDataBase.executeUpdate(sql1);
 
     }
+
+
 
     public void finalize() throws Throwable {
         connectionToDataBase.Disconect();
