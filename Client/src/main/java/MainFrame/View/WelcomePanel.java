@@ -15,12 +15,13 @@ public class WelcomePanel extends JPanel {
 
         this.setBackground(colorConfig.getColor03());
         this.setLayout(null);
-        this.setBounds(0,80,(int)(frameConfig.getWidth()),(int)frameConfig.getHeight()-80);
+        this.setBounds(0,79,(int)(frameConfig.getWidth()),(int)frameConfig.getHeight()-80);
 
         welcomeText = new JLabel();
-        welcomeText.setText("Welcome");
+        welcomeText.setText("salam @ali hale@khoobe besalamati");
         welcomeText.setBounds(170,20,400,20);
         welcomeText.setVisible(true);
+
 
 
         this.add(welcomeText);
