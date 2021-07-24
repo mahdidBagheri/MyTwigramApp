@@ -9,6 +9,7 @@ import Connection.Client.ClientRequest;
 import Connection.ClientConnection;
 import Constants.Constants;
 import LocalDataBase.ConnectionToLocalDataBase;
+import Twitt.Model.Twitt;
 import User.Model.User;
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -69,7 +70,14 @@ public class UserController {
         String sql = String.format("select * from \"twitts\";");
         ConnectionToLocalDataBase connectionToLocalDataBase = new ConnectionToLocalDataBase();
         ResultSet rs = connectionToLocalDataBase.executeQuery(sql);
-
+        if(rs != null){
+            while (rs.next()){
+                Twitt twitt = new Twitt();
+                twitt.setTwittUUID(rs.getString(1));
+                twitt.setText(rs.getString(2));
+                user.getTwitts().add(twitt);
+            }
+        }
 
     }
 
@@ -182,7 +190,7 @@ public class UserController {
     }
 
     private void readBlackList() throws SQLException, IOException, ClassNotFoundException {
-        user.setFollowing(new LinkedList<User>());
+        user.setBlackList(new LinkedList<User>());
 
         ConnectionToLocalDataBase connectionToLocalDataBase = new ConnectionToLocalDataBase();
         String sql = "select * from \"blacklist\";";

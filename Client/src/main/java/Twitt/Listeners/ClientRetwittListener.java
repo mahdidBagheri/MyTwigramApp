@@ -1,4 +1,4 @@
-package TimeLine.Listeners;
+package Twitt.Listeners;
 
 import CommonClasses.Exceptions.ServerException;
 import Connection.Client.ClientPayLoad;
@@ -15,18 +15,14 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 public class ClientRetwittListener {
-    TimeLinePanel timeLinePanel;
     Twitt twitt;
     User mainUser;
 
-    public ClientRetwittListener(TimeLinePanel timeLinePanel) {
-        this.timeLinePanel = timeLinePanel;
-    }
 
-    public void listen() throws CouldNotConnectToServerException, SQLException, IOException, ClassNotFoundException, ServerException {
+    public void listen(Twitt twitt) throws CouldNotConnectToServerException, SQLException, IOException, ClassNotFoundException, ServerException {
         ClientConnection clientConnection = new ClientConnection();
         ClientPayLoad clientPayLoad = new ClientPayLoad();
-        this.twitt = timeLinePanel.getTimeLine().getTwitts().get(timeLinePanel.getTwittNum());
+        this.twitt = twitt;
 
 
         User mainUser = new User();
@@ -39,7 +35,7 @@ public class ClientRetwittListener {
         ClientRequest clientRequest = new ClientRequest("twitt",clientPayLoad,mainUser.getSession(),"retwitt",mainUser.getUserName(),mainUser.getPassWord());
         boolean res = clientConnection.executeBoolean(clientRequest);
         if(res == true){
-            updateGraphics();
+
         }
         else {
             throw new ServerException("already retwitted");
@@ -47,14 +43,5 @@ public class ClientRetwittListener {
 
     }
 
-    private void updateGraphics() {
-            mainUser.getReTwitts().add(twitt.getTwittUUID());
-            twitt.getReTwitts().add(mainUser.getUserName());
-            twitt.getTwittReTwittersList().add(mainUser);
-            timeLinePanel.addTwittLikes();
-            timeLinePanel.addTwittRetwitts();
-            timeLinePanel.getLikesLable().setText("Likes: " + twitt.getLikes().size());
-            timeLinePanel.getReTwittsLable().setText("retwitts: " + twitt.getReTwitts().size());
-            JOptionPane.showMessageDialog(timeLinePanel,"liked successfully");
-    }
+
 }

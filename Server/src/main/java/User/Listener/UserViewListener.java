@@ -19,15 +19,28 @@ public class UserViewListener {
     }
 
     public void listen(ClientRequest clientRequest) throws unsuccessfullReadDataFromDatabase, SQLException, IOException, TwittReadDataException {
+        if(clientRequest.getCommand().equals("userInfo")) {
+            User reqUser = new User();
+            ServerUserController userController = new ServerUserController(reqUser);
+            userController.readAll(clientRequest.getClientPayLoad().getStringStringHashMap().get("username"));
 
-        User reqUser = new User();
-        UserController userController = new UserController(reqUser);
-        userController.readAll(clientRequest.getClientPayLoad().getStringStringHashMap().get("userView"));
+            ServerPayLoad serverPayLoad = new ServerPayLoad();
+            serverPayLoad.setUser(reqUser);
 
-        ServerPayLoad serverPayLoad = new ServerPayLoad();
-        serverPayLoad.setUser(reqUser);
+            ServerRequest serverRequest = new ServerRequest(clientRequest.getUsername(), "userInfo", serverPayLoad);
+            serverConnection.execute(serverRequest);
+        }
+        else if(clientRequest.getCommand().equals("readTwitts")){
+            User reqUser = new User();
+            ServerUserController userController = new ServerUserController(reqUser);
+            userController.readUserUUIDbyUsername(clientRequest.getClientPayLoad().getStringStringHashMap().get("username"));
+            userController.readTwitts();
 
-        ServerRequest serverRequest = new ServerRequest(clientRequest.getUsername(),"userView",serverPayLoad);
-        serverConnection.execute(serverRequest);
+            ServerPayLoad serverPayLoad = new ServerPayLoad();
+            serverPayLoad.setUser(reqUser);
+
+            ServerRequest serverRequest = new ServerRequest(clientRequest.getUsername(), "userInfo", serverPayLoad);
+            serverConnection.execute(serverRequest);
+        }
     }
 }

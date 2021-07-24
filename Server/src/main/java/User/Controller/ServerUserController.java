@@ -847,20 +847,22 @@ public class ServerUserController {
         connectionToServer.Disconect();
     }
 
-    public void readTwitts() throws SQLException, unsuccessfullReadDataFromDatabase {
+    public void readTwitts() throws SQLException, unsuccessfullReadDataFromDatabase, TwittReadDataException {
         ConnectionToDataBase connectionToServer = new ConnectionToDataBase();
-        String MutedTableAddress = "User" + user.getUserUUID() + "Twitts";
+        String twittsTableAddress = "User" + user.getUserUUID() + "Twitts";
         DataBaseUtils dataBaseUtils = new DataBaseUtils();
         LinkedList<Twitt> TwittsList = new LinkedList<>();
 
-        if (!dataBaseUtils.isEmptyTable(MutedTableAddress)) {
-            String getTwittsQuery = String.format("select * from  \"%s\" ", MutedTableAddress);
+        if (!dataBaseUtils.isEmptyTable(twittsTableAddress)) {
+            String getTwittsQuery = String.format("select * from  \"%s\" ", twittsTableAddress);
             ResultSet rs = connectionToServer.executeQuery(getTwittsQuery);
             if (rs != null) {
                 while (rs.next()) {
                     Twitt twitt = new Twitt();
-                    twitt.setTwittUUID(rs.getString(1));
-                    //TODO fillup
+                    twitt.setTwittUUID(rs.getString(2));
+                    ServerTwittsController serverTwittsController = new ServerTwittsController(twitt);
+                    serverTwittsController.readText();
+
                     TwittsList.add(twitt);
                 }
                 user.setTwitts(TwittsList);

@@ -1,7 +1,10 @@
 package Profile.View;
 
 import Connection.Exceptions.CouldNotConnectToServerException;
+import Twitt.Events.TwittViewEvent;
 import Twitt.Listeners.ClientTwittViewListener;
+import Twitt.Model.Twitt;
+import User.Events.UserViewEvent;
 import User.Listener.ClientUserViewListener;
 import Config.ColorConfig.ColorConfig;
 import MainFrame.View.MainPanel;
@@ -51,7 +54,6 @@ public class ProfilePanel extends JPanel implements ActionListener {
 
     ClientUserViewListener userViewListener;
     ClientTwittViewListener twittViewListener;
-    ChangeProfileListener changeProfileListener = new ChangeProfileListener();
 
     public ProfilePanel(MainPanel mainPanel, User user) throws IOException {
         this.mainPanel = mainPanel;
@@ -59,7 +61,6 @@ public class ProfilePanel extends JPanel implements ActionListener {
 
         this.userViewListener = new ClientUserViewListener(mainPanel);
         this.twittViewListener = new ClientTwittViewListener(mainPanel);
-        this.changeProfileListener = new ChangeProfileListener();
 
         ColorConfig colorConfig = new ColorConfig();
 
@@ -100,9 +101,9 @@ public class ProfilePanel extends JPanel implements ActionListener {
         changePicBotton.addActionListener(this);
 
         followersCombo = new JComboBox<>();
-        getFollowersItems(user);
         followersCombo.setBounds(5, 230, 100, 50);
         followersCombo.setVisible(true);
+        getFollowersItems();
 
         followersViewBtn = new JButton("View");
         followersViewBtn.setText("flwer View");
@@ -111,9 +112,9 @@ public class ProfilePanel extends JPanel implements ActionListener {
         followersViewBtn.addActionListener(this);
 
         blackListCombo = new JComboBox<>();
-        getBlackListItems(user);
         blackListCombo.setBounds(215, 230, 100, 50);
         blackListCombo.setVisible(true);
+        getBlackListItems(user);
 
         blackListViewBtn = new JButton("View");
         blackListViewBtn.setText("Blocked View");
@@ -123,9 +124,9 @@ public class ProfilePanel extends JPanel implements ActionListener {
 
 
         followingCombo = new JComboBox<>();
-        getFollowingItems(user);
         followingCombo.setBounds(110, 230, 100, 50);
         followingCombo.setVisible(true);
+        getFollowingItems(user);
 
         followingViewBtn = new JButton("View");
         followingViewBtn.setText("flwing View");
@@ -135,9 +136,9 @@ public class ProfilePanel extends JPanel implements ActionListener {
 
 
         twittsCombo = new JComboBox<>();
-        getTwittsItems(user);
         twittsCombo.setBounds(70, 305, 200, 85);
         twittsCombo.setVisible(true);
+        getTwittsItems(user);
 
         twittListViewBtn = new JButton("View");
         twittListViewBtn.setText("Twitts View");
@@ -146,9 +147,9 @@ public class ProfilePanel extends JPanel implements ActionListener {
         twittListViewBtn.addActionListener(this);
 
         savedListCombo = new JComboBox<>();
-        getSavedTwittItems(user);
         savedListCombo.setBounds(70, 430, 200, 85);
         savedListCombo.setVisible(true);
+        getSavedTwittItems(user);
 
         savedListViewBtn = new JButton("View");
         savedListViewBtn.setText("save twitt View");
@@ -186,34 +187,49 @@ public class ProfilePanel extends JPanel implements ActionListener {
 
 
     private void getSavedTwittItems(User user) {
+        savedListCombo.removeAllItems();
         for (int i = 0; i < user.getSavedTwitts().size(); i++) {
             savedListCombo.addItem(user.getSavedTwitts().get(i).getText());
         }
+        savedListCombo.repaint();
+        this.repaint();
     }
 
     private void getTwittsItems(User user) {
+        twittsCombo.removeAllItems();
         for (int i = 0; i < user.getTwitts().size(); i++) {
             twittsCombo.addItem(user.getTwitts().get(i).getText());
         }
+        twittsCombo.repaint();
+        this.repaint();
     }
 
 
     private void getFollowingItems(User user) {
+        followingCombo.removeAllItems();
         for (int i = 0; i < user.getFollowing().size(); i++) {
             followingCombo.addItem(user.getFollowing().get(i).getUserName());
         }
+        followingCombo.repaint();
+        this.repaint();
     }
 
     private void getBlackListItems(User user) {
+        blackListCombo.removeAllItems();
         for (int i = 0; i < user.getBlackList().size(); i++) {
             blackListCombo.addItem(user.getBlackList().get(i).getUserName());
         }
+        blackListCombo.repaint();
+        this.repaint();
     }
 
-    private void getFollowersItems(User user) {
+    private void getFollowersItems() {
+        followersCombo.removeAllItems();
         for (int i = 0; i < user.getFollowers().size(); i++) {
             followersCombo.addItem(user.getFollowers().get(i).getUserName());
         }
+        followersCombo.repaint();
+        this.repaint();
     }
 
     @Override
@@ -253,6 +269,60 @@ public class ProfilePanel extends JPanel implements ActionListener {
                 ioException.printStackTrace();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
+            } catch (ClassNotFoundException classNotFoundException) {
+                classNotFoundException.printStackTrace();
+            } catch (CouldNotConnectToServerException couldNotConnectToServerException) {
+                couldNotConnectToServerException.printStackTrace();
+            }
+        }
+        else if(e.getSource() == followersViewBtn){
+            User follower = new User();
+            if(followersCombo.getItemCount()>0) {
+                try {
+                    follower.setUserName(followersCombo.getSelectedItem().toString());
+                    UserViewEvent userViewEvent = new UserViewEvent(follower,mainPanel);
+                    userViewListener.listen(userViewEvent);
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                } catch (ClassNotFoundException classNotFoundException) {
+                    classNotFoundException.printStackTrace();
+                } catch (CouldNotConnectToServerException couldNotConnectToServerException) {
+                    couldNotConnectToServerException.printStackTrace();
+                }
+            }
+        }
+        else if(e.getSource() == followingViewBtn){
+            User follower = new User();
+            if(followingCombo.getItemCount() > 0) {
+                try {
+                    follower.setUserName(followingCombo.getSelectedItem().toString());
+                    UserViewEvent userViewEvent = new UserViewEvent(follower,mainPanel);
+                    userViewListener.listen(userViewEvent);
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                } catch (ClassNotFoundException classNotFoundException) {
+                    classNotFoundException.printStackTrace();
+                } catch (CouldNotConnectToServerException couldNotConnectToServerException) {
+                    couldNotConnectToServerException.printStackTrace();
+                }
+            }
+        }
+        else if(e.getSource() == twittListViewBtn){
+            int idx = twittsCombo.getSelectedIndex();
+            Twitt twitt = user.getTwitts().get(idx);
+            TwittViewEvent twittViewEvent = null;
+            try {
+                twittViewEvent = new TwittViewEvent(twitt,mainPanel);
+                twittViewListener.listen(twittViewEvent);
+
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
             } catch (ClassNotFoundException classNotFoundException) {
                 classNotFoundException.printStackTrace();
             } catch (CouldNotConnectToServerException couldNotConnectToServerException) {

@@ -13,6 +13,9 @@ import TimeLine.Events.ReplyEvent;
 import TimeLine.Listeners.*;
 import TimeLine.Model.TimeLine;
 import Twitt.Events.TwittViewEvent;
+import Twitt.Listeners.ClientLikeListener;
+import Twitt.Listeners.ClientReplyListener;
+import Twitt.Listeners.ClientRetwittListener;
 import Twitt.Listeners.ClientTwittViewListener;
 import Twitt.Model.Twitt;
 import User.Events.UserViewEvent;
@@ -28,6 +31,8 @@ import java.sql.SQLException;
 
 public class TimeLinePanel extends JPanel implements ActionListener {
     public static TimeLinePanel instance = null;
+
+    User mainUser;
 
     public JButton upBotton;
     public JButton downBotton;
@@ -69,19 +74,19 @@ public class TimeLinePanel extends JPanel implements ActionListener {
 
 
     ClientMoveTwittListener clientMoveTwittListener;
-    ClientMoveReplyListener clientMoveReplyListener;
+    ClientTimeLineMoveReplyListener clientMoveReplyListener;
     ClientReplyListener clientReplyListener;
     ClientRetwittListener clientRetwittListener;
     ClientTwittViewListener clientTwittViewListener;
     ClientUserViewListener clientUserViewListener;
     ClientLikeListener clientLikeListener;
-    ClientGoAuthorListener clientGoAuthorListener;
 
 
-    public TimeLinePanel(MainPanel mainPanel, TimeLine timeLine) throws IOException {
+    public TimeLinePanel(MainPanel mainPanel, TimeLine timeLine, User mainUser) throws IOException {
         this.setLayout(null);
         this.mainPanel = mainPanel;
         this.timeLine = timeLine;
+        this.mainUser = mainUser;
         twittNum = timeLine.getTwitts().size()-1;
         replyNum = 0;
 
@@ -127,7 +132,6 @@ public class TimeLinePanel extends JPanel implements ActionListener {
 
 
         likeBtn = new JButton("like");
-        likeBtn.setText("like");
         likeBtn.setBounds(5, 270, 100, 40);
         likeBtn.setVisible(true);
         likeBtn.addActionListener(this);
@@ -250,13 +254,21 @@ public class TimeLinePanel extends JPanel implements ActionListener {
         initialize();
 
         clientMoveTwittListener = new ClientMoveTwittListener(timeLine, this);
-        clientMoveReplyListener = new ClientMoveReplyListener(this);
-        clientReplyListener = new ClientReplyListener(this,timeLine);
-        clientLikeListener = new ClientLikeListener(this);
-        clientRetwittListener = new ClientRetwittListener(this);
-        clientGoAuthorListener = new ClientGoAuthorListener(this,mainPanel);
+        clientMoveReplyListener = new ClientTimeLineMoveReplyListener(this);
+        clientReplyListener = new ClientReplyListener();
+        clientLikeListener = new ClientLikeListener();
+        clientRetwittListener = new ClientRetwittListener();
         clientUserViewListener = new ClientUserViewListener(mainPanel);
         clientTwittViewListener = new ClientTwittViewListener(mainPanel);
+    }
+
+    public void setLikeBtnText() {
+        if(mainUser.getLikes().contains(timeLine.getTwitts().get(twittNum).getTwittUUID())){
+            likeBtn.setText("removeLike");
+        }
+        else {
+            likeBtn.setText("like");
+        }
     }
 
     @Override
@@ -271,7 +283,9 @@ public class TimeLinePanel extends JPanel implements ActionListener {
             ReplyEvent replyEvent = new ReplyEvent(timeLine.getTwitts().get(twittNum),replyField.getText());
             try {
                 clientReplyListener.listen(replyEvent);
-                replyField.setText(" ");
+                updateReply(replyEvent.getNewTwitt());
+
+                replyField.setText("");
                 JOptionPane.showMessageDialog(this,"reply sent");
 
             } catch (SQLException | ClassNotFoundException | IOException | CouldNotConnectToServerException throwables) {
@@ -290,7 +304,9 @@ public class TimeLinePanel extends JPanel implements ActionListener {
         }
         else if(e.getSource() == likeBtn){
             try {
-                clientLikeListener.listen();
+                Twitt twitt = getTimeLine().getTwitts().get(getTwittNum());
+                clientLikeListener.listen(twitt);
+                updateGraphicsLike();
             } catch (CouldNotConnectToServerException | SQLException | IOException | ClassNotFoundException couldNotConnectToServerException) {
                 couldNotConnectToServerException.printStackTrace();
             } catch (ServerException serverException) {
@@ -299,11 +315,13 @@ public class TimeLinePanel extends JPanel implements ActionListener {
         }
         else if(e.getSource() == reTwittBtn){
             try {
-                clientRetwittListener.listen();
+
+                clientRetwittListener.listen(timeLine.getTwitts().get(twittNum));
+                updateGraphicsRetwitt();
             } catch (CouldNotConnectToServerException | SQLException | IOException | ClassNotFoundException couldNotConnectToServerException) {
                 couldNotConnectToServerException.printStackTrace();
             } catch (ServerException serverException) {
-                JOptionPane.showMessageDialog(this,"already retwitted");
+                JOptionPane.showMessageDialog(this,"server refused. may already retwitted");
                 serverException.printStackTrace();
             }
         }
@@ -402,6 +420,7 @@ public class TimeLinePanel extends JPanel implements ActionListener {
 
     public void initialize() throws IOException {
         if(timeLine.getTwitts().size() > 0) {
+            setLikeBtnText();
             addTwittLikes();
             addTwittRetwitts();
             ClientTimeLineController clientTimeLineController = new ClientTimeLineController(timeLine);
@@ -451,6 +470,43 @@ public class TimeLinePanel extends JPanel implements ActionListener {
         instance.revalidate();
         instance.repaint();
         int a = 0;
+    }
+
+
+    private void updateGraphicsLike() {
+        Twitt twitt = timeLine.getTwitts().get(getTwittNum());
+        if(getLikeBtn().getText().equals("like")){
+            getLikeBtn().setText("removeLike");
+            mainUser.getLikes().add(twitt.getTwittUUID());
+            twitt.getLikes().add(mainUser.getUserName());
+            addTwittLikes();
+            addTwittRetwitts();
+            getLikesLable().setText("Likes: " + twitt.getLikes().size());
+            getReTwittsLable().setText("retwitts: " + twitt.getReTwitts().size());
+            JOptionPane.showMessageDialog(this,"liked successfully");
+        }
+        else if(getLikeBtn().getText().equals("removeLike")){
+            getLikeBtn().setText("like");
+            mainUser.getLikes().remove(twitt.getTwittUUID());
+            twitt.getLikes().remove(mainUser.getUserName());
+            addTwittLikes();
+            addTwittRetwitts();
+            getLikesLable().setText("Likes: " + twitt.getLikes().size());
+            getReTwittsLable().setText("retwitts: " + twitt.getReTwitts().size());
+
+            JOptionPane.showMessageDialog(this,"removeLike");
+        }
+    }
+
+    private void updateGraphicsRetwitt() {
+        mainUser.getReTwitts().add(timeLine.getTwitts().get(twittNum).getTwittUUID());
+        timeLine.getTwitts().get(twittNum).getReTwitts().add(mainUser.getUserName());
+        timeLine.getTwitts().get(twittNum).getTwittReTwittersList().add(mainUser);
+        addTwittLikes();
+        addTwittRetwitts();
+        getLikesLable().setText("Likes: " + timeLine.getTwitts().get(twittNum).getLikes().size());
+        getReTwittsLable().setText("retwitts: " + timeLine.getTwitts().get(twittNum).getReTwitts().size());
+        JOptionPane.showMessageDialog(this,"liked successfully");
     }
 
     public JButton getLikeBtn() {

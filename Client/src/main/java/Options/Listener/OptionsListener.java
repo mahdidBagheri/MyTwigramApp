@@ -20,17 +20,14 @@ public class OptionsListener {
 
     public void listen(String command) throws SQLException, IOException, ClassNotFoundException, CouldNotConnectToServerException {
         if(command.equals("profileBtn")){
+            SyncLocalDataBase syncLocalDataBase = new SyncLocalDataBase();
+            syncLocalDataBase.syncAll();
+
             User mainUser = new User();
             UserController userController = new UserController(mainUser);
             userController.setAsMain();
 
-            ClientConnection clientConnection = new ClientConnection();
-            ClientPayLoad clientPayLoad = new ClientPayLoad();
-            clientPayLoad.getStringStringHashMap().put("username",mainUser.getUserName());
-            ClientRequest clientRequest = new ClientRequest("profile",clientPayLoad,mainUser.getSession(),"profileData",mainUser.getUserName(),mainUser.getPassWord());
-            clientConnection.execute(clientRequest);
-
-            mainPanel.addProfilePanel(mainUser);
+            mainPanel.addProfilePanel(userController.getUser());
         }
         else if(command.equals("searchBtn")){
             mainPanel.addSearchPanel();
@@ -56,7 +53,7 @@ public class OptionsListener {
             ObjectInputStream objectInputStream = new ObjectInputStream(clientConnection.getSocket().getInputStream());
             ServerRequest serverRequest = (ServerRequest) objectInputStream.readObject();
 
-            mainPanel.addTimeLinePanel(serverRequest.getPayLoad().getTimeLine());
+            mainPanel.addTimeLinePanel(serverRequest.getPayLoad().getTimeLine(), mainUser);
         }
         else if(command.equals("chats")){
 

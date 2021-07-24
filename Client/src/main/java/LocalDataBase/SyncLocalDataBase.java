@@ -32,11 +32,12 @@ public class SyncLocalDataBase {
 
     public void syncAll() throws SQLException, IOException, ClassNotFoundException, CouldNotConnectToServerException {
         syncFollowers();
-        //syncMutes();
-        //syncBlackList();
+        syncMutes();
+        syncBlackList();
 
-        //syncFollowings();
+        syncFollowings();
         syncChats();
+        syncTwitts();
 
     }
 
@@ -68,24 +69,29 @@ public class SyncLocalDataBase {
     }
 
     public void syncFollowings() throws SQLException, IOException, ClassNotFoundException, CouldNotConnectToServerException {
-        User mainUser = new User();
-        ClientUserController clientUserController = new ClientUserController(mainUser);
-        clientUserController.setAsMain();
-
-        String followingsQuery = String.format("select * from followings;");
-        ResultSet rs = connectionToLocalDataBase.executeQuery(followingsQuery);
+        ClientConnection clientConnection = new ClientConnection();
+        ClientRequest clientRequest = null;
+        String deleteFollowingListQuery = String.format("delete from followings;");
+        connectionToLocalDataBase.executeUpdate(deleteFollowingListQuery);
 
         ClientPayLoad clientPayLoad = new ClientPayLoad();
-        if(rs != null){
-            while (rs.next()){
-                clientPayLoad.getStringStringHashMap().put(rs.getString(2),"username");
-            }
-        }
+        clientPayLoad.getStringStringHashMap().put("username", mainUser.getUserName());
+        clientRequest = new ClientRequest("userInfo", clientPayLoad, mainUser.getSession(), "userInfo", mainUser.getUserName(), mainUser.getPassWord());
 
-        ClientConnection clientConnection = new ClientConnection();
-        ClientRequest clientRequest = new ClientRequest("sync",clientPayLoad,mainUser.getSession(),"syncFollowings",mainUser.getUserName(),mainUser.getPassWord());
         clientConnection.execute(clientRequest);
 
+        ClientWaitForInput.waitForInput(clientConnection.getSocket());
+        ObjectInputStream objectInputStream = new ObjectInputStream(clientConnection.getSocket().getInputStream());
+
+        ServerRequest serverRequest = (ServerRequest) objectInputStream.readObject();
+        User mainUser = serverRequest.getPayLoad().getUser();
+
+        String addfollowings;
+
+        for (User user : mainUser.getFollowing()) {
+            addfollowings = String.format("insert into followings ( \"UUID\" , \"Username\" , \"sync\") values ('%s','%s','%s');", user.getUserUUID(), user.getUserName(), "true");
+            connectionToLocalDataBase.executeUpdate(addfollowings);
+        }
     }
 
     public void syncMutes() throws SQLException, IOException, ClassNotFoundException, CouldNotConnectToServerException {
@@ -140,7 +146,7 @@ public class SyncLocalDataBase {
 
         String addfollowings;
 
-        for (User user : mainUser.getFollowers()) {
+        for (User user : mainUser.getBlackList()) {
             addfollowings = String.format("insert into blacklist ( \"UUID\" , \"Username\" , \"sync\") values ('%s','%s','%s');", user.getUserUUID(), user.getUserName(), "true");
             connectionToLocalDataBase.executeUpdate(addfollowings);
         }
@@ -394,8 +400,35 @@ public class SyncLocalDataBase {
         connectionToLocalDataBase.Disconect();
     }
 
-    public void syncTwitts() {
-        //TODO
+    public void syncTwitts() throws CouldNotConnectToServerException, SQLException, IOException, ClassNotFoundException {
+        ClientConnection clientConnection = new ClientConnection();
+
+        User mainUser = new User();
+        ClientUserController clientUserController = new ClientUserController(mainUser);
+        clientUserController.setAsMain();
+        ClientPayLoad clientPayLoad = new ClientPayLoad();
+        clientPayLoad.getStringStringHashMap().put("username",mainUser.getUserName());
+
+        ClientRequest clientRequest = new ClientRequest("userInfo",clientPayLoad,mainUser.getSession(),"readTwitts",mainUser.getUserName(),mainUser.getPassWord());
+        clientConnection.execute(clientRequest);
+
+        ClientWaitForInput.waitForInput(clientConnection.getSocket());
+        ObjectInputStream objectInputStream = new ObjectInputStream(clientConnection.getSocket().getInputStream());
+
+        ServerRequest serverRequest = (ServerRequest) objectInputStream.readObject();
+        User user = serverRequest.getPayLoad().getUser();
+
+        String sql;
+        ConnectionToLocalDataBase connectionToLocalDataBase = new ConnectionToLocalDataBase();
+        sql = String.format("delete from \"twitts\";");
+        connectionToLocalDataBase.executeUpdate(sql);
+
+        for(Twitt twitt:user.getTwitts()){
+            NewTwittController newTwittController = new NewTwittController(twitt);
+            newTwittController.saveToLocalDataBase();
+        }
+
+        connectionToLocalDataBase.Disconect();
     }
 
     public void syncTimeLine() {

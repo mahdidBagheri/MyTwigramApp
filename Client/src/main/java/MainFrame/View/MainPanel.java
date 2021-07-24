@@ -153,10 +153,10 @@ public class MainPanel extends JPanel {
         this.add(new NewTwittPanel(mainPanel));
     }
 
-    public void addTimeLinePanel(TimeLine timeLine) throws IOException {
+    public void addTimeLinePanel(TimeLine timeLine, User mainUser) throws IOException {
         this.clear();
         this.add(new OptionPanel(mainPanel));
-        this.add(new TimeLinePanel(mainPanel, timeLine));
+        this.add(new TimeLinePanel(mainPanel, timeLine, mainUser));
     }
 
     public void addChatsPanel(User mainUser) throws IOException {

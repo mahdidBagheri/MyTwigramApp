@@ -4,11 +4,11 @@ import MainFrame.View.MainPanel;
 import TimeLine.View.TimeLinePanel;
 import Twitt.Model.Twitt;
 
-public class ClientMoveReplyListener {
+public class ClientTimeLineMoveReplyListener {
     TimeLinePanel timeLinePanel;
     Twitt twitt;
 
-    public ClientMoveReplyListener(TimeLinePanel timeLinePanel) {
+    public ClientTimeLineMoveReplyListener(TimeLinePanel timeLinePanel) {
         this.timeLinePanel = timeLinePanel;
         this.twitt = timeLinePanel.getTimeLine().getTwitts().get(timeLinePanel.getTwittNum());
     }
