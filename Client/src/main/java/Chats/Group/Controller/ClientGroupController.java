@@ -11,13 +11,14 @@ import java.sql.SQLException;
 
 public class ClientGroupController {
     Group group;
+    ConnectionToLocalDataBase connectionToLocalDataBase;
 
-    public ClientGroupController(Group group) {
+    public ClientGroupController(Group group) throws SQLException, IOException, ClassNotFoundException {
         this.group = group;
+        this.connectionToLocalDataBase = new ConnectionToLocalDataBase();
     }
 
     public void readMessages() throws SQLException, IOException, ClassNotFoundException {
-        ConnectionToLocalDataBase connectionToLocalDataBase = new ConnectionToLocalDataBase();
         String sql = String.format("select * from \"%s\";", group.getGroupTableAddress());
         ResultSet rs = connectionToLocalDataBase.executeQuery(sql);
 
@@ -37,6 +38,9 @@ public class ClientGroupController {
                 group.getMessages().add(message);
             }
         }
+    }
+
+    public void finalize() throws SQLException {
         connectionToLocalDataBase.Disconect();
     }
 }

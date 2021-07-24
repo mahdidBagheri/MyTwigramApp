@@ -1,13 +1,21 @@
 package Twitt.View;
 
+import CommonClasses.Exceptions.ServerException;
 import Config.ColorConfig.ColorConfig;
 import Connection.Exceptions.CouldNotConnectToServerException;
 import HyperLink.Model.ImprovedJLabel;
 import MainFrame.View.MainPanel;
+import TimeLine.Listeners.ClientMoveTwittListener;
+import TimeLine.Listeners.ClientTimeLineMoveReplyListener;
 import Twitt.Controller.TwittsController;
 import Twitt.Events.TwittViewEvent;
+import Twitt.Listeners.ClientLikeListener;
+import Twitt.Listeners.ClientReplyListener;
+import Twitt.Listeners.ClientRetwittListener;
+import Twitt.Listeners.ClientTwittViewListener;
 import Twitt.Model.Twitt;
 import User.Listener.ClientUserViewListener;
+import User.Model.User;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,6 +27,7 @@ import java.sql.SQLException;
 public class TwittPanel extends JPanel implements ActionListener {
     MainPanel mainPanel;
     Twitt twitt;
+    User mainUser;
 
 
     public TwittPanel instance = null;
@@ -61,7 +70,12 @@ public class TwittPanel extends JPanel implements ActionListener {
     ImageIcon twittPic;
 
 
-    ClientUserViewListener userViewListener;
+    ClientReplyListener clientReplyListener;
+    ClientRetwittListener clientRetwittListener;
+    ClientTwittViewListener clientTwittViewListener;
+    ClientUserViewListener clientUserViewListener;
+    ClientLikeListener clientLikeListener;
+
 
     int replyNumber;
     String picPath;
@@ -69,6 +83,7 @@ public class TwittPanel extends JPanel implements ActionListener {
     public TwittPanel(TwittViewEvent twittViewEvent) throws IOException {
         this.mainPanel = twittViewEvent.getMainPanel();
         this.twitt = twittViewEvent.getTwitt();
+        this.mainUser = twittViewEvent.getMainUser();
 
         this.setLayout(null);
         ColorConfig colorConfig = new ColorConfig();
@@ -81,7 +96,7 @@ public class TwittPanel extends JPanel implements ActionListener {
         instance = this;
 
         titrLable = new JLabel();
-        titrLable.setBounds(5, 15, 100, 100);
+        titrLable.setBounds(5, 20, 100, 30);
         titrLable.setVisible(true);
         titrLable.setText(twitt.getAuthor().getUserName());
 
@@ -95,9 +110,11 @@ public class TwittPanel extends JPanel implements ActionListener {
         likesLable = new JLabel();
         likesLable.setBounds(5, 150, 100, 50);
         likesLable.setVisible(true);
+        likesLable.setText("Likes: " + twitt.getLikes().size());
 
-        likeBtn = new JButton("Like");
-        likeBtn.setText(twittViewEvent.getMainUser().isLiked(twitt.getTwittUUID()) ? "remove Like" : "Like");
+
+        likeBtn = new JButton("like");
+        likeBtn.setText(this.isLikedBy() ? "removeLike" : "like");
         likeBtn.setBounds(5, 250, 100, 40);
         likeBtn.setVisible(true);
         likeBtn.addActionListener(this);
@@ -117,6 +134,7 @@ public class TwittPanel extends JPanel implements ActionListener {
         reTwittsLable = new JLabel();
         reTwittsLable.setBounds(110, 150, 100, 50);
         reTwittsLable.setVisible(true);
+        reTwittsLable.setText("retwitts: " + twitt.getReTwitts().size());
 
         reTwittBtn = new JButton("ReTwitt");
         reTwittBtn.setText(twittViewEvent.getMainUser().isRetwitted(twitt.getTwittUUID()) ? "remove Ret" : "Retwitt");
@@ -139,6 +157,7 @@ public class TwittPanel extends JPanel implements ActionListener {
         repliesLable = new ImprovedJLabel();
         repliesLable.setBounds(220, 150, 100, 50);
         repliesLable.setVisible(true);
+        repliesLable.setText("replies: " + twitt.getReplies().size());
 
         replyBtn = new JButton("Reply");
         replyBtn.setText("Reply");
@@ -251,7 +270,21 @@ public class TwittPanel extends JPanel implements ActionListener {
             reportBtn.setEnabled(false);
         }
 
+        clientReplyListener = new ClientReplyListener();
+        clientLikeListener = new ClientLikeListener();
+        clientRetwittListener = new ClientRetwittListener();
+        clientUserViewListener = new ClientUserViewListener(mainPanel);
+        clientTwittViewListener = new ClientTwittViewListener(mainPanel);
 
+    }
+
+    private boolean isLikedBy() {
+        for(int i = 0; i<this.twitt.getLikes().size();i++){
+            if(this.twitt.getLikes().get(i).equals(mainUser.getUserName())){
+                return true;
+            }
+        }
+        return false;
     }
 
     public void setTwitt(Twitt twitt) throws ClassNotFoundException, SQLException, CouldNotConnectToServerException, IOException {
@@ -287,7 +320,7 @@ public class TwittPanel extends JPanel implements ActionListener {
         getRetwittsComboBox().removeAllItems();
 
         for (int i = 0; i < twitt.getReTwitts().size(); i++) {
-            getRetwittsComboBox().addItem(twitt.getReTwitts().get(i));
+            getRetwittsComboBox().addItem(twitt.getTwittReTwittersList().get(i).getUserName());
         }
     }
 
@@ -310,6 +343,71 @@ public class TwittPanel extends JPanel implements ActionListener {
         else if(e.getSource() == backBtn){
             mainPanel.back();
         }
+        else if(e.getSource() == likeBtn){
+            try {
+                clientLikeListener.listen(this.twitt);
+                updateGraphicsLike();
+            } catch (CouldNotConnectToServerException couldNotConnectToServerException) {
+                couldNotConnectToServerException.printStackTrace();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            } catch (ClassNotFoundException classNotFoundException) {
+                classNotFoundException.printStackTrace();
+            } catch (ServerException serverException) {
+                serverException.printStackTrace();
+            }
+        }
+    }
+
+    public void addTwittRetwitts() {
+        retwittsComboBox.removeAllItems();
+        for(int i = 0; i < this.twitt.getTwittReTwittersList().size() ; i++){
+            retwittsComboBox.addItem(this.twitt.getTwittReTwittersList().get(i).getUserName());
+        }
+    }
+
+    public void addTwittLikes() {
+        getLikesComboBox().removeAllItems();
+        for(int i = 0; i < this.twitt.getLikes().size() ; i++){
+            likesComboBox.addItem(this.twitt.getLikes().get(i));
+        }
+    }
+
+    private void updateGraphicsLike() {
+        if(likeBtn.getText().equals("like")){
+            likeBtn.setText("removeLike");
+            mainUser.getLikes().add(twitt.getTwittUUID());
+            twitt.getLikes().add(mainUser.getUserName());
+            addTwittLikes();
+            addTwittRetwitts();
+            likesLable.setText("Likes: " + twitt.getLikes().size());
+            reTwittsLable.setText("retwitts: " + twitt.getReTwitts().size());
+            JOptionPane.showMessageDialog(this,"liked successfully");
+        }
+        else if(likeBtn.getText().equals("removeLike")){
+            likeBtn.setText("like");
+            mainUser.getLikes().remove(twitt.getTwittUUID());
+            twitt.getLikes().remove(mainUser.getUserName());
+            addTwittLikes();
+            addTwittRetwitts();
+            likesLable.setText("Likes: " + twitt.getLikes().size());
+            reTwittsLable.setText("retwitts: " + twitt.getReTwitts().size());
+
+            JOptionPane.showMessageDialog(this,"removeLike");
+        }
+    }
+
+    private void updateGraphicsRetwitt() {
+        mainUser.getReTwitts().add(twitt.getTwittUUID());
+        twitt.getReTwitts().add(mainUser.getUserName());
+        twitt.getTwittReTwittersList().add(mainUser);
+        addTwittLikes();
+        addTwittRetwitts();
+        likesLable.setText("Likes: " + twitt.getLikes().size());
+        likesLable.setText("retwitts: " + twitt.getReTwitts().size());
+        JOptionPane.showMessageDialog(this,"liked successfully");
     }
 
     public JComboBox<String> getLikesComboBox() {

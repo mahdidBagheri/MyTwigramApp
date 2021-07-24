@@ -19,9 +19,12 @@ import java.sql.SQLException;
 public class SendMessageListener {
     GroupPanel groupPanel;
     Group group;
-    public SendMessageListener(GroupPanel groupPanel) {
+    ConnectionToLocalDataBase connectionToLocalDataBase;
+    public SendMessageListener(GroupPanel groupPanel) throws SQLException, IOException, ClassNotFoundException {
         this.groupPanel = groupPanel;
         this.group = groupPanel.getGroup();
+        this.connectionToLocalDataBase = new ConnectionToLocalDataBase();
+
     }
 
     public void listen(SendMessageEvent sendMessageEvent) throws MessageSavedAndNotSent, SQLException, IOException, ClassNotFoundException {
@@ -71,9 +74,11 @@ public class SendMessageListener {
         else {
             sql = String.format("insert into \"%s\" (\"Message\",\"Author\",\"Date\",\"sync\") values ('%s','%s','%s','%s');",groupTableAddress,text,author,date,sync);
         }
-        ConnectionToLocalDataBase connectionToLocalDataBase = new ConnectionToLocalDataBase();
 
         connectionToLocalDataBase.executeUpdate(sql);
+    }
+
+    public void finalize() throws SQLException {
         connectionToLocalDataBase.Disconect();
     }
 }

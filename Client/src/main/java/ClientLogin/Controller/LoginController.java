@@ -16,6 +16,13 @@ import java.io.ObjectInputStream;
 import java.sql.SQLException;
 
 public class LoginController {
+
+    ConnectionToLocalDataBase connectionToLocalDataBase;
+
+    public LoginController() throws SQLException, IOException, ClassNotFoundException {
+        this.connectionToLocalDataBase = new ConnectionToLocalDataBase();
+    }
+
     public void validateLogin(LoginEvent loginEvent) throws EmptyFieldException, IOException {
         if(loginEvent.getUsername().isEmpty()){
             throw new EmptyFieldException("username is empty");
@@ -50,9 +57,11 @@ public class LoginController {
     }
 
     private void saveSessionToDataBase(String session) throws SQLException, IOException, ClassNotFoundException {
-        ConnectionToLocalDataBase connectionToLocalDataBase = new ConnectionToLocalDataBase();
         String sql = String.format("update \"UserInfo\" set\"Session\" = '%s';",session);
         connectionToLocalDataBase.executeUpdate(sql);
+    }
+
+    public void finalize() throws SQLException {
         connectionToLocalDataBase.Disconect();
     }
 

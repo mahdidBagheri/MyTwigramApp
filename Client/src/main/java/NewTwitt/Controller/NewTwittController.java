@@ -23,9 +23,10 @@ import java.util.UUID;
 
 public class NewTwittController {
     Twitt newTwitt;
-
-    public NewTwittController(Twitt newTwitt) {
+    ConnectionToLocalDataBase connectionToLocalDataBase;
+    public NewTwittController(Twitt newTwitt) throws SQLException, IOException, ClassNotFoundException {
         this.newTwitt = newTwitt;
+        this.connectionToLocalDataBase = new ConnectionToLocalDataBase();
     }
 
     public NewTwittController() {
@@ -48,10 +49,8 @@ public class NewTwittController {
     }
 
     public void saveToLocalDataBase() throws SQLException, IOException, ClassNotFoundException {
-        ConnectionToLocalDataBase connectionToLocalDataBase = new ConnectionToLocalDataBase();
         String sql = String.format("insert into \"twitts\"(\"TwittUUID\",\"text\",\"Author\",\"sync\") values ('%s','%s','%s','%s');",newTwitt.getTwittUUID(),newTwitt.getText(),newTwitt.getAuthorUUID(),"true");
         connectionToLocalDataBase.executeUpdate(sql);
-        connectionToLocalDataBase.Disconect();
     }
 
     private void sendToServer() throws IOException, CouldNotConnectToServerException {
@@ -115,5 +114,9 @@ public class NewTwittController {
 
     public Twitt getNewTwitt() {
         return newTwitt;
+    }
+
+    public void finalize() throws SQLException {
+        connectionToLocalDataBase.Disconect();
     }
 }

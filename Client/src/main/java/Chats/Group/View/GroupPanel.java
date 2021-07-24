@@ -51,7 +51,7 @@ public class GroupPanel extends JPanel implements ActionListener {
 
     String picPath;
 
-    public GroupPanel(Group group, MainPanel mainPanel) throws IOException {
+    public GroupPanel(Group group, MainPanel mainPanel) throws IOException, SQLException, ClassNotFoundException {
 
         this.group = group;
         this.mainPanel = mainPanel;

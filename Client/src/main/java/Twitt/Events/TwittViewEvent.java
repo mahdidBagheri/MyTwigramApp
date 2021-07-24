@@ -20,6 +20,7 @@ public class TwittViewEvent {
         User mainUser = new User();
         ClientUserController mainUserController = new ClientUserController(mainUser);
         mainUserController.setAsMain();
+
         this.mainUser = mainUser;
 
     }

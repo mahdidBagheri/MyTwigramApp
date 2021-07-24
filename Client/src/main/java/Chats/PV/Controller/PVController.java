@@ -11,8 +11,10 @@ import java.sql.SQLException;
 
 public class PVController {
     PV pv;
-    public PVController(PV pv) {
+    ConnectionToLocalDataBase connectionToLocalDataBase;
+    public PVController(PV pv) throws SQLException, IOException, ClassNotFoundException {
         this.pv = pv;
+        this.connectionToLocalDataBase = new ConnectionToLocalDataBase();
     }
 
     public String getPVTableNameByUserUUID(String userUUID) {
@@ -24,7 +26,6 @@ public class PVController {
 
     public void readMessages() throws SQLException, IOException, ClassNotFoundException {
         pv.getMessages().clear();
-        ConnectionToLocalDataBase connectionToLocalDataBase = new ConnectionToLocalDataBase();
         String sql = String.format("select * from \"%s\";",pv.getPVTableName());
         ResultSet rs = connectionToLocalDataBase.executeQuery(sql);
 
@@ -45,6 +46,9 @@ public class PVController {
                 pv.addMessage(message);
             }
         }
+    }
+
+    public void finalize() throws SQLException {
         connectionToLocalDataBase.Disconect();
     }
 }

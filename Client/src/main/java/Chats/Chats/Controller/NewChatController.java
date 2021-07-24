@@ -19,7 +19,6 @@ public class NewChatController {
     }
 
     public void saveChatToLocalDataBase(String chatAddress, String username) throws SQLException, IOException, ClassNotFoundException {
-        ConnectionToLocalDataBase connectionToLocalDataBase = new ConnectionToLocalDataBase();
         DateTime dateTime = new DateTime();
 
         String sql = String.format("insert into \"ChatsTable\" (\"ChatAddress\",\"Username\",\"Date\",\"sync\") values ('%s','%s','%s','%s')",chatAddress,username,dateTime.Now(),"true");
@@ -27,7 +26,6 @@ public class NewChatController {
 
         String create_pv_table = String.format("create table \"%s\"(\"ID\" BIGSERIAL NOT NULL PRIMARY KEY,\"Message\" text,\"Author\" character varying (50), \"ImageAddress\" character varying (200) ,\"Date\" timestamp without time zone,\"sync\" character varying (6));", chatAddress);
         connectionToLocalDataBase.executeUpdate(create_pv_table);
-        connectionToLocalDataBase.Disconect();
 
     }
 

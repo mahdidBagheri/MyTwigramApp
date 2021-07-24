@@ -17,9 +17,10 @@ import java.sql.SQLException;
 
 public class SendMessageListener {
     PV pv;
-
-    public SendMessageListener(PV pv) {
+    ConnectionToLocalDataBase connectionToLocalDataBase;
+    public SendMessageListener(PV pv) throws SQLException, IOException, ClassNotFoundException {
         this.pv = pv;
+        this.connectionToLocalDataBase = new ConnectionToLocalDataBase();
     }
 
     public void listen(SendMessageEvent sendMessageEvent) throws SQLException, IOException, ClassNotFoundException, MessageSavedAndNotSent {
@@ -69,9 +70,7 @@ public class SendMessageListener {
         else {
             sql = String.format("insert into \"%s\" (\"Message\",\"Author\",\"Date\",\"sync\") values ('%s','%s','%s','%s');",pvAddress,text,author,date,sync);
         }
-        ConnectionToLocalDataBase connectionToLocalDataBase = new ConnectionToLocalDataBase();
-        
+
         connectionToLocalDataBase.executeUpdate(sql);
-        connectionToLocalDataBase.Disconect();
     }
 }
