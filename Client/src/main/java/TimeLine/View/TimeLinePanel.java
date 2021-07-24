@@ -12,6 +12,8 @@ import TimeLine.Controller.ClientTimeLineController;
 import TimeLine.Events.ReplyEvent;
 import TimeLine.Listeners.*;
 import TimeLine.Model.TimeLine;
+import Twitt.Events.TwittViewEvent;
+import Twitt.Listeners.ClientTwittViewListener;
 import Twitt.Model.Twitt;
 import User.Events.UserViewEvent;
 import User.Listener.ClientUserViewListener;
@@ -74,6 +76,7 @@ public class TimeLinePanel extends JPanel implements ActionListener {
     ClientUserViewListener clientUserViewListener;
     ClientLikeListener clientLikeListener;
     ClientGoAuthorListener clientGoAuthorListener;
+
 
     public TimeLinePanel(MainPanel mainPanel, TimeLine timeLine) throws IOException {
         this.setLayout(null);
@@ -188,7 +191,7 @@ public class TimeLinePanel extends JPanel implements ActionListener {
         prevReplyBtn.addActionListener(this);
 
         replyText = new ImprovedJLabel();
-        replyText.setBounds(60, 360, 220, 150);
+        replyText.setBounds(60, 360, 220, 100);
         replyText.setVisible(true);
         replyText.setMainPanel(mainPanel);
 
@@ -247,11 +250,13 @@ public class TimeLinePanel extends JPanel implements ActionListener {
         initialize();
 
         clientMoveTwittListener = new ClientMoveTwittListener(timeLine, this);
+        clientMoveReplyListener = new ClientMoveReplyListener(this);
         clientReplyListener = new ClientReplyListener(this,timeLine);
         clientLikeListener = new ClientLikeListener(this);
         clientRetwittListener = new ClientRetwittListener(this);
         clientGoAuthorListener = new ClientGoAuthorListener(this,mainPanel);
         clientUserViewListener = new ClientUserViewListener(mainPanel);
+        clientTwittViewListener = new ClientTwittViewListener(mainPanel);
     }
 
     @Override
@@ -280,8 +285,8 @@ public class TimeLinePanel extends JPanel implements ActionListener {
         else if(e.getSource() == nextReplyBtn){
             clientMoveReplyListener.listen("next");
         }
-        else if(e.getSource() == nextReplyBtn){
-            clientMoveReplyListener.listen("next");
+        else if(e.getSource() == prevReplyBtn){
+            clientMoveReplyListener.listen("prev");
         }
         else if(e.getSource() == likeBtn){
             try {
@@ -361,8 +366,29 @@ public class TimeLinePanel extends JPanel implements ActionListener {
                 couldNotConnectToServerException.printStackTrace();
             }
         }
+        else if(e.getSource() == goReply){
+
+            try {
+                TwittViewEvent twittViewEvent = new TwittViewEvent(timeLine.getTwitts().get(twittNum).getReplies().get(replyNum),mainPanel);
+                clientTwittViewListener.listen(twittViewEvent);
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            } catch (ClassNotFoundException classNotFoundException) {
+                classNotFoundException.printStackTrace();
+            } catch (CouldNotConnectToServerException couldNotConnectToServerException) {
+                couldNotConnectToServerException.printStackTrace();
+            }
+
+        }
     }
 
+    public void setReply(Twitt reply){
+        replyText.setText(reply.getText());
+        replyText.repaint();
+        this.repaint();
+    }
 
 
     public void updateReply(Twitt twitt) {
@@ -394,6 +420,14 @@ public class TimeLinePanel extends JPanel implements ActionListener {
             imageLabel.repaint();
             this.repaint();
         }
+    }
+
+    public void increaseReplyNum(){
+        replyNum++;
+    }
+
+    public void decreaseReplyNum(){
+        replyNum--;
     }
 
     public void addTwittRetwitts() {

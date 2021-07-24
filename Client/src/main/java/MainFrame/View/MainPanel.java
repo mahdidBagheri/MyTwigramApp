@@ -15,6 +15,8 @@ import Profile.View.ProfilePanel;
 import NewTwitt.View.NewTwittPanel;
 import TimeLine.Model.TimeLine;
 import TimeLine.View.TimeLinePanel;
+import Twitt.Events.TwittViewEvent;
+import Twitt.View.TwittPanel;
 import User.Events.UserViewEvent;
 import User.Model.User;
 import User.View.UserPanel;
@@ -119,6 +121,19 @@ public class MainPanel extends JPanel {
         this.add(new UserPanel(userViewEvent));
     }
 
+    public void addTwittPanel(TwittViewEvent twittViewEvent) throws IOException {
+        if(panels.size() == 2){
+            panelsTrace.add(panels.get(0));
+            panelsTrace.add(panels.get(1));
+        }
+        else {
+            panelsTrace.add(panels.getLast());
+        }
+
+        this.clear();
+        this.add(new TwittPanel(twittViewEvent));
+    }
+
 
     public void back() {
         clear();
@@ -175,4 +190,6 @@ public class MainPanel extends JPanel {
         this.clear();
         this.add(new GroupPanel(group, mainPanel));
     }
+
+
 }

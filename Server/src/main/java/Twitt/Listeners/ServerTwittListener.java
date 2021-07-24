@@ -2,11 +2,14 @@ package Twitt.Listeners;
 
 import Connection.Client.ClientRequest;
 import Connection.Server.ServerConnection;
+import Connection.Server.ServerPayLoad;
 import Connection.Server.ServerRequest;
 import Twitt.Controller.ServerLikeController;
 import Twitt.Controller.ServerRetwittController;
+import Twitt.Controller.ServerTwittsController;
 import Twitt.Exceptions.AlreadyRetwittedException;
 import Twitt.Exceptions.TwittReadDataException;
+import Twitt.Model.Twitt;
 import User.Exceptions.unsuccessfullReadDataFromDatabase;
 
 import java.io.IOException;
@@ -36,6 +39,19 @@ public class ServerTwittListener {
                 serverRequest = new ServerRequest(clientRequest.getUsername(),"false",null);
             }
 
+            serverConnection.execute(serverRequest);
+        }
+        else if(clientRequest.getCommand().equals("twittInfo")){
+             Twitt twitt = new Twitt();
+             String twittUUID = clientRequest.getClientPayLoad().getStringStringHashMap().get("twittUUID");
+             twitt.setTwittUUID(twittUUID);
+
+            ServerTwittsController serverTwittsController = new ServerTwittsController(twitt);
+            serverTwittsController.readDataFromDataBaseByUUID();
+            ServerPayLoad serverPayLoad = new ServerPayLoad();
+            serverPayLoad.setTwitt(twitt);
+
+            ServerRequest serverRequest = new ServerRequest(clientRequest.getUsername(),"twittInfo",serverPayLoad);
             serverConnection.execute(serverRequest);
         }
     }

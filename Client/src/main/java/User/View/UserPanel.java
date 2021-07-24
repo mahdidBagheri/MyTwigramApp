@@ -4,7 +4,7 @@ import Config.ColorConfig.ColorConfig;
 import Connection.Exceptions.CouldNotConnectToServerException;
 import MainFrame.Listener.BackListener;
 import MainFrame.View.MainPanel;
-import TimeLine.Listeners.ClientTwittViewListener;
+import Twitt.Listeners.ClientTwittViewListener;
 import User.Controller.ClientUserController;
 import User.Events.UserEvent;
 import User.Events.UserViewEvent;
@@ -58,7 +58,7 @@ public class UserPanel extends JPanel implements ActionListener {
     MainPanel mainPanel;
 
     public UserPanel(UserViewEvent userViewEvent) throws IOException {
-        this.twittViewListener = new ClientTwittViewListener();
+        this.twittViewListener = new ClientTwittViewListener(mainPanel);
         this.userListener = new ClientUserListener(userViewEvent.getMainPanel());
         this.mainPanel = userViewEvent.getMainPanel();
         this.backListener = new BackListener(mainPanel);

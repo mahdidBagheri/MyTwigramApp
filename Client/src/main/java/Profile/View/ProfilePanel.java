@@ -1,7 +1,7 @@
 package Profile.View;
 
 import Connection.Exceptions.CouldNotConnectToServerException;
-import TimeLine.Listeners.ClientTwittViewListener;
+import Twitt.Listeners.ClientTwittViewListener;
 import User.Listener.ClientUserViewListener;
 import Config.ColorConfig.ColorConfig;
 import MainFrame.View.MainPanel;
@@ -58,7 +58,7 @@ public class ProfilePanel extends JPanel implements ActionListener {
         this.user = user;
 
         this.userViewListener = new ClientUserViewListener(mainPanel);
-        this.twittViewListener = new ClientTwittViewListener();
+        this.twittViewListener = new ClientTwittViewListener(mainPanel);
         this.changeProfileListener = new ChangeProfileListener();
 
         ColorConfig colorConfig = new ColorConfig();

@@ -1,8 +1,10 @@
 package Connection.Server;
 
+
 import Chats.Group.Model.Group;
 import Chats.PV.Model.PV;
 import TimeLine.Model.TimeLine;
+import Twitt.Model.Twitt;
 import User.Model.User;
 
 import java.io.Serializable;
@@ -17,6 +19,7 @@ public class ServerPayLoad implements Serializable {
     TimeLine timeLine;
     PV pv;
     Group group;
+    Twitt twitt;
 
     public User getUser() {
         return user;
@@ -56,5 +59,13 @@ public class ServerPayLoad implements Serializable {
 
     public void setGroup(Group group) {
         this.group = group;
+    }
+
+    public Twitt getTwitt() {
+        return twitt;
+    }
+
+    public void setTwitt(Twitt twitt) {
+        this.twitt = twitt;
     }
 }
