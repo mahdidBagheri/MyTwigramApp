@@ -147,7 +147,7 @@ public class MainPanel extends JPanel {
         }
     }
 
-    public void addNewTwittPanel() throws IOException {
+    public void addNewTwittPanel() throws IOException, SQLException, ClassNotFoundException {
         this.clear();
         this.add(new OptionPanel(mainPanel));
         this.add(new NewTwittPanel(mainPanel));

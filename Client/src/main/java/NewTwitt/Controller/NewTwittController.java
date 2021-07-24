@@ -29,7 +29,8 @@ public class NewTwittController {
         this.connectionToLocalDataBase = new ConnectionToLocalDataBase();
     }
 
-    public NewTwittController() {
+    public NewTwittController() throws SQLException, IOException, ClassNotFoundException {
+        this.connectionToLocalDataBase = new ConnectionToLocalDataBase();
     }
 
     public void newTwitt(NewTwittEvent newTwittEvent) throws SQLException, IOException, ClassNotFoundException, CouldNotConnectToServerException {

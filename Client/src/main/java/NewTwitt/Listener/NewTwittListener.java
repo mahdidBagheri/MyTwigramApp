@@ -16,7 +16,7 @@ public class NewTwittListener {
     NewTwittValidation newTwittValidation = new NewTwittValidation();
     NewTwittController newTwittController = new NewTwittController();
 
-    public NewTwittListener(MainPanel mainPanel) {
+    public NewTwittListener(MainPanel mainPanel) throws SQLException, IOException, ClassNotFoundException {
         this.mainPanel = mainPanel;
     }
 

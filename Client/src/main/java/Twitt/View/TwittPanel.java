@@ -1,10 +1,12 @@
 package Twitt.View;
 
+import ClientLogin.Exceptions.EmptyFieldException;
 import CommonClasses.Exceptions.ServerException;
 import Config.ColorConfig.ColorConfig;
 import Connection.Exceptions.CouldNotConnectToServerException;
 import HyperLink.Model.ImprovedJLabel;
 import MainFrame.View.MainPanel;
+import TimeLine.Events.ReplyEvent;
 import TimeLine.Listeners.ClientMoveTwittListener;
 import TimeLine.Listeners.ClientTimeLineMoveReplyListener;
 import Twitt.Controller.TwittsController;
@@ -359,6 +361,41 @@ public class TwittPanel extends JPanel implements ActionListener {
                 serverException.printStackTrace();
             }
         }
+        else if(e.getSource() == reTwittBtn){
+            try {
+                clientRetwittListener.listen(this.twitt);
+                updateGraphicsRetwitt();
+            } catch (CouldNotConnectToServerException couldNotConnectToServerException) {
+                couldNotConnectToServerException.printStackTrace();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            } catch (ClassNotFoundException classNotFoundException) {
+                classNotFoundException.printStackTrace();
+            } catch (ServerException serverException) {
+                JOptionPane.showMessageDialog(this,"server error may already retwitted");
+                serverException.printStackTrace();
+            }
+        }
+        else if(e.getSource() == replyBtn){
+
+            try {
+                ReplyEvent replyEvent = new ReplyEvent(this.twitt,replyField.getText());
+                clientReplyListener.listen(replyEvent);
+                updateReply(replyEvent.getNewTwitt());
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            } catch (ClassNotFoundException classNotFoundException) {
+                classNotFoundException.printStackTrace();
+            } catch (EmptyFieldException emptyFieldException) {
+                emptyFieldException.printStackTrace();
+            } catch (CouldNotConnectToServerException couldNotConnectToServerException) {
+                couldNotConnectToServerException.printStackTrace();
+            }
+        }
     }
 
     public void addTwittRetwitts() {
@@ -416,5 +453,14 @@ public class TwittPanel extends JPanel implements ActionListener {
 
     public JComboBox<String> getRetwittsComboBox() {
         return retwittsComboBox;
+    }
+
+    public void updateReply(Twitt twitt) {
+        this.twitt.getReplies().add(twitt);
+        if(this.twitt.getReplies().size() == 1) {
+            replyText.setText(twitt.getText());
+            replyText.repaint();
+            this.repaint();
+        }
     }
 }

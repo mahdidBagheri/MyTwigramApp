@@ -37,7 +37,7 @@ public class NewTwittPanel extends JPanel implements ActionListener {
     String picPath;
     MainPanel mainPanel;
 
-    public NewTwittPanel(MainPanel mainPanel) throws IOException {
+    public NewTwittPanel(MainPanel mainPanel) throws IOException, SQLException, ClassNotFoundException {
         ColorConfig colorConfig = new ColorConfig();
 
         this.mainPanel = mainPanel;
