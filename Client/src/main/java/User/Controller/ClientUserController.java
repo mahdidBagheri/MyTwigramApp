@@ -111,7 +111,7 @@ public class UserController {
         connectionToLocalDataBase.Disconect();
     }
 
-    private void readPVs() throws SQLException, IOException, ClassNotFoundException {
+    public void readPVs() throws Throwable {
         user.getChats().clear();
         String sql = String.format("select * from \"ChatsTable\";");
         ConnectionToLocalDataBase connectionToLocalDataBase = new ConnectionToLocalDataBase();
@@ -129,7 +129,7 @@ public class UserController {
                 pv.setPVTableName(rs.getString(1));
                 PVController pvController = new PVController(pv);
                 pvController.readMessages();
-
+                pvController.finalize();
                 user.addChat(pv);
             }
         }
@@ -245,5 +245,6 @@ public class UserController {
         String sql = String.format("update \"UserInfo\" set \"ProfilePic\" = '%s';",path);
         connectionToLocalDataBase.executeUpdate(sql);
         connectionToLocalDataBase.Disconect();
+        super.finalize();
     }
 }

@@ -120,7 +120,8 @@ public class ServerLikeController {
         LikeLable = likeLable;
     }
 
-    public void finalize() throws SQLException {
+    public void finalize() throws Throwable {
         connectionToDataBase.Disconect();
+        super.finalize();
     }
 }

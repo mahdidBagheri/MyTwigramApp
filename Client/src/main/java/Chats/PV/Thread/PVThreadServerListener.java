@@ -6,6 +6,7 @@ import Connection.ClientConnection;
 import Connection.Exceptions.CouldNotConnectToServerException;
 import LocalDataBase.SyncLocalDataBase;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -15,7 +16,7 @@ public class PVThreadServerListener extends Thread {
     PVPanel pvPanel;
     SyncLocalDataBase syncLocalDataBase;
 
-    public PVThreadServerListener(PVPanel pvPanel) throws InterruptedException, SQLException, IOException, ClassNotFoundException {
+    public PVThreadServerListener(PVPanel pvPanel) throws Throwable {
         this.pvPanel = pvPanel;
         this.syncLocalDataBase = new SyncLocalDataBase();
 
@@ -32,26 +33,32 @@ public class PVThreadServerListener extends Thread {
 
     }
 
-    public void run(){
-        while (isRunning) {
-            try {
+    public void run() {
+
+        try {
+            while (isRunning) {
                 syncLocalDataBase.syncPV(pvPanel.getPv().getPVTableName());
                 PVController pvController = new PVController(pvPanel.getPv());
                 pvController.readMessages();
                 pvPanel.updatePV();
+                pvController.finalize();
                 Thread.sleep(2000);
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            } catch (CouldNotConnectToServerException e) {
-                e.printStackTrace();
-            } catch (InterruptedException interruptedException) {
-                interruptedException.printStackTrace();
             }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (CouldNotConnectToServerException e) {
+            JOptionPane.showMessageDialog(pvPanel,e.getMessage());
+            e.printStackTrace();
+        } catch (InterruptedException interruptedException) {
+            interruptedException.printStackTrace();
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
         }
+
     }
 
     public void setRunning(boolean running) {
@@ -60,7 +67,7 @@ public class PVThreadServerListener extends Thread {
 
     public void finalize() throws Throwable {
         setRunning(false);
-        if(!clientConnection.getSocket().isClosed()){
+        if (!clientConnection.getSocket().isClosed()) {
             clientConnection.getSocket().close();
         }
         super.finalize();

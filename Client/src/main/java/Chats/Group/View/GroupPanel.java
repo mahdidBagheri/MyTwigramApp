@@ -192,6 +192,8 @@ public class GroupPanel extends JPanel implements ActionListener {
                 ioException.printStackTrace();
             } catch (ClassNotFoundException classNotFoundException) {
                 classNotFoundException.printStackTrace();
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
             }
         }
         else if(e.getSource() == upBtn){

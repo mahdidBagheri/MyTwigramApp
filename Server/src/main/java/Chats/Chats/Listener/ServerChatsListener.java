@@ -19,10 +19,11 @@ public class ServerChatsListener {
         this.serverConnection = serverConnection;
     }
 
-    public void listen(ClientRequest clientRequest) throws TwittReadDataException, SQLException, unsuccessfullReadDataFromDatabase, IOException {
+    public void listen(ClientRequest clientRequest) throws Throwable {
         if(clientRequest.getCommand().equals("createNewChat")){
             ServerNewChatController serverNewChatController = new ServerNewChatController(serverConnection);
             serverNewChatController.listen(clientRequest);
+            serverNewChatController.finalize();
         }
         if(clientRequest.getCommand().equals("readChats")){
             User mainUser = new User();

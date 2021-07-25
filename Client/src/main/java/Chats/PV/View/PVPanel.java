@@ -33,6 +33,7 @@ public class PVPanel extends JPanel implements ActionListener {
     JButton deleteBtn;
     JButton editBtn;
     JButton backBtn;
+    JButton refrshBtn;
     JButton exitBtn;
     JButton chooseImageBtn;
     JButton deleteImageBtn;
@@ -51,7 +52,7 @@ public class PVPanel extends JPanel implements ActionListener {
 
     String picPath;
 
-    public PVPanel(PV pv, MainPanel mainPanel) throws IOException, InterruptedException, SQLException, ClassNotFoundException {
+    public PVPanel(PV pv, MainPanel mainPanel) throws Throwable {
         this.pv = pv;
         this.mainPanel = mainPanel;
 
@@ -93,6 +94,11 @@ public class PVPanel extends JPanel implements ActionListener {
         editBtn.setBounds(310, 300, 80, 40);
         editBtn.setText("edit");
         editBtn.addActionListener(this);
+
+        refrshBtn = new JButton();
+        refrshBtn.setBounds(310, 250, 80, 40);
+        refrshBtn.setText("refresh");
+        refrshBtn.addActionListener(this);
 
         editField = new JTextArea();
         editField.setBounds(310, 350, 160, 40);
@@ -163,6 +169,7 @@ public class PVPanel extends JPanel implements ActionListener {
         this.add(editField);
         this.add(exitBtn);
         this.add(deleteImageBtn);
+        this.add(refrshBtn);
     }
 
     public PV getPv() {
@@ -187,6 +194,8 @@ public class PVPanel extends JPanel implements ActionListener {
                 classNotFoundException.printStackTrace();
             } catch (MessageSavedAndNotSent messageSavedAndNotSent) {
                 messageSavedAndNotSent.printStackTrace();
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
             }
         }
         else if(e.getSource() == upBtn){
@@ -201,6 +210,13 @@ public class PVPanel extends JPanel implements ActionListener {
                 upOrDownBtnListener.listen("down");
             } catch (IOException ioException) {
                 ioException.printStackTrace();
+            }
+        }
+        else if(e.getSource() == refrshBtn){
+            try {
+                refreshConnection();
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
             }
         }
     }
@@ -230,6 +246,11 @@ public class PVPanel extends JPanel implements ActionListener {
 
         this.revalidate();
         this.repaint();
+    }
+
+    public void refreshConnection() throws Throwable {
+        pvThreadServerListener = new PVThreadServerListener(this);
+        pvThreadServerListener.start();
     }
 
     public void finalize(){

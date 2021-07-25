@@ -23,7 +23,7 @@ public class SendMessageListener {
         this.connectionToLocalDataBase = new ConnectionToLocalDataBase();
     }
 
-    public void listen(SendMessageEvent sendMessageEvent) throws SQLException, IOException, ClassNotFoundException, MessageSavedAndNotSent {
+    public void listen(SendMessageEvent sendMessageEvent) throws Throwable {
         ClientPayLoad clientPayLoad = new ClientPayLoad();
         DateTime dateTime = new DateTime();
         String date = dateTime.Now();
@@ -51,6 +51,7 @@ public class SendMessageListener {
         User mainUser = new User();
         ClientUserController clientUserController = new ClientUserController(mainUser);
         clientUserController.setAsMain();
+        clientUserController.finalize();
 
         ClientRequest clientRequest = new ClientRequest("pv",clientPayLoad,mainUser.getSession(),"sendMessage",mainUser.getUserName(),mainUser.getPassWord());
         clientConnection.execute(clientRequest);

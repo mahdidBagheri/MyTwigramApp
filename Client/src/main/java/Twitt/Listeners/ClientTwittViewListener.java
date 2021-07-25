@@ -19,7 +19,7 @@ public class ClientTwittViewListener {
         this.mainPanel = mainPanel;
     }
 
-    public void listen(TwittViewEvent twittViewEvent) throws ClassNotFoundException, SQLException, CouldNotConnectToServerException, IOException {
+    public void listen(TwittViewEvent twittViewEvent) throws Throwable {
         this.twitt = twittViewEvent.getTwitt();
         TwittsController twittsController = new TwittsController(twitt);
         twittsController.readAllByUUID();

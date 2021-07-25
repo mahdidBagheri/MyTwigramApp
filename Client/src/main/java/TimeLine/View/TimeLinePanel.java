@@ -294,6 +294,8 @@ public class TimeLinePanel extends JPanel implements ActionListener {
                 JOptionPane.showMessageDialog(this,emptyFieldException.getMessage());
 
                 emptyFieldException.printStackTrace();
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
             }
         }
         else if(e.getSource() == nextReplyBtn){
@@ -311,6 +313,8 @@ public class TimeLinePanel extends JPanel implements ActionListener {
                 couldNotConnectToServerException.printStackTrace();
             } catch (ServerException serverException) {
                 serverException.printStackTrace();
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
             }
         }
         else if(e.getSource() == reTwittBtn){
@@ -323,6 +327,8 @@ public class TimeLinePanel extends JPanel implements ActionListener {
             } catch (ServerException serverException) {
                 JOptionPane.showMessageDialog(this,"server refused. may already retwitted");
                 serverException.printStackTrace();
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
             }
         }
         else if(e.getSource() == goAuthorProfileBtn){
@@ -340,6 +346,8 @@ public class TimeLinePanel extends JPanel implements ActionListener {
                 classNotFoundException.printStackTrace();
             } catch (CouldNotConnectToServerException couldNotConnectToServerException) {
                 couldNotConnectToServerException.printStackTrace();
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
             }
         }
         else if(e.getSource() == viewSelectedLikeBtn){
@@ -361,6 +369,8 @@ public class TimeLinePanel extends JPanel implements ActionListener {
                 classNotFoundException.printStackTrace();
             } catch (CouldNotConnectToServerException couldNotConnectToServerException) {
                 couldNotConnectToServerException.printStackTrace();
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
             }
         }
         else if(e.getSource() == viewSelectedRetBtn){
@@ -382,6 +392,8 @@ public class TimeLinePanel extends JPanel implements ActionListener {
                 classNotFoundException.printStackTrace();
             } catch (CouldNotConnectToServerException couldNotConnectToServerException) {
                 couldNotConnectToServerException.printStackTrace();
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
             }
         }
         else if(e.getSource() == goReply){
@@ -397,6 +409,8 @@ public class TimeLinePanel extends JPanel implements ActionListener {
                 classNotFoundException.printStackTrace();
             } catch (CouldNotConnectToServerException couldNotConnectToServerException) {
                 couldNotConnectToServerException.printStackTrace();
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
             }
 
         }

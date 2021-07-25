@@ -250,6 +250,7 @@ public class ProfilePanel extends JPanel implements ActionListener {
                     User mainUser = new User();
                     UserController mainUserController = new UserController(mainUser);
                     mainUserController.setAsMain();
+                    mainUserController.finalize();
 
                     mainUserController.changeProfilePic(path);
 
@@ -273,6 +274,8 @@ public class ProfilePanel extends JPanel implements ActionListener {
                 classNotFoundException.printStackTrace();
             } catch (CouldNotConnectToServerException couldNotConnectToServerException) {
                 couldNotConnectToServerException.printStackTrace();
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
             }
         }
         else if(e.getSource() == followersViewBtn){
@@ -290,6 +293,8 @@ public class ProfilePanel extends JPanel implements ActionListener {
                     classNotFoundException.printStackTrace();
                 } catch (CouldNotConnectToServerException couldNotConnectToServerException) {
                     couldNotConnectToServerException.printStackTrace();
+                } catch (Throwable throwable) {
+                    throwable.printStackTrace();
                 }
             }
         }
@@ -308,6 +313,8 @@ public class ProfilePanel extends JPanel implements ActionListener {
                     classNotFoundException.printStackTrace();
                 } catch (CouldNotConnectToServerException couldNotConnectToServerException) {
                     couldNotConnectToServerException.printStackTrace();
+                } catch (Throwable throwable) {
+                    throwable.printStackTrace();
                 }
             }
         }
@@ -327,6 +334,8 @@ public class ProfilePanel extends JPanel implements ActionListener {
                 classNotFoundException.printStackTrace();
             } catch (CouldNotConnectToServerException couldNotConnectToServerException) {
                 couldNotConnectToServerException.printStackTrace();
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
             }
         }
     }

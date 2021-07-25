@@ -93,6 +93,8 @@ public class SearchPanel extends JPanel implements ActionListener {
                 classNotFoundException.printStackTrace();
             } catch (CouldNotConnectToServerException couldNotConnectToServerException) {
                 couldNotConnectToServerException.printStackTrace();
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
             }
 
 

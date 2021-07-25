@@ -39,16 +39,20 @@ public class PVController {
                 Message message;
                 if(picAddress != null){
                     message = new Message(user,text,date,picAddress);
+                    message.setSync(rs.getString(6).equals("true"));
                 }
                 else {
                     message = new Message(user,text,date);
+                    message.setSync(rs.getString(6).equals("true"));
+
                 }
                 pv.addMessage(message);
             }
         }
     }
 
-    public void finalize() throws SQLException {
+    public void finalize() throws Throwable {
         connectionToLocalDataBase.Disconect();
+        super.finalize();
     }
 }

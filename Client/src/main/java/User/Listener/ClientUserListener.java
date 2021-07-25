@@ -23,7 +23,7 @@ public class ClientUserListener {
         this.mainPanel = mainPanel;
     }
 
-    public void listen(UserEvent userEvent) throws SQLException, IOException, ClassNotFoundException, FollowException, CouldNotConnectToServerException {
+    public void listen(UserEvent userEvent) throws Throwable {
         if(userEvent.getCommand().equals("followOrUnfollow")){
             User mainUser = new User();
             UserController mainUserController = new UserController(mainUser);

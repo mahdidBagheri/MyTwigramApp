@@ -256,6 +256,8 @@ public class SignupPanel extends JPanel implements ActionListener {
                 ioException.printStackTrace();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
+            } catch (InterruptedException interruptedException) {
+                interruptedException.printStackTrace();
             }
 
 

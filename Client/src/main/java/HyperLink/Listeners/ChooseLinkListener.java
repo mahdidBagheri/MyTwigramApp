@@ -35,6 +35,8 @@ public class ChooseLinkListener implements ActionListener {
                 ioException.printStackTrace();
             } catch (ClassNotFoundException classNotFoundException) {
                 classNotFoundException.printStackTrace();
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
             }
 
             hyperLinkChooseFrame.getDialog().setVisible(false);

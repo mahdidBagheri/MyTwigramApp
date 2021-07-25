@@ -154,4 +154,9 @@ public class ServerRetwittController {
     public void setRetwittUUID(String retwittUUID) {
         RetwittUUID = retwittUUID;
     }
+
+    public void finalize() throws Throwable {
+        connectionToDataBase.Disconect();
+        super.finalize();
+    }
 }

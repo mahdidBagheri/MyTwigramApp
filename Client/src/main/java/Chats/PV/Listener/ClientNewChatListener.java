@@ -10,6 +10,7 @@ import Connection.Client.ClientWaitForInput;
 import Connection.ClientConnection;
 import Connection.Exceptions.CouldNotConnectToServerException;
 import Connection.Server.ServerRequest;
+import LocalDataBase.SyncLocalDataBase;
 import User.Controller.ClientUserController;
 import User.Model.User;
 import java.io.IOException;
@@ -22,7 +23,7 @@ public class ClientNewChatListener {
         this.chatsPanel = chatsPanel;
     }
 
-    public void listen(NewChatEvent newChatEvent) throws SQLException, IOException, ClassNotFoundException, CouldNotConnectToServerException, ExistingPVException {
+    public void listen(NewChatEvent newChatEvent) throws Throwable {
         if(isRepeatedPV(newChatEvent.getUser())){
             throw new ExistingPVException("PV exists");
         }
@@ -30,6 +31,7 @@ public class ClientNewChatListener {
         User mainUser = new User();
         ClientUserController clientUserController = new ClientUserController(mainUser);
         clientUserController.setAsMain();
+        clientUserController.finalize();
 
         ClientConnection clientConnection = new ClientConnection();
         ClientPayLoad clientPayLoad = new ClientPayLoad();
@@ -49,11 +51,22 @@ public class ClientNewChatListener {
         NewChatController newChatController = new NewChatController();
 
         newChatController.saveChatToLocalDataBase(chatAddress,newChatEvent.getUser().getUserName() );
+
+        SyncLocalDataBase syncLocalDataBase = new SyncLocalDataBase();
+        syncLocalDataBase.syncChats();
+        syncLocalDataBase.finalize();
+
+        ClientUserController clientUserController1 = new ClientUserController(chatsPanel.getMainUser());
+        clientUserController1.readPVs();
+
+        chatsPanel.insertPVsintoCombo(clientUserController1.getUser().getChats());
+        chatsPanel.repaint();
+        clientUserController1.finalize();
     }
 
     private boolean isRepeatedPV(User user) {
-        for (int i = 0; i < chatsPanel.getFollowersCombo().getItemCount(); i++) {
-            String username = chatsPanel.getFollowersCombo().getItemAt(i).toString();
+        for (int i = 0; i < chatsPanel.getpVsCombo().getItemCount(); i++) {
+            String username = chatsPanel.getpVsCombo().getItemAt(i).toString();
             if (username.equals(user.getUserName())) {
                 return true;
             }

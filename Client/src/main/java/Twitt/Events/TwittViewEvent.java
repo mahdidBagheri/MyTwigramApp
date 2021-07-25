@@ -13,13 +13,14 @@ public class TwittViewEvent {
     MainPanel mainPanel;
     User mainUser;
 
-    public TwittViewEvent(Twitt twitt, MainPanel mainPanel) throws SQLException, IOException, ClassNotFoundException {
+    public TwittViewEvent(Twitt twitt, MainPanel mainPanel) throws Throwable {
         this.twitt = twitt;
         this.mainPanel = mainPanel;
 
         User mainUser = new User();
         ClientUserController mainUserController = new ClientUserController(mainUser);
         mainUserController.setAsMain();
+        mainUserController.finalize();
 
         this.mainUser = mainUser;
 

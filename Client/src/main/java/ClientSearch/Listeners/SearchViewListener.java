@@ -24,10 +24,11 @@ public class SearchViewListener {
         this.searchPanel = searchPanel;
     }
 
-    public void listen(SearchEvent searchEvent) throws SQLException, IOException, ClassNotFoundException, CouldNotConnectToServerException {
+    public void listen(SearchEvent searchEvent) throws Throwable {
         User mainUser = new User();
         UserController mainUserController = new UserController(mainUser);
         mainUserController.setAsMain();
+        mainUserController.finalize();
 
         ClientConnection clientConnection = new ClientConnection();
         ClientPayLoad clientPayLoad = new ClientPayLoad();

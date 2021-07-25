@@ -18,7 +18,7 @@ public class ClientPVViewListener {
         this.mainPanel = mainPanel;
     }
 
-    public void listen(ClientPVViewEvent clientPVViewEvent) throws SQLException, IOException, ClassNotFoundException, InterruptedException {
+    public void listen(ClientPVViewEvent clientPVViewEvent) throws Throwable {
         User mainUser = new User();
         ClientUserController clientUserController = new ClientUserController(mainUser);
         clientUserController.setAsMain();
@@ -26,16 +26,19 @@ public class ClientPVViewListener {
         try {
             SyncLocalDataBase syncLocalDataBase = new SyncLocalDataBase();
             syncLocalDataBase.syncChats();
+            syncLocalDataBase.finalize();
+            clientUserController.readPVs();
         } catch (CouldNotConnectToServerException e) {
             e.printStackTrace();
         }
-
         for (PV pv :mainUser.getChats()){
             if(pv.getContact().getUserName().equals(clientPVViewEvent.getUsername())){
                 mainPanel.addPVPanel(pv);
                 break;
             }
         }
+
+        clientUserController.finalize();
 
     }
 }

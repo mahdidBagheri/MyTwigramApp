@@ -21,16 +21,17 @@ public class SyncLocalDataBase {
     ConnectionToLocalDataBase connectionToLocalDataBase;
     User mainUser;
 
-    public SyncLocalDataBase() throws SQLException, IOException, ClassNotFoundException {
+    public SyncLocalDataBase() throws Throwable {
         this.connectionToLocalDataBase = new ConnectionToLocalDataBase();
         User mainUser = new User();
         UserController mainUserController = new UserController(mainUser);
         mainUserController.setAsMain();
+        mainUserController.finalize();
 
         this.mainUser = mainUser;
     }
 
-    public void syncAll() throws SQLException, IOException, ClassNotFoundException, CouldNotConnectToServerException {
+    public void syncAll() throws Throwable {
         syncFollowers();
         syncMutes();
         syncBlackList();
@@ -200,19 +201,20 @@ public class SyncLocalDataBase {
 
     }
 
-    public void syncPV(String PVTableName) throws SQLException, CouldNotConnectToServerException, IOException, ClassNotFoundException {
+    public void syncPV(String PVTableName) throws Throwable {
         sendPVQueuedMessages(PVTableName);
         requestChatFromServer(PVTableName);
     }
 
 
 
-    private void sendPVQueuedMessages(String PVTableName) throws SQLException, IOException, ClassNotFoundException, CouldNotConnectToServerException {
+    private void sendPVQueuedMessages(String PVTableName) throws Throwable {
         String sql = String.format("select * from \"%s\";",PVTableName);
         ResultSet rs = connectionToLocalDataBase.executeQuery(sql);
         User mainUser = new User();
         ClientUserController clientUserController = new ClientUserController(mainUser);
         clientUserController.setAsMain();
+        clientUserController.finalize();
 
         if(rs != null){
             while (rs.next()){
@@ -222,9 +224,11 @@ public class SyncLocalDataBase {
                     clientPayLoad.getStringStringHashMap().put("PVAddress",PVTableName);
                     clientPayLoad.getStringStringHashMap().put("username",mainUser.getUserName());
                     clientPayLoad.getStringStringHashMap().put("text",rs.getString(2));
-                    clientPayLoad.getStringStringHashMap().put("picAddress",rs.getString(4));
                     clientPayLoad.getStringStringHashMap().put("date",rs.getString(5));
-                    clientPayLoad.setFile(new File(rs.getString(4)));
+                    if(rs.getString(4) != null){
+                        clientPayLoad.getStringStringHashMap().put("picAddress",rs.getString(4));
+                        clientPayLoad.setFile(new File(rs.getString(4)));
+                    }
                     ClientRequest clientRequest = new ClientRequest("PV",clientPayLoad,mainUser.getSession(),"sendMessage",mainUser.getUserName(),mainUser.getPassWord());
                     clientConnection.execute(clientRequest);
                     String updateMessage = String.format("update \"%s\" set sync = true where \"Date\" = '%s' and \"Author\" = '%s';",PVTableName,rs.getString(5),rs.getString(3));
@@ -234,12 +238,14 @@ public class SyncLocalDataBase {
         }
     }
 
-    private void requestChatFromServer(String PVTableName) throws CouldNotConnectToServerException, SQLException, IOException, ClassNotFoundException {
+    private void requestChatFromServer(String PVTableName) throws Throwable {
         ClientConnection clientConnection = new ClientConnection();
 
         User mainUser = new User();
         ClientUserController clientUserController = new ClientUserController(mainUser);
         clientUserController.setAsMain();
+        clientUserController.finalize();
+
         ClientPayLoad clientPayLoad = new ClientPayLoad();
         clientPayLoad.getStringStringHashMap().put("PVTableName",PVTableName);
 
@@ -272,7 +278,6 @@ public class SyncLocalDataBase {
             }
         }
 
-        connectionToLocalDataBase.Disconect();
     }
 
     public void syncGroups() throws CouldNotConnectToServerException, IOException, ClassNotFoundException, SQLException {
@@ -327,17 +332,18 @@ public class SyncLocalDataBase {
         connectionToLocalDataBase.executeUpdate(sql1);
     }
 
-    public void syncGroupMessagesAndMemmbers(String groupTableName) throws ClassNotFoundException, SQLException, CouldNotConnectToServerException, IOException {
+    public void syncGroupMessagesAndMemmbers(String groupTableName) throws Throwable {
         sendGroupQueuedMessages(groupTableName);
         requestGroupFromServer(groupTableName);
     }
 
-    private void sendGroupQueuedMessages(String groupTableName) throws SQLException, IOException, ClassNotFoundException, CouldNotConnectToServerException {
+    private void sendGroupQueuedMessages(String groupTableName) throws Throwable {
         String sql = String.format("select * from \"%s\";",groupTableName);
         ResultSet rs = connectionToLocalDataBase.executeQuery(sql);
         User mainUser = new User();
         ClientUserController clientUserController = new ClientUserController(mainUser);
         clientUserController.setAsMain();
+        clientUserController.finalize();
 
         if(rs != null){
             while (rs.next()){
@@ -359,12 +365,14 @@ public class SyncLocalDataBase {
         }
     }
 
-    private void requestGroupFromServer(String groupTableName) throws CouldNotConnectToServerException, SQLException, IOException, ClassNotFoundException {
+    private void requestGroupFromServer(String groupTableName) throws Throwable {
         ClientConnection clientConnection = new ClientConnection();
 
         User mainUser = new User();
         ClientUserController clientUserController = new ClientUserController(mainUser);
         clientUserController.setAsMain();
+        clientUserController.finalize();
+
         ClientPayLoad clientPayLoad = new ClientPayLoad();
         clientPayLoad.getStringStringHashMap().put("PVTableName",groupTableName);
 
@@ -397,15 +405,16 @@ public class SyncLocalDataBase {
             }
         }
 
-        connectionToLocalDataBase.Disconect();
     }
 
-    public void syncTwitts() throws CouldNotConnectToServerException, SQLException, IOException, ClassNotFoundException {
+    public void syncTwitts() throws Throwable {
         ClientConnection clientConnection = new ClientConnection();
 
         User mainUser = new User();
         ClientUserController clientUserController = new ClientUserController(mainUser);
         clientUserController.setAsMain();
+        clientUserController.finalize();
+
         ClientPayLoad clientPayLoad = new ClientPayLoad();
         clientPayLoad.getStringStringHashMap().put("username",mainUser.getUserName());
 
@@ -428,7 +437,6 @@ public class SyncLocalDataBase {
             newTwittController.saveToLocalDataBase();
         }
 
-        connectionToLocalDataBase.Disconect();
     }
 
     public void syncTimeLine() {

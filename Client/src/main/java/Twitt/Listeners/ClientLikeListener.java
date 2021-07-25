@@ -20,13 +20,15 @@ public class ClientLikeListener {
     public ClientLikeListener() {
     }
 
-    public void listen(Twitt twitt) throws CouldNotConnectToServerException, SQLException, IOException, ClassNotFoundException, ServerException {
+    public void listen(Twitt twitt) throws Throwable {
         ClientConnection clientConnection = new ClientConnection();
         ClientPayLoad clientPayLoad = new ClientPayLoad();
 
         User mainUser = new User();
         ClientUserController clientUserController = new ClientUserController(mainUser);
         clientUserController.setAsMain();
+        clientUserController.finalize();
+
         this.mainUser = mainUser;
 
         clientPayLoad.getStringStringHashMap().put("username",mainUser.getUserName());

@@ -11,11 +11,9 @@ import TimeLine.Listeners.ClientMoveTwittListener;
 import TimeLine.Listeners.ClientTimeLineMoveReplyListener;
 import Twitt.Controller.TwittsController;
 import Twitt.Events.TwittViewEvent;
-import Twitt.Listeners.ClientLikeListener;
-import Twitt.Listeners.ClientReplyListener;
-import Twitt.Listeners.ClientRetwittListener;
-import Twitt.Listeners.ClientTwittViewListener;
+import Twitt.Listeners.*;
 import Twitt.Model.Twitt;
+import User.Events.UserViewEvent;
 import User.Listener.ClientUserViewListener;
 import User.Model.User;
 
@@ -61,7 +59,7 @@ public class TwittPanel extends JPanel implements ActionListener {
     private JButton reportBtn;
     JButton deleteBtn;
 
-    private JLabel replyText;
+    private ImprovedJLabel replyText;
 
     private JButton backBtn;
 
@@ -77,6 +75,7 @@ public class TwittPanel extends JPanel implements ActionListener {
     ClientTwittViewListener clientTwittViewListener;
     ClientUserViewListener clientUserViewListener;
     ClientLikeListener clientLikeListener;
+    ClientTwittMoveReplyListener clientTwittMoveReplyListener;
 
 
     int replyNumber;
@@ -108,6 +107,7 @@ public class TwittPanel extends JPanel implements ActionListener {
         textLable.setAlignmentY(TextArea.TOP_ALIGNMENT);
         textLable.setVisible(true);
         textLable.setText(twitt.getText());
+        textLable.setMainPanel(mainPanel);
 
         likesLable = new JLabel();
         likesLable.setBounds(5, 150, 100, 50);
@@ -172,9 +172,13 @@ public class TwittPanel extends JPanel implements ActionListener {
         replyField.setVisible(true);
 
 
-        replyText = new JLabel();
+        replyText = new ImprovedJLabel();
         replyText.setBounds(60, 360, 220, 150);
         replyText.setVisible(true);
+        if(twitt.getReplies().size() > 0){
+            setReply(twitt.getReplies().getFirst());
+        }
+        replyText.setMainPanel(mainPanel);
 
         nextReplyBtn = new JButton();
         nextReplyBtn.setText("n");
@@ -203,7 +207,7 @@ public class TwittPanel extends JPanel implements ActionListener {
 
 
         goReply = new JButton("Show Reply");
-        goReply.setText("Show\nReply");
+        goReply.setText("ShowReply");
         goReply.setBounds(185, 500, 80, 35);
         goReply.setVisible(twitt.getReplies().size() != 0);
         goReply.addActionListener(this);
@@ -277,7 +281,7 @@ public class TwittPanel extends JPanel implements ActionListener {
         clientRetwittListener = new ClientRetwittListener();
         clientUserViewListener = new ClientUserViewListener(mainPanel);
         clientTwittViewListener = new ClientTwittViewListener(mainPanel);
-
+        clientTwittMoveReplyListener = new ClientTwittMoveReplyListener(this);
     }
 
     private boolean isLikedBy() {
@@ -289,7 +293,7 @@ public class TwittPanel extends JPanel implements ActionListener {
         return false;
     }
 
-    public void setTwitt(Twitt twitt) throws ClassNotFoundException, SQLException, CouldNotConnectToServerException, IOException {
+    public void setTwitt(Twitt twitt) throws Throwable {
         textLable.setText(twitt.getText());
         likesLable.setText("likes" + twitt.getLikes().size());
         reTwittsLable.setText("Retwitts" + twitt.getReTwitts().size());
@@ -331,16 +335,19 @@ public class TwittPanel extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == goReply){
             try {
-                TwittViewEvent twittViewEvent = new TwittViewEvent(twitt.getReplies().get(replyNumber),mainPanel);
-
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
+                TwittViewEvent twittViewEvent = new TwittViewEvent(this.twitt.getReplies().get(replyNumber),mainPanel);
+                clientTwittViewListener.listen(twittViewEvent);
             } catch (ClassNotFoundException classNotFoundException) {
                 classNotFoundException.printStackTrace();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            } catch (CouldNotConnectToServerException couldNotConnectToServerException) {
+                couldNotConnectToServerException.printStackTrace();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
             }
-
         }
         else if(e.getSource() == backBtn){
             mainPanel.back();
@@ -359,6 +366,8 @@ public class TwittPanel extends JPanel implements ActionListener {
                 classNotFoundException.printStackTrace();
             } catch (ServerException serverException) {
                 serverException.printStackTrace();
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
             }
         }
         else if(e.getSource() == reTwittBtn){
@@ -376,6 +385,8 @@ public class TwittPanel extends JPanel implements ActionListener {
             } catch (ServerException serverException) {
                 JOptionPane.showMessageDialog(this,"server error may already retwitted");
                 serverException.printStackTrace();
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
             }
         }
         else if(e.getSource() == replyBtn){
@@ -384,6 +395,7 @@ public class TwittPanel extends JPanel implements ActionListener {
                 ReplyEvent replyEvent = new ReplyEvent(this.twitt,replyField.getText());
                 clientReplyListener.listen(replyEvent);
                 updateReply(replyEvent.getNewTwitt());
+                JOptionPane.showMessageDialog(this,"reply sent");
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             } catch (IOException ioException) {
@@ -394,6 +406,31 @@ public class TwittPanel extends JPanel implements ActionListener {
                 emptyFieldException.printStackTrace();
             } catch (CouldNotConnectToServerException couldNotConnectToServerException) {
                 couldNotConnectToServerException.printStackTrace();
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
+            }
+        }
+        else if(e.getSource() == nextReplyBtn){
+            clientTwittMoveReplyListener.listen("next");
+        }
+        else if(e.getSource() == prevReplyBtn){
+            clientTwittMoveReplyListener.listen("prev");
+        }
+        else if(e.getSource() == goAuthorProfileBtn){
+
+            try {
+                UserViewEvent userViewEvent = new UserViewEvent(twitt.getAuthor(),mainPanel);
+                clientUserViewListener.listen(userViewEvent);
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            } catch (ClassNotFoundException classNotFoundException) {
+                classNotFoundException.printStackTrace();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            } catch (CouldNotConnectToServerException couldNotConnectToServerException) {
+                couldNotConnectToServerException.printStackTrace();
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
             }
         }
     }
@@ -457,10 +494,32 @@ public class TwittPanel extends JPanel implements ActionListener {
 
     public void updateReply(Twitt twitt) {
         this.twitt.getReplies().add(twitt);
+        goReply.setVisible(true);
+        replyField.setText("");
         if(this.twitt.getReplies().size() == 1) {
             replyText.setText(twitt.getText());
             replyText.repaint();
             this.repaint();
         }
+    }
+
+    public Twitt getTwitt() {
+        return twitt;
+    }
+
+    public User getMainUser() {
+        return mainUser;
+    }
+
+    public int getReplyNumber() {
+        return replyNumber;
+    }
+
+    public void increaseReplyNum() {
+        replyNumber++;
+    }
+
+    public void decreaseReplyNum() {
+        replyNumber--;
     }
 }

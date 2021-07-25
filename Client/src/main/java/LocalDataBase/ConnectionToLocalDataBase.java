@@ -32,7 +32,7 @@ public class ConnectionToLocalDataBase {
     public void executeUpdate(String sql) throws SQLException {
         Statement statement = this.localDBConnection.createStatement();
         int i = statement.executeUpdate(sql);
-
+        int a = 0;
     }
 
     public ResultSet executeQuery(String sql) throws SQLException {

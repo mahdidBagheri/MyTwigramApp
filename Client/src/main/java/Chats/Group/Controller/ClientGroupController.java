@@ -40,7 +40,8 @@ public class ClientGroupController {
         }
     }
 
-    public void finalize() throws SQLException {
+    public void finalize() throws Throwable {
         connectionToLocalDataBase.Disconect();
+        super.finalize();
     }
 }

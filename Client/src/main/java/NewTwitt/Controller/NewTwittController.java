@@ -33,7 +33,7 @@ public class NewTwittController {
         this.connectionToLocalDataBase = new ConnectionToLocalDataBase();
     }
 
-    public void newTwitt(NewTwittEvent newTwittEvent) throws SQLException, IOException, ClassNotFoundException, CouldNotConnectToServerException {
+    public void newTwitt(NewTwittEvent newTwittEvent) throws Throwable {
         newTwitt = new Twitt();
 
         setNewTwittUUID();
@@ -105,10 +105,11 @@ public class NewTwittController {
         newTwitt.setTwittUUID(uuid);
     }
 
-    public void setNewTwittAuthor() throws SQLException, IOException, ClassNotFoundException {
+    public void setNewTwittAuthor() throws Throwable {
         User mainUser = new User();
         ClientUserController clientUserController = new ClientUserController(mainUser);
         clientUserController.setAsMain();
+        clientUserController.finalize();
         newTwitt.setAuthor(mainUser);
         newTwitt.setAuthorUUID(mainUser.getUserUUID());
     }

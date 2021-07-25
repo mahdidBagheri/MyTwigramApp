@@ -39,4 +39,9 @@ public class ServerSyncListener {
 
 
     }
+
+    public void finalize() throws Throwable {
+        connectionToDataBase.Disconect();
+        super.finalize();
+    }
 }

@@ -4,6 +4,7 @@ import Config.ColorConfig.ColorConfig;
 import Connection.Exceptions.CouldNotConnectToServerException;
 import MainFrame.Listener.BackListener;
 import MainFrame.View.MainPanel;
+import Twitt.Events.TwittViewEvent;
 import Twitt.Listeners.ClientTwittViewListener;
 import User.Controller.ClientUserController;
 import User.Events.UserEvent;
@@ -223,6 +224,8 @@ public class UserPanel extends JPanel implements ActionListener {
         this.add(phoneNumberLbl);
         this.add(lastSeenLbl);
 
+        userViewListener = new ClientUserViewListener(mainPanel);
+        twittViewListener = new ClientTwittViewListener(mainPanel);
 
     }
 
@@ -276,20 +279,84 @@ public class UserPanel extends JPanel implements ActionListener {
                 followException.printStackTrace();
             } catch (CouldNotConnectToServerException couldNotConnectToServerException) {
                 couldNotConnectToServerException.printStackTrace();
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
             }
         }
         else if(e.getSource() == backBtn){
             backListener.listen();
         }
+        else if(e.getSource() == followersViewBtn){
+            String username = followersCombo.getSelectedItem().toString();
+            User flwer = new User();
+            flwer.setUserName(username);
+            UserViewEvent userViewEvent = null;
+            try {
+                userViewEvent = new UserViewEvent(flwer,mainPanel);
+                userViewListener.listen(userViewEvent);
+
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            } catch (ClassNotFoundException classNotFoundException) {
+                classNotFoundException.printStackTrace();
+            } catch (CouldNotConnectToServerException couldNotConnectToServerException) {
+                couldNotConnectToServerException.printStackTrace();
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
+            }
+        }
+        else if(e.getSource() == followingCombo){
+            String username = followingCombo.getSelectedItem().toString();
+            User flwing = new User();
+            flwing.setUserName(username);
+            UserViewEvent userViewEvent = null;
+            try {
+                userViewEvent = new UserViewEvent(flwing,mainPanel);
+                userViewListener.listen(userViewEvent);
+
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            } catch (ClassNotFoundException classNotFoundException) {
+                classNotFoundException.printStackTrace();
+            } catch (CouldNotConnectToServerException couldNotConnectToServerException) {
+                couldNotConnectToServerException.printStackTrace();
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
+            }
+        }
+        else if(e.getSource() == twittListViewBtn){
+            int idx = twittsCombo.getSelectedIndex();
+
+            try {
+                TwittViewEvent twittViewEvent = new TwittViewEvent(user.getTwitts().get(idx),mainPanel);
+                twittViewListener.listen(twittViewEvent);
+            } catch (ClassNotFoundException classNotFoundException) {
+                classNotFoundException.printStackTrace();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            } catch (CouldNotConnectToServerException couldNotConnectToServerException) {
+                couldNotConnectToServerException.printStackTrace();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
+            }
+        }
     }
 
-    private void updateCombos() throws SQLException, IOException, ClassNotFoundException, CouldNotConnectToServerException {
+    private void updateCombos() throws Throwable {
 
         User user = this.user;
         ClientUserController clientUserController = new ClientUserController(user);
         clientUserController.readAllByUsername();
 
+
         UserViewEvent userViewEvent = new UserViewEvent(clientUserController.getUser(),mainPanel);
+        clientUserController.finalize();
 
         getFollowersItems(userViewEvent);
         getFollowingsItems(userViewEvent);

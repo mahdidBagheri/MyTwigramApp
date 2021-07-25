@@ -24,7 +24,7 @@ public class SignupListener {
             EmptyFieldException, PasswordsNotMatchException,
             ClassNotFoundException, UsernameExistsException,
             EmailExistException, CouldNotConnectToServerException,
-            IOException, SQLException {
+            IOException, SQLException, InterruptedException {
 
         ClientSignupController signupController = new ClientSignupController(mainPanel);
 
@@ -32,6 +32,8 @@ public class SignupListener {
         signupController.signup(signupEvent);
         LocalDataBase localDataBase = new LocalDataBase();
         localDataBase.createLocalDataBase("User" + signupEvent.getUserName() + "DataBase");
+        System.out.println("User" + signupEvent.getUserName() + "DataBase");
+        Thread.sleep(100);
         signupController.saveUserDataToLocalDataBase(signupEvent);
 
     }

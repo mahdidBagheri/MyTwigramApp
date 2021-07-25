@@ -164,7 +164,7 @@ public class ChatsPanel extends JPanel implements ActionListener {
         }
     }
 
-    private void insertPVsintoCombo(LinkedList<PV> privateChats) {
+    public void insertPVsintoCombo(LinkedList<PV> privateChats) {
         pVsCombo.removeAllItems();
         for (int i = 0; i < privateChats.size(); i++) {
             pVsCombo.addItem(privateChats.get(i).getContact().getUserName());
@@ -189,7 +189,7 @@ public class ChatsPanel extends JPanel implements ActionListener {
                 classNotFoundException.printStackTrace();
             } catch (CouldNotConnectToServerException couldNotConnectToServerException) {
                 couldNotConnectToServerException.printStackTrace();
-            } catch (ExistingPVException existingPVException) {
+            } catch (Throwable existingPVException) {
                 existingPVException.printStackTrace();
             }
         } else if (e.getSource() == pVVewiBtn) {
@@ -206,6 +206,8 @@ public class ChatsPanel extends JPanel implements ActionListener {
                 classNotFoundException.printStackTrace();
             } catch (InterruptedException interruptedException) {
                 interruptedException.printStackTrace();
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
             }
         } else if (e.getSource() == addFollowerBtn) {
             try {
@@ -227,7 +229,7 @@ public class ChatsPanel extends JPanel implements ActionListener {
                 classNotFoundException.printStackTrace();
             } catch (CouldNotConnectToServerException couldNotConnectToServerException) {
                 couldNotConnectToServerException.printStackTrace();
-            } catch (EmptyFieldException emptyFieldException) {
+            } catch (Throwable emptyFieldException) {
                 emptyFieldException.printStackTrace();
             }
         } else if(e.getSource() == groupViewBtn){
@@ -241,6 +243,8 @@ public class ChatsPanel extends JPanel implements ActionListener {
                 ioException.printStackTrace();
             } catch (ClassNotFoundException classNotFoundException) {
                 classNotFoundException.printStackTrace();
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
             }
         }
     }

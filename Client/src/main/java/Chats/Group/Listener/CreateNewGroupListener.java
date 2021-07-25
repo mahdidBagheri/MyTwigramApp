@@ -25,7 +25,7 @@ public class CreateNewGroupListener {
         return chatsPanel;
     }
 
-    public void listen() throws SQLException, IOException, ClassNotFoundException, CouldNotConnectToServerException, EmptyFieldException {
+    public void listen() throws Throwable {
         if(chatsPanel.getGroupNameField().getText().isEmpty()){
             throw new EmptyFieldException("group name must not be empty");
         }
@@ -35,6 +35,7 @@ public class CreateNewGroupListener {
         User mainUser = new User();
         ClientUserController clientUserController = new ClientUserController(mainUser);
         clientUserController.setAsMain();
+        clientUserController.finalize();
 
         Group group = new Group();
         group.getMemmbers().add(mainUser);
@@ -58,8 +59,10 @@ public class CreateNewGroupListener {
 
         SyncLocalDataBase syncLocalDataBase = new SyncLocalDataBase();
         syncLocalDataBase.syncGroups();
+        syncLocalDataBase.finalize();
 
         ClientUserController clientUserController1 = new ClientUserController(chatsPanel.getMainUser());
         clientUserController1.setAsMain();
+        clientUserController1.finalize();
     }
 }

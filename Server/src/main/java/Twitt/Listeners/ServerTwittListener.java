@@ -21,13 +21,14 @@ public class ServerTwittListener {
         this.serverConnection = serverConnection;
     }
 
-    public void listen(ClientRequest clientRequest) throws SQLException, unsuccessfullReadDataFromDatabase, TwittReadDataException, IOException {
+    public void listen(ClientRequest clientRequest) throws Throwable {
         if(clientRequest.getCommand().equals("like")){
             ServerLikeController serverLikeController = new ServerLikeController(clientRequest);
             serverLikeController.change_Like_OR_noLike();
 
             ServerRequest serverRequest = new ServerRequest(clientRequest.getUsername(),"true",null);
             serverConnection.execute(serverRequest);
+            serverLikeController.finalize();
         }
         else if (clientRequest.getCommand().equals("retwitt")) {
             ServerRetwittController serverRetwittController = new ServerRetwittController(clientRequest);
@@ -40,6 +41,7 @@ public class ServerTwittListener {
             }
 
             serverConnection.execute(serverRequest);
+            serverRetwittController.finalize();
         }
         else if(clientRequest.getCommand().equals("twittInfo")){
              Twitt twitt = new Twitt();

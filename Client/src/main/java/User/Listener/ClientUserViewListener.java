@@ -22,10 +22,11 @@ public class ClientUserViewListener {
         this.mainPanel = mainPanel;
     }
 
-    public void listen(UserViewEvent userViewEvent) throws IOException, ClassNotFoundException, SQLException, CouldNotConnectToServerException {
+    public void listen(UserViewEvent userViewEvent) throws Throwable {
         User user = userViewEvent.getUser();
         ClientUserController clientUserController = new ClientUserController(user);
         clientUserController.readAllByUsername();
+        clientUserController.finalize();
 
 
         UserViewEvent userViewEvent1 = new UserViewEvent(clientUserController.getUser(), mainPanel);

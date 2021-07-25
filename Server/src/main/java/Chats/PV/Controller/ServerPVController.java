@@ -117,6 +117,7 @@ public class ServerPVController {
                 }
                 else {
                     message = new Message(author,text,date);
+
                 }
                 pv.addMessage(message);
             }

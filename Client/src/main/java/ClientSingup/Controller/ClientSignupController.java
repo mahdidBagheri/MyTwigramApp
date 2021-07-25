@@ -26,7 +26,6 @@ public class ClientSignupController {
 
     public ClientSignupController(MainPanel mainPanel) throws SQLException, IOException, ClassNotFoundException {
         this.mainPanel = mainPanel;
-        this.connectionToLocalDataBase = new ConnectionToLocalDataBase();
     }
 
     public void validateSignup(SignupEvent signupEvent) throws PasswordsNotMatchException,
@@ -221,8 +220,11 @@ public class ClientSignupController {
                     defaultProfilePath);
 
         }
-
+        ConnectionToLocalDataBase connectionToLocalDataBase = new ConnectionToLocalDataBase();
         connectionToLocalDataBase.executeUpdate(sqlQuery);
+        System.out.println(sqlQuery);
+        connectionToLocalDataBase.Disconect();
+
     }
 
     public void finalize() throws SQLException {

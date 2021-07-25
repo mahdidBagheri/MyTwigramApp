@@ -73,6 +73,7 @@ public class ClientThread extends Thread{
             if (clientRequest.getSource().equals("sync")) {
                 ServerSyncListener serverSyncListener = new ServerSyncListener(serverConnection);
                 serverSyncListener.listen(clientRequest);
+                serverSyncListener.finalize();
             }
             if (clientRequest.getSource().equals("newTwitt")) {
                 ServerNewTwittListener serverTwittListener = new ServerNewTwittListener(serverConnection);
@@ -120,6 +121,14 @@ public class ClientThread extends Thread{
             }
         } catch (TwittReadDataException e) {
             e.printStackTrace();
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+
+        try {
+            serverConnection.getConnectionToDataBase().Disconect();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
     }
 }

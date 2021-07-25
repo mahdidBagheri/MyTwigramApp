@@ -13,7 +13,7 @@ import java.sql.SQLException;
 
 public class ClientReplyListener {
 
-    public void listen(ReplyEvent replyEvent) throws SQLException, IOException, ClassNotFoundException, EmptyFieldException, CouldNotConnectToServerException {
+    public void listen(ReplyEvent replyEvent) throws Throwable {
         if(replyEvent.getText().isEmpty()){
             throw new EmptyFieldException("reply field is empty");
         }

@@ -91,13 +91,10 @@ public class ServerUserController {
         if (rs != null) {
             if (rs.next()) {
                 user.setUserUUID(rs.getString(1));
-                connectionToServer.Disconect();
             } else {
-                connectionToServer.Disconect();
                 throw new unsuccessfullReadDataFromDatabase("Could not retrive User Name");
             }
         } else {
-            connectionToServer.Disconect();
             throw new unsuccessfullReadDataFromDatabase("Could not retrive User Name");
         }
     }
@@ -110,13 +107,10 @@ public class ServerUserController {
         if (rs != null) {
             if (rs.next()) {
                 user.setUserName(rs.getString(1));
-                connectionToServer.Disconect();
             } else {
-                connectionToServer.Disconect();
                 throw new unsuccessfullReadDataFromDatabase("Could not retrive User Name");
             }
         } else {
-            connectionToServer.Disconect();
             throw new unsuccessfullReadDataFromDatabase("Could not retrive User Name");
         }
     }
@@ -129,13 +123,10 @@ public class ServerUserController {
         if (rs != null) {
             if (rs.next()) {
                 user.setPassWord(rs.getString(1));
-                connectionToServer.Disconect();
             } else {
-                connectionToServer.Disconect();
                 throw new unsuccessfullReadDataFromDatabase("Could not retrive User Name");
             }
         } else {
-            connectionToServer.Disconect();
             throw new unsuccessfullReadDataFromDatabase("Could not retrive User Name");
         }
     }
@@ -148,13 +139,10 @@ public class ServerUserController {
         if (rs != null) {
             if (rs.next()) {
                 user.setfName(rs.getString(1));
-                connectionToServer.Disconect();
             } else {
-                connectionToServer.Disconect();
                 throw new unsuccessfullReadDataFromDatabase("Could not retrive First Name");
             }
         } else {
-            connectionToServer.Disconect();
             throw new unsuccessfullReadDataFromDatabase("Could not retrive First Name");
         }
     }
@@ -167,13 +155,10 @@ public class ServerUserController {
         if (rs != null) {
             if (rs.next()) {
                 user.setlName(rs.getString(1));
-                connectionToServer.Disconect();
             } else {
-                connectionToServer.Disconect();
                 throw new unsuccessfullReadDataFromDatabase("Could not retrive Last Name");
             }
         } else {
-            connectionToServer.Disconect();
             throw new unsuccessfullReadDataFromDatabase("Could not retrive Last Name");
         }
     }
@@ -985,7 +970,7 @@ public class ServerUserController {
 
     }
 
-    public void readChats() throws SQLException, unsuccessfullReadDataFromDatabase {
+    public void readChats() throws Throwable {
 
         user.getChats().clear();
         Chats newChats = new Chats();
@@ -1016,7 +1001,7 @@ public class ServerUserController {
 
                     ServerPVController serverPVController = new ServerPVController(pv);
                     serverPVController.readMessages();
-
+                    serverPVController.finalize();
                     user.addChat(pv);
 
                 }

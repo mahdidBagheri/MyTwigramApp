@@ -20,7 +20,7 @@ public class NewTwittListener {
         this.mainPanel = mainPanel;
     }
 
-    public void listen(NewTwittEvent newTwittEvent) throws NewTwittException, SQLException, IOException, ClassNotFoundException, CouldNotConnectToServerException {
+    public void listen(NewTwittEvent newTwittEvent) throws Throwable {
         newTwittValidation.Validate(newTwittEvent);
         newTwittController.newTwitt(newTwittEvent);
     }

@@ -22,7 +22,7 @@ public class LoginListener {
         this.mainPanel = mainPanel;
     }
 
-    public void listen(LoginEvent loginEvent) throws IOException, EmptyFieldException, ClassNotFoundException, SQLException, UserPassNotMatchException, CouldNotConnectToServerException {
+    public void listen(LoginEvent loginEvent) throws Throwable {
         LoginController loginController = new LoginController();
 
         loginController.validateLogin(loginEvent);
@@ -35,6 +35,7 @@ public class LoginListener {
         User mainUser = new User();
         UserController userController = new UserController(mainUser);
         userController.setAsMain();
+        userController.finalize();
 
         ClientConnection clientConnection = new ClientConnection();
         ClientPayLoad clientPayLoad = new ClientPayLoad();
@@ -44,6 +45,8 @@ public class LoginListener {
 
         SyncLocalDataBase syncLocalDataBase = new SyncLocalDataBase();
         syncLocalDataBase.syncAll();
+        syncLocalDataBase.finalize();
+
         mainPanel.addProfilePanel(mainUser);
     }
 }

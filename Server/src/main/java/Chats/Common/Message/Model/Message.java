@@ -12,6 +12,7 @@ public class Message implements Serializable {
     String date;
     ImageIcon pic;
     File picFile;
+    boolean sync;
 
     public Message(User author, String text, String date, String picAddress) {
         this.author = author;
@@ -65,5 +66,13 @@ public class Message implements Serializable {
 
     public void setPicFile(File picFile) {
         this.picFile = picFile;
+    }
+
+    public boolean isSync() {
+        return sync;
+    }
+
+    public void setSync(boolean sync) {
+        this.sync = sync;
     }
 }

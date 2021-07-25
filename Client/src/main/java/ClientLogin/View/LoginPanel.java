@@ -98,6 +98,8 @@ public class LoginPanel extends JPanel implements ActionListener {
                 userPassNotMatchException.printStackTrace();
             } catch (CouldNotConnectToServerException couldNotConnectToServerException) {
                 couldNotConnectToServerException.printStackTrace();
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
             }
         }
     }

@@ -23,14 +23,14 @@ public class HyperLinkController {
         this.hyperlink = hyperlink;
     }
 
-    public void goToLink() throws CouldNotConnectToServerException, SQLException, IOException, ClassNotFoundException {
+    public void goToLink() throws Throwable {
         ClientPayLoad clientPayLoad = new ClientPayLoad();
         clientPayLoad.getStringStringHashMap().put("link",hyperlink.getLink());
 
         User mainUser = new User();
         ClientUserController clientUserController = new ClientUserController(mainUser);
         clientUserController.setAsMain();
-
+        clientUserController.finalize();
 
         ClientRequest clientRequest = new ClientRequest("hyperLink",clientPayLoad,mainUser.getSession(),"hyperLinkData",mainUser.getUserName(),mainUser.getPassWord());
         ClientConnection clientConnection = new ClientConnection();

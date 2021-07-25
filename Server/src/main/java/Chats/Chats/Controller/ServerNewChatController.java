@@ -19,7 +19,7 @@ public class ServerNewChatController {
         this.serverConnection = serverConnection;
     }
 
-    public void listen(ClientRequest clientRequest) throws TwittReadDataException, unsuccessfullReadDataFromDatabase, SQLException, IOException {
+    public void listen(ClientRequest clientRequest) throws Throwable {
         PV pv = new PV();
         ServerPVController serverPVController = new ServerPVController(serverConnection,pv);
 
@@ -32,5 +32,11 @@ public class ServerNewChatController {
         serverUser2Controller.readAll(clientRequest.getClientPayLoad().getStringStringHashMap().get("username2"));
 
         serverPVController.createNewPV(user1, user2);
+        serverPVController.finalize();
+    }
+
+    public void finalize() throws Throwable {
+        serverConnection.getConnectionToDataBase().Disconect();
+        super.finalize();
     }
 }

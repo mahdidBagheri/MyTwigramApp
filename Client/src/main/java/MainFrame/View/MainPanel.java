@@ -165,7 +165,7 @@ public class MainPanel extends JPanel {
         this.add(new ChatsPanel(mainPanel,mainUser ));
     }
 
-    public void addPVPanel(PV pv) throws IOException, InterruptedException, SQLException, ClassNotFoundException {
+    public void addPVPanel(PV pv) throws Throwable {
         if(panels.size() == 2){
             panelsTrace.add(panels.get(0));
             panelsTrace.add(panels.get(1));

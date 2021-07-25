@@ -18,7 +18,7 @@ public class ServerPVListener {
         this.serverConnection = serverConnection;
     }
 
-    public void listen(ClientRequest clientRequest) throws SQLException, IOException {
+    public void listen(ClientRequest clientRequest) throws Throwable {
         if(clientRequest.getCommand().equals("sendMessage")){
             ConnectionToDataBase connectionToDataBase = new ConnectionToDataBase();
             String PVTableName = clientRequest.getClientPayLoad().getStringStringHashMap().get("PVAddress");
@@ -46,7 +46,7 @@ public class ServerPVListener {
             pv.setPVTableName(PVTableName);
             ServerPVController serverPVController = new ServerPVController(pv);
             serverPVController.readMessages();
-
+            serverPVController.finalize();
             ServerPayLoad serverPayLoad = new ServerPayLoad();
             serverPayLoad.setPv(pv);
             ServerRequest serverRequest = new ServerRequest(clientRequest.getUsername(),"pvRequest",serverPayLoad);

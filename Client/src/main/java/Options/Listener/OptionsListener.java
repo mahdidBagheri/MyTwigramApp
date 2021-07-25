@@ -18,16 +18,19 @@ public class OptionsListener {
         this.mainPanel = mainPanel;
     }
 
-    public void listen(String command) throws SQLException, IOException, ClassNotFoundException, CouldNotConnectToServerException {
+    public void listen(String command) throws Throwable {
         if(command.equals("profileBtn")){
             SyncLocalDataBase syncLocalDataBase = new SyncLocalDataBase();
             syncLocalDataBase.syncAll();
+            syncLocalDataBase.finalize();
 
             User mainUser = new User();
             UserController userController = new UserController(mainUser);
             userController.setAsMain();
 
             mainPanel.addProfilePanel(userController.getUser());
+            userController.finalize();
+
         }
         else if(command.equals("searchBtn")){
             mainPanel.addSearchPanel();
@@ -42,6 +45,7 @@ public class OptionsListener {
             User mainUser = new User();
             ClientUserController userController = new ClientUserController(mainUser);
             userController.setAsMain();
+            userController.finalize();
 
             ClientConnection clientConnection = new ClientConnection();
             ClientPayLoad clientPayLoad = new ClientPayLoad();
@@ -62,10 +66,12 @@ public class OptionsListener {
             syncLocalDataBase.syncFollowings();
             syncLocalDataBase.syncFollowers();
             syncLocalDataBase.syncGroups();
+            syncLocalDataBase.finalize();
 
             User mainUser = new User();
             ClientUserController userController = new ClientUserController(mainUser);
             userController.setAsMain();
+            userController.finalize();
 
             mainPanel.addChatsPanel(mainUser);
         }

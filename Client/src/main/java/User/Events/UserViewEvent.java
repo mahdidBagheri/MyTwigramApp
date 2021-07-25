@@ -12,13 +12,15 @@ public class UserViewEvent {
     User mainUser;
     MainPanel mainPanel;
 
-    public UserViewEvent(User user, MainPanel mainPanel) throws SQLException, IOException, ClassNotFoundException, CouldNotConnectToServerException {
+    public UserViewEvent(User user, MainPanel mainPanel) throws Throwable {
         this.user = user;
         User mainUser = new User();
         UserController userController = new UserController(mainUser);
         userController.setAsMain();
         this.mainUser = mainUser;
         this.mainPanel = mainPanel;
+        userController.finalize();
+
     }
 
     public User getUser() {

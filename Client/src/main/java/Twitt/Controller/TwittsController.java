@@ -73,10 +73,11 @@ public class TwittsController {
         }
     }
 
-    public void readAllByUUID() throws SQLException, IOException, ClassNotFoundException, CouldNotConnectToServerException {
+    public void readAllByUUID() throws Throwable {
         User mainUser = new User();
         ClientUserController mainUserController = new ClientUserController(mainUser);
         mainUserController.setAsMain();
+        mainUserController.finalize();
 
         ClientConnection clientConnection = new ClientConnection();
         ClientPayLoad clientPayLoad = new ClientPayLoad();
