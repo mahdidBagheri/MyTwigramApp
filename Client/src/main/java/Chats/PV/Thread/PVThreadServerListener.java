@@ -5,6 +5,7 @@ import Chats.PV.View.PVPanel;
 import Connection.ClientConnection;
 import Connection.Exceptions.CouldNotConnectToServerException;
 import LocalDataBase.SyncLocalDataBase;
+import jdk.nashorn.internal.scripts.JO;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -13,6 +14,7 @@ import java.sql.SQLException;
 public class PVThreadServerListener extends Thread {
     ClientConnection clientConnection;
     boolean isRunning = true;
+    boolean tryConnection = true;
     PVPanel pvPanel;
     SyncLocalDataBase syncLocalDataBase;
 
@@ -34,35 +36,47 @@ public class PVThreadServerListener extends Thread {
     }
 
     public void run() {
+        while (isRunning) {
 
-        try {
-            while (isRunning) {
-                syncLocalDataBase.syncPV(pvPanel.getPv().getPVTableName());
+            if (tryConnection) {
+                try {
+                    syncLocalDataBase.syncPV(pvPanel.getPv().getPVTableName());
+                } catch (Throwable throwable) {
+                    tryConnection = false;
+                    JOptionPane.showMessageDialog(pvPanel,throwable.getMessage());
+                    throwable.printStackTrace();
+                }
+            }
+
+            try {
                 PVController pvController = new PVController(pvPanel.getPv());
                 pvController.readMessages();
                 pvPanel.updatePV();
                 pvController.finalize();
                 Thread.sleep(2000);
+            } catch (InterruptedException interruptedException) {
+                interruptedException.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (CouldNotConnectToServerException e) {
-            JOptionPane.showMessageDialog(pvPanel,e.getMessage());
-            e.printStackTrace();
-        } catch (InterruptedException interruptedException) {
-            interruptedException.printStackTrace();
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
-        }
 
+        }
     }
+
+
 
     public void setRunning(boolean running) {
         isRunning = running;
+    }
+
+    public void setTryConnection(boolean tryConnection) {
+        this.tryConnection = tryConnection;
     }
 
     public void finalize() throws Throwable {

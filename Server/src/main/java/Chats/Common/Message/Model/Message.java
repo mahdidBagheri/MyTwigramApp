@@ -12,7 +12,7 @@ public class Message implements Serializable {
     String date;
     ImageIcon pic;
     File picFile;
-    boolean sync;
+    String state;
 
     public Message(User author, String text, String date, String picAddress) {
         this.author = author;
@@ -68,11 +68,12 @@ public class Message implements Serializable {
         this.picFile = picFile;
     }
 
-    public boolean isSync() {
-        return sync;
+    public String getState() {
+        return state;
     }
 
-    public void setSync(boolean sync) {
-        this.sync = sync;
+    public void setState(String state) {
+        this.state = state;
     }
+
 }

@@ -14,6 +14,9 @@ public class ColorConfig {
     Color color02;
     Color color03;
     Color color04;
+    Color color05;
+    Color color06;
+    Color color07;
 
     public ColorConfig() throws IOException {
         ClientMainConfig mainConfig = new ClientMainConfig();
@@ -27,6 +30,9 @@ public class ColorConfig {
         color02 = Color.decode(properties.getProperty("color02"));
         color03 = Color.decode(properties.getProperty("color03"));
         color04 = Color.decode(properties.getProperty("color04"));
+        color05 = Color.decode(properties.getProperty("color05"));
+        color06 = Color.decode(properties.getProperty("color06"));
+        color07 = Color.decode(properties.getProperty("color07"));
 
     }
 
@@ -44,5 +50,17 @@ public class ColorConfig {
 
     public Color getColor04() {
         return color04;
+    }
+
+    public Color getColor05() {
+        return color05;
+    }
+
+    public Color getColor06() {
+        return color06;
+    }
+
+    public Color getColor07() {
+        return color07;
     }
 }

@@ -21,8 +21,20 @@ public class MessagePanel extends JPanel {
         this.setLayout(null);
         ColorConfig colorConfig = new ColorConfig();
 
+
         this.setBounds(0, 20, 300, 400);
-        this.setBackground(colorConfig.getColor03());
+        if(message.getState().equals("seen")) {
+            this.setBackground(colorConfig.getColor03());
+        }
+        else if(message.getState().equals("login")){
+            this.setBackground(colorConfig.getColor05());
+        }
+        else if(message.getState().equals("sent")){
+            this.setBackground(colorConfig.getColor06());
+        }
+        else if(message.getState().equals("unsync")){
+            this.setBackground(colorConfig.getColor07());
+        }
         this.setVisible(true);
 
         authurLbl = new JLabel();

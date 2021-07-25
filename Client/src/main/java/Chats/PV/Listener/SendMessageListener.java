@@ -37,11 +37,11 @@ public class SendMessageListener {
         ClientConnection clientConnection = null;
         try {
             clientConnection = new ClientConnection();
-            clientPayLoad.getStringStringHashMap().put("sync","true");
+            clientPayLoad.getStringStringHashMap().put("state","sent");
             saveToLocalDataBase(clientPayLoad);
 
         } catch (CouldNotConnectToServerException e) {
-            clientPayLoad.getStringStringHashMap().put("sync","false");
+            clientPayLoad.getStringStringHashMap().put("state","unsync");
             System.out.println("message saved to send later");
             saveToLocalDataBase(clientPayLoad);
             e.printStackTrace();
@@ -62,14 +62,14 @@ public class SendMessageListener {
         String author = clientPayLoad.getStringStringHashMap().get("username");
         String pvAddress = clientPayLoad.getStringStringHashMap().get("PVAddress");
         String imageAddress = clientPayLoad.getStringStringHashMap().get("imageAddress");
-        String sync = clientPayLoad.getStringStringHashMap().get("sync");
+        String sync = clientPayLoad.getStringStringHashMap().get("state");
         String date = clientPayLoad.getStringStringHashMap().get("date");
         String sql;
         if(imageAddress != null){
-            sql = String.format("insert into \"%s\" (\"Message\",\"Author\",\"ImageAddress\",\"Date\",\"sync\") values ('%s','%s','%s','%s','%s');",pvAddress,text,author,imageAddress,date,sync);
+            sql = String.format("insert into \"%s\" (\"Message\",\"Author\",\"ImageAddress\",\"Date\",\"state\") values ('%s','%s','%s','%s','%s');",pvAddress,text,author,imageAddress,date,sync);
         }
         else {
-            sql = String.format("insert into \"%s\" (\"Message\",\"Author\",\"Date\",\"sync\") values ('%s','%s','%s','%s');",pvAddress,text,author,date,sync);
+            sql = String.format("insert into \"%s\" (\"Message\",\"Author\",\"Date\",\"state\") values ('%s','%s','%s','%s');",pvAddress,text,author,date,sync);
         }
 
         connectionToLocalDataBase.executeUpdate(sql);

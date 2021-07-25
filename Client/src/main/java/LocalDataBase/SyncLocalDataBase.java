@@ -186,7 +186,7 @@ public class SyncLocalDataBase {
                 }
                 if(!isExist){
                     DateTime dateTime = new DateTime();
-                    addChat = String.format("insert into \"ChatsTable\" ( \"ChatAddress\" , \"Username\" , \"Date\",\"sync\") values ('%s','%s','%s','%s');", pv.getPVTableName(), pv.getContact().getUserName(),dateTime.Now(), "true");
+                    addChat = String.format("insert into \"ChatsTable\" ( \"ChatAddress\" , \"Username\" , \"Date\",\"state\") values ('%s','%s','%s','%s');", pv.getPVTableName(), pv.getContact().getUserName(),dateTime.Now(), "true");
                     createPVTable(pv.getPVTableName());
                     connectionToLocalDataBase.executeUpdate(addChat);
                 }
@@ -196,7 +196,7 @@ public class SyncLocalDataBase {
     }
 
     private void createPVTable(String pvTableName) throws SQLException {
-        String sql = String.format("create table \"%s\"(\"ID\" BIGSERIAL NOT NULL PRIMARY KEY,\"Message\" text,\"Author\" character varying (50), \"ImageAddress\" character varying (200) ,\"Date\" timestamp without time zone,\"sync\" character varying (6));",pvTableName);
+        String sql = String.format("create table \"%s\"(\"ID\" BIGSERIAL NOT NULL PRIMARY KEY,\"Message\" text,\"Author\" character varying (50), \"ImageAddress\" character varying (200) ,\"Date\" timestamp without time zone,\"state\" character varying (6));",pvTableName);
         connectionToLocalDataBase.executeUpdate(sql);
 
     }
@@ -218,7 +218,7 @@ public class SyncLocalDataBase {
 
         if(rs != null){
             while (rs.next()){
-                if(rs.getString(6).equals("false")){
+                if(rs.getString(6).equals("unsync")){
                     ClientConnection clientConnection = new ClientConnection();
                     ClientPayLoad clientPayLoad = new ClientPayLoad();
                     clientPayLoad.getStringStringHashMap().put("PVAddress",PVTableName);
@@ -231,7 +231,7 @@ public class SyncLocalDataBase {
                     }
                     ClientRequest clientRequest = new ClientRequest("PV",clientPayLoad,mainUser.getSession(),"sendMessage",mainUser.getUserName(),mainUser.getPassWord());
                     clientConnection.execute(clientRequest);
-                    String updateMessage = String.format("update \"%s\" set sync = true where \"Date\" = '%s' and \"Author\" = '%s';",PVTableName,rs.getString(5),rs.getString(3));
+                    String updateMessage = String.format("update \"%s\" set state = 'sent' where \"Date\" = '%s' and \"Author\" = '%s';",PVTableName,rs.getString(5),rs.getString(3));
                     connectionToLocalDataBase.executeUpdate(updateMessage);
                 }
             }
@@ -269,11 +269,11 @@ public class SyncLocalDataBase {
         for(Message message:pv.getMessages()){
             if(message.getPic() != null){
                 // TODO pic address
-                sql = String.format("insert into \"%s\" (\"Message\",\"Author\",\"ImageAddress\",\"Date\",\"sync\") values ('%s','%s','%s','%s','true');",pv.getPVTableName(),message.getText(),message.getAuthor().getUserName(),"picaddress",message.getDate());
+                sql = String.format("insert into \"%s\" (\"Message\",\"Author\",\"ImageAddress\",\"Date\",\"state\") values ('%s','%s','%s','%s','%s');",pv.getPVTableName(),message.getText(),message.getAuthor().getUserName(),"picaddress",message.getDate(),message.getState());
                 connectionToLocalDataBase.executeUpdate(sql);
             }
             else {
-                sql = String.format("insert into \"%s\" (\"Message\",\"Author\",\"Date\",\"sync\") values ('%s','%s','%s','true');",pv.getPVTableName(),message.getText(),message.getAuthor().getUserName(),message.getDate());
+                sql = String.format("insert into \"%s\" (\"Message\",\"Author\",\"Date\",\"state\") values ('%s','%s','%s','%s');",pv.getPVTableName(),message.getText(),message.getAuthor().getUserName(),message.getDate(),message.getState());
                 connectionToLocalDataBase.executeUpdate(sql);
             }
         }
@@ -313,7 +313,7 @@ public class SyncLocalDataBase {
                 }
                 if(!isExist){
                     DateTime dateTime = new DateTime();
-                    addChat = String.format("insert into \"GroupsTable\" ( \"ChatAddress\" , \"GroupName\" , \"Date\",\"sync\") values ('%s','%s','%s','%s');", group.getGroupTableAddress(), group.getGroupName(),dateTime.Now(), "true");
+                    addChat = String.format("insert into \"GroupsTable\" ( \"ChatAddress\" , \"GroupName\" , \"Date\",\"state\") values ('%s','%s','%s','%s');", group.getGroupTableAddress(), group.getGroupName(),dateTime.Now(), "true");
                     createGroupTable(group.getGroupTableAddress());
                     connectionToLocalDataBase.executeUpdate(addChat);
                 }
@@ -324,11 +324,11 @@ public class SyncLocalDataBase {
 
     private void createGroupTable(String groupTableAddress) throws SQLException {
         //groupMemmbersTables
-        String sql = String.format("create table \"%s\"(\"ID\" BIGSERIAL NOT NULL PRIMARY KEY,\"Memmbers\" character varying (50),\"sync\" character varying (6));",groupTableAddress + "Memmbers");
+        String sql = String.format("create table \"%s\"(\"ID\" BIGSERIAL NOT NULL PRIMARY KEY,\"Memmbers\" character varying (50),\"state\" character varying (6));",groupTableAddress + "Memmbers");
         connectionToLocalDataBase.executeUpdate(sql);
 
         //groupMessagesTable
-        String sql1 = String.format("create table \"%s\"(\"ID\" BIGSERIAL NOT NULL PRIMARY KEY,\"Message\" text,\"Author\" character varying (50), \"ImageAddress\" character varying (200) ,\"Date\" timestamp without time zone,\"sync\" character varying (6));",groupTableAddress);
+        String sql1 = String.format("create table \"%s\"(\"ID\" BIGSERIAL NOT NULL PRIMARY KEY,\"Message\" text,\"Author\" character varying (50), \"ImageAddress\" character varying (200) ,\"Date\" timestamp without time zone,\"state\" character varying (6));",groupTableAddress);
         connectionToLocalDataBase.executeUpdate(sql1);
     }
 
@@ -396,11 +396,11 @@ public class SyncLocalDataBase {
         for(Message message:group.getMessages()){
             if(message.getPic() != null){
                 // TODO pic address
-                sql = String.format("insert into \"%s\" (\"Message\",\"Author\",\"ImageAddress\",\"Date\",\"sync\") values ('%s','%s','%s','%s','true');",group.getGroupTableAddress(),message.getText(),message.getAuthor().getUserName(),"picaddress",message.getDate());
+                sql = String.format("insert into \"%s\" (\"Message\",\"Author\",\"ImageAddress\",\"Date\",\"state\") values ('%s','%s','%s','%s','true');",group.getGroupTableAddress(),message.getText(),message.getAuthor().getUserName(),"picaddress",message.getDate());
                 connectionToLocalDataBase.executeUpdate(sql);
             }
             else {
-                sql = String.format("insert into \"%s\" (\"Message\",\"Author\",\"Date\",\"sync\") values ('%s','%s','%s','true');",group.getGroupTableAddress(),message.getText(),message.getAuthor().getUserName(),message.getDate());
+                sql = String.format("insert into \"%s\" (\"Message\",\"Author\",\"Date\",\"state\") values ('%s','%s','%s','true');",group.getGroupTableAddress(),message.getText(),message.getAuthor().getUserName(),message.getDate());
                 connectionToLocalDataBase.executeUpdate(sql);
             }
         }

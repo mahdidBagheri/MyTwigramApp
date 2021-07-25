@@ -26,7 +26,7 @@ public class PVController {
 
     public void readMessages() throws SQLException, IOException, ClassNotFoundException {
         pv.getMessages().clear();
-        String sql = String.format("select * from \"%s\";",pv.getPVTableName());
+        String sql = String.format("select * from \"%s\" order by \"Date\" ASC;",pv.getPVTableName());
         ResultSet rs = connectionToLocalDataBase.executeQuery(sql);
 
         if(rs != null){
@@ -39,11 +39,11 @@ public class PVController {
                 Message message;
                 if(picAddress != null){
                     message = new Message(user,text,date,picAddress);
-                    message.setSync(rs.getString(6).equals("true"));
+                    message.setState(rs.getString(6));
                 }
                 else {
                     message = new Message(user,text,date);
-                    message.setSync(rs.getString(6).equals("true"));
+                    message.setState(rs.getString(6));
 
                 }
                 pv.addMessage(message);

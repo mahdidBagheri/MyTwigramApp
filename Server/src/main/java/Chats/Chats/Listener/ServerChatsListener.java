@@ -27,6 +27,7 @@ public class ServerChatsListener {
         }
         if(clientRequest.getCommand().equals("readChats")){
             User mainUser = new User();
+            mainUser.setUserName(clientRequest.getUsername());
             ServerUserController mainUserController = new ServerUserController(mainUser);
             mainUserController.readUserUUIDbyUsername(clientRequest.getUsername());
 

@@ -148,6 +148,7 @@ public class PVPanel extends JPanel implements ActionListener {
 
         addAll();
 
+
         instance = this;
         sendMessageListener = new SendMessageListener(pv);
         pvThreadServerListener = new PVThreadServerListener(this);
@@ -161,15 +162,16 @@ public class PVPanel extends JPanel implements ActionListener {
         this.add(messagePanel);
         this.add(backBtn);
         this.add(deleteBtn);
-        this.add(messageField);
         this.add(sendMessageBtn);
         this.add(chooseImageBtn);
         this.add(picLable);
         this.add(editBtn);
-        this.add(editField);
         this.add(exitBtn);
         this.add(deleteImageBtn);
         this.add(refrshBtn);
+        this.add(messageField);
+        this.add(editField);
+
     }
 
     public PV getPv() {
@@ -186,6 +188,8 @@ public class PVPanel extends JPanel implements ActionListener {
             SendMessageEvent sendMessageEvent = new SendMessageEvent(messageField.getText());
             try {
                 sendMessageListener.listen(sendMessageEvent);
+                JOptionPane.showMessageDialog(this,"message sent");
+                messageField.setText("");
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             } catch (IOException ioException) {
@@ -223,7 +227,15 @@ public class PVPanel extends JPanel implements ActionListener {
 
 
     public void updatePV() throws IOException {
-        messagePanel = new MessagePanel(pv.getMessages().get(messageNumber),mainPanel);
+        if(pv.getMessages().size() > 0) {
+            if(messageNumber > pv.getMessages().size() - 1){
+                messageNumber = pv.getMessages().size() - 1;
+            }
+            if(messageNumber < 0){
+                messageNumber = 0;
+            }
+            setMessage(pv.getMessages().get(messageNumber));
+        }
         this.repaint();
     }
 
@@ -240,17 +252,19 @@ public class PVPanel extends JPanel implements ActionListener {
     }
 
     public void setMessage(Message message) throws IOException {
-        this.removeAll();
+        this.remove(messagePanel);
         this.messagePanel = new MessagePanel(message,mainPanel);
-        addAll();
+        add(messagePanel);
+
 
         this.revalidate();
         this.repaint();
+        messageField.setCaretPosition(messageField.getText().length());
+
     }
 
     public void refreshConnection() throws Throwable {
-        pvThreadServerListener = new PVThreadServerListener(this);
-        pvThreadServerListener.start();
+        pvThreadServerListener.setTryConnection(true);
     }
 
     public void finalize(){

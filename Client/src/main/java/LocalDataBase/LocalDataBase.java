@@ -74,19 +74,19 @@ public class LocalDataBase {
 
 
     private void createGroupsTable() throws SQLException {
-        String sql = String.format("create table \"GroupsTable\"(\"ChatAddress\" character varying (50),\"GroupName\" character varying (50), \"Date\" timestamp without time zone, \"sync\" character varying (6) );");
+        String sql = String.format("create table \"GroupsTable\"(\"ChatAddress\" character varying (50),\"GroupName\" character varying (50), \"Date\" timestamp without time zone, \"state\" character varying (6) );");
         Statement statement = localDBConnection.createStatement();
         statement.executeUpdate(sql);
     }
 
     private void createChatsTable() throws SQLException {
-        String sql = String.format("create table \"ChatsTable\"(\"ChatAddress\" character varying (50),\"Username\" character varying (50), \"Date\" timestamp without time zone, \"sync\" character varying (6));");
+        String sql = String.format("create table \"ChatsTable\"(\"ChatAddress\" character varying (50),\"Username\" character varying (50), \"Date\" timestamp without time zone, \"state\" character varying (6));");
         Statement statement = localDBConnection.createStatement();
         statement.executeUpdate(sql);
     }
 
     private void createTimeLineTable() throws SQLException {
-        String sql = String.format("create table \"TimeLine\"(\"UUID\" uuid NOT NULL PRIMARY KEY, \"text\" text,\"Username\" character varying (50), \"Date\" timestamp without time zone,\"sync\" character varying (6));");
+        String sql = String.format("create table \"TimeLine\"(\"UUID\" uuid NOT NULL PRIMARY KEY, \"text\" text,\"Username\" character varying (50), \"Date\" timestamp without time zone,\"state\" character varying (6));");
         Statement statement = localDBConnection.createStatement();
         statement.executeUpdate(sql);
     }

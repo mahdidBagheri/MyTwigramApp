@@ -28,10 +28,10 @@ public class ServerPVListener {
             String date = clientRequest.getClientPayLoad().getStringStringHashMap().get("date");
             String sql;
             if(picAddress != null){
-                sql = String.format("insert into \"%s\" (\"Message\",\"Author\",\"ImageAddress\",\"Date\") values ('%s','%s','%s','%s');",PVTableName,text,username,picAddress,date);
+                sql = String.format("insert into \"%s\" (\"Message\",\"Author\",\"ImageAddress\",\"Date\",\"state\") values ('%s','%s','%s','%s','sent');",PVTableName,text,username,picAddress,date);
             }
             else {
-                sql = String.format("insert into \"%s\" (\"Message\",\"Author\",\"Date\") values ('%s','%s','%s');",PVTableName,text,username,date);
+                sql = String.format("insert into \"%s\" (\"Message\",\"Author\",\"Date\",\"state\") values ('%s','%s','%s','sent');",PVTableName,text,username,date);
 
             }
             connectionToDataBase.executeUpdate(sql);

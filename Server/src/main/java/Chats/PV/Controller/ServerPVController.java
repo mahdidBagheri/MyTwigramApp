@@ -58,7 +58,7 @@ public class ServerPVController {
         connectionToDataBase.executeUpdate(addtouser2chats);
 
 
-        String create_pv_table = String.format("create table \"%s\"(\"ID\" BIGSERIAL NOT NULL PRIMARY KEY,\"Message\" text,\"Author\" character varying (50), \"ImageAddress\" character varying (200) ,\"Date\" timestamp without time zone);", PVTableName);
+        String create_pv_table = String.format("create table \"%s\"(\"ID\" BIGSERIAL NOT NULL PRIMARY KEY,\"Message\" text,\"Author\" character varying (50), \"ImageAddress\" character varying (200) ,\"Date\" timestamp without time zone,\"state\" character varying (50));", PVTableName);
         connectionToDataBase.executeUpdate(create_pv_table);
 
 
@@ -95,7 +95,7 @@ public class ServerPVController {
 
     public void readMessages() throws SQLException {
 
-        String sql = String.format("select * from \"%s\";",pv.getPVTableName());
+        String sql = String.format("select * from \"%s\" order by \"Date\" ASC;",pv.getPVTableName());
         ResultSet rs = connectionToDataBase.executeQuery(sql);
 
         if(rs != null){
@@ -111,23 +111,42 @@ public class ServerPVController {
                 String text = rs.getString(2);
                 String picAddress = rs.getString(4);
                 String date = rs.getString(5);
+                if(!author.getUserName().equals(pv.getUser().getUserName())){
+                    String updateStateQuery = String.format("update \"%s\" set \"state\" = 'seen' where \"ID\" = '%s';",pv.getPVTableName(),rs.getString(1));
+                    connectionToDataBase.executeUpdate(updateStateQuery);
+                }
                 Message message;
                 if(picAddress != null){
                     message = new Message(author,text,date,picAddress);
+                    message.setState(rs.getString(6));
                 }
                 else {
                     message = new Message(author,text,date);
-
+                    message.setState(rs.getString(6));
                 }
                 pv.addMessage(message);
             }
         }
     }
 
+    public void updateStateAfterLogin() throws Throwable {
+        String sql = String.format("select * from \"%s\";", pv.getPVTableName());
+        ResultSet rs = connectionToDataBase.executeQuery(sql);
 
+        if (rs != null) {
+            while (rs.next()) {
+                if (rs.getString(6).equals("sent") && !rs.getString(3).equals(pv.getUser().getUserName())) {
+                    sql = String.format("update \"%s\" set \"state\" = '%s' where \"ID\" = '%s';", pv.getPVTableName(),"login",rs.getString(1));
+                    connectionToDataBase.executeUpdate(sql);
+                }
+            }
+        }
+    }
 
     public void finalize() throws Throwable {
         connectionToDataBase.Disconect();
         super.finalize();
     }
+
+
 }

@@ -1000,7 +1000,10 @@ public class ServerUserController {
                     pv.setPVTableName(rs.getString(3));
 
                     ServerPVController serverPVController = new ServerPVController(pv);
-                    serverPVController.readMessages();
+                    //read chats messages
+                    //serverPVController.readMessages();
+
+                    serverPVController.updateStateAfterLogin();
                     serverPVController.finalize();
                     user.addChat(pv);
 
