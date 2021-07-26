@@ -24,6 +24,8 @@ import User.Model.User;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -45,6 +47,7 @@ public class TimeLinePanel extends JPanel implements ActionListener {
 
     public JLabel imageLabel;
 
+    public JButton linkCopyBtn;
     public JButton replyBtn;
     public JButton likeBtn;
     public JButton reTwittBtn;
@@ -130,6 +133,10 @@ public class TimeLinePanel extends JPanel implements ActionListener {
         imageLabel.setBounds(150, 30, Constants.picWidth, Constants.picHeight);
         imageLabel.setVisible(true);
 
+        linkCopyBtn = new JButton();
+        linkCopyBtn.setBounds(5, 130, 60, 30);
+        linkCopyBtn.setVisible(true);
+        linkCopyBtn.addActionListener(this);
 
         likeBtn = new JButton("like");
         likeBtn.setBounds(5, 270, 100, 40);
@@ -248,6 +255,7 @@ public class TimeLinePanel extends JPanel implements ActionListener {
         this.add(viewSelectedRetBtn);
         this.add(reportBtn);
         this.add(imageLabel);
+        this.add(linkCopyBtn);
 
         instance = this;
 
@@ -413,6 +421,12 @@ public class TimeLinePanel extends JPanel implements ActionListener {
                 throwable.printStackTrace();
             }
 
+        }
+        if(e.getSource() == linkCopyBtn){
+            StringSelection selection = new StringSelection("@Twitt" + timeLine.getTwitts().get(twittNum).getTwittUUID());
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            clipboard.setContents(selection, selection);
+            JOptionPane.showMessageDialog(this,"linkCopied!");
         }
     }
 

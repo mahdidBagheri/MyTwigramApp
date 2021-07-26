@@ -13,6 +13,9 @@ import Config.FrameConfig.FrameConfig;
 import MainFrame.View.MainPanel;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -32,6 +35,7 @@ public class PVPanel extends JPanel implements ActionListener {
     JButton downBtn;
     JButton deleteBtn;
     JButton editBtn;
+    JButton linkCopyBtn;
     JButton backBtn;
     JButton refrshBtn;
     JButton exitBtn;
@@ -89,6 +93,12 @@ public class PVPanel extends JPanel implements ActionListener {
         deleteBtn.setText("delete");
         deleteBtn.addActionListener(this);
         deleteBtn.setVisible(true);
+
+        linkCopyBtn = new JButton();
+        linkCopyBtn.setBounds(400, 270, 80, 40);
+        linkCopyBtn.setText("copyLink");
+        linkCopyBtn.addActionListener(this);
+        linkCopyBtn.setVisible(true);
 
         editBtn = new JButton();
         editBtn.setBounds(310, 300, 80, 40);
@@ -171,6 +181,7 @@ public class PVPanel extends JPanel implements ActionListener {
         this.add(refrshBtn);
         this.add(messageField);
         this.add(editField);
+        this.add(linkCopyBtn);
 
     }
 
@@ -222,6 +233,12 @@ public class PVPanel extends JPanel implements ActionListener {
             } catch (Throwable throwable) {
                 throwable.printStackTrace();
             }
+        }
+        else if(e.getSource() == linkCopyBtn){
+            StringSelection selection = new StringSelection("@" + pv.getPVTableName());
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            clipboard.setContents(selection, selection);
+            JOptionPane.showMessageDialog(this,"copied!");
         }
     }
 

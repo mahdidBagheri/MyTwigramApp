@@ -296,4 +296,17 @@ public class ServerTwittsController {
         super.finalize();
     }
 
+    public boolean isExist() throws SQLException {
+        String sql = String.format("select * from \"TwittsTable\" where \"TwittUUID\" = '%s';",twitt.getTwittUUID());
+        ResultSet rs = connectionToDataBase.executeQuery(sql);
+        if(rs != null){
+            if(rs.next()){
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        return false;
+    }
 }

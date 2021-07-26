@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public class WelcomePanel extends JPanel {
     MainPanel mainPanel;
-    ImprovedJLabel welcomeText;
+    JLabel welcomeText;
     public WelcomePanel(MainPanel mainPanel) throws IOException {
         this.mainPanel = mainPanel;
 
@@ -24,8 +24,6 @@ public class WelcomePanel extends JPanel {
         welcomeText.setText("welcome");
         welcomeText.setBounds(170,20,400,20);
         welcomeText.setVisible(true);
-        welcomeText.setMainPanel(mainPanel);
-
 
 
         this.add(welcomeText);

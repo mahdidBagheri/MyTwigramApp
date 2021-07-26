@@ -6,6 +6,9 @@ import Connection.DataBaseConnection.ConnectionToDataBase;
 import Connection.Server.ServerConnection;
 import Connection.Server.ServerPayLoad;
 import Connection.Server.ServerRequest;
+import Twitt.Exceptions.TwittReadDataException;
+import User.Controller.ServerUserController;
+import User.Exceptions.unsuccessfullReadDataFromDatabase;
 import User.Model.User;
 import Utils.DateTime;
 
@@ -149,4 +152,30 @@ public class ServerPVController {
     }
 
 
+    public boolean isExist() throws SQLException {
+        String sql = String.format("select * from \"%s\" where \"PVTableName\" = '%s';","User" + pv.getUser().getUserUUID() + "Chats",pv.getPVTableName());
+        ResultSet rs = connectionToDataBase.executeQuery(sql);
+        if(rs != null){
+            if(rs.next()){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void readPV() throws SQLException, unsuccessfullReadDataFromDatabase, TwittReadDataException {
+        String sql = String.format("select * from \"%s\" where \"PVTableName\" = '%s';","User" + pv.getUser().getUserUUID() + "Chats",pv.getPVTableName());
+        ResultSet rs = connectionToDataBase.executeQuery(sql);
+        if(rs != null){
+            if(rs.next()){
+                User contact = new User();
+                contact.setUserUUID(rs.getString(2));
+                ServerUserController serverUserController = new ServerUserController(contact);
+                serverUserController.readUserName();
+
+                pv.setContact(contact);
+
+            }
+        }
+    }
 }
