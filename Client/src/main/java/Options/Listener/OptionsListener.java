@@ -75,6 +75,16 @@ public class OptionsListener {
 
             mainPanel.addChatsPanel(mainUser);
         }
+        else if(command.equals("settings")){
+            SyncLocalDataBase syncLocalDataBase = new SyncLocalDataBase();
+            syncLocalDataBase.syncUser();
+
+            User mainUser = new User();
+            ClientUserController clientUserController = new ClientUserController(mainUser);
+            clientUserController.setAsMain();
+
+            mainPanel.addSettingsPanel(clientUserController.getUser());
+        }
     }
 
 }

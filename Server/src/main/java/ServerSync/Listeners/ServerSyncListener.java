@@ -36,6 +36,13 @@ public class ServerSyncListener {
                 }
             }
         }
+        else if(clientRequest.getCommand().equals("syncUser")){
+            User user = clientRequest.getClientPayLoad().getUser();
+
+            ServerUserController serverUserController = new ServerUserController(user);
+            serverUserController.saveUserInfo();
+
+        }
 
 
     }

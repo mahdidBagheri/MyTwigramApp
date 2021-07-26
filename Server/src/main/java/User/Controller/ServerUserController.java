@@ -1262,4 +1262,30 @@ public class ServerUserController {
         }
         return false;
     }
+
+    public void saveUserInfo() throws SQLException {
+        ConnectionToDataBase connectionToDataBase = new ConnectionToDataBase();
+        String sql = String.format("update \"UsersTable\" set \"Pass\" = '%s' where \"UserName\" = '%s';",user.getPassWord(),user.getUserName());
+        connectionToDataBase.executeUpdate(sql);
+
+        sql = String.format("update \"UsersTable\" set \"Email\" = '%s' where \"UserName\" = '%s';",user.getEmail(),user.getUserName());
+        connectionToDataBase.executeUpdate(sql);
+
+        sql = String.format("update \"UsersTable\" set \"Privacy\" = '%s' where \"UserName\" = '%s';",user.getPrivacy(),user.getUserName());
+        connectionToDataBase.executeUpdate(sql);
+
+        sql = String.format("update \"UsersTable\" set \"PhoneNumber\" = '%s' where \"UserName\" = '%s';",user.getPhoneNumber(),user.getUserName());
+        connectionToDataBase.executeUpdate(sql);
+
+        sql = String.format("update \"UsersTable\" set \"Bio\" = '%s' where \"UserName\" = '%s';",user.getBio(),user.getUserName());
+        connectionToDataBase.executeUpdate(sql);
+
+        sql = String.format("update \"UsersTable\" set \"Status\" = '%s' where \"UserName\" = '%s';",user.getStatus(),user.getUserName());
+        connectionToDataBase.executeUpdate(sql);
+
+        sql = String.format("update \"UsersTable\" set \"LastSeenMode\" = '%s' where \"UserName\" = '%s';",user.getLastSeenMode(),user.getUserName());
+        connectionToDataBase.executeUpdate(sql);
+
+        connectionToDataBase.Disconect();
+    }
 }

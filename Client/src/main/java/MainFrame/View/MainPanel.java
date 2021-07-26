@@ -13,6 +13,7 @@ import Config.FrameConfig.FrameConfig;
 import Options.View.OptionPanel;
 import Profile.View.ProfilePanel;
 import NewTwitt.View.NewTwittPanel;
+import Settings.View.SettingPanel;
 import TimeLine.Model.TimeLine;
 import TimeLine.View.TimeLinePanel;
 import Twitt.Events.TwittViewEvent;
@@ -192,4 +193,17 @@ public class MainPanel extends JPanel {
     }
 
 
+    public void addSettingsPanel(User user) throws IOException {
+        if(panels.size() == 2){
+            panelsTrace.add(panels.get(0));
+            panelsTrace.add(panels.get(1));
+        }
+        else {
+            panelsTrace.add(panels.getLast());
+        }
+
+        this.clear();
+        this.add(new OptionPanel(mainPanel));
+        this.add(new SettingPanel(user,mainPanel));
+    }
 }

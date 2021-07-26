@@ -151,5 +151,12 @@ public class OptionPanel extends JPanel implements ActionListener {
                 throwables.printStackTrace();
             }
         }
+        else if(e.getSource() == settingBotton){
+            try {
+                optionsListener.listen("settings");
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
+            }
+        }
     }
 }

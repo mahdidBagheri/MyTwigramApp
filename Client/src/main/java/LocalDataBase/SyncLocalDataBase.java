@@ -177,16 +177,16 @@ public class SyncLocalDataBase {
         boolean isExist = false;
         for (PV pv : mainUser.getChats()) {
             isExist = false;
-            if(rs != null){
-                while (rs.next()){
-                    if(pv.getPVTableName().equals(rs.getString(1))){
+            if (rs != null) {
+                while (rs.next()) {
+                    if (pv.getPVTableName().equals(rs.getString(1))) {
                         isExist = true;
                         break;
                     }
                 }
-                if(!isExist){
+                if (!isExist) {
                     DateTime dateTime = new DateTime();
-                    addChat = String.format("insert into \"ChatsTable\" ( \"ChatAddress\" , \"Username\" , \"Date\",\"state\") values ('%s','%s','%s','%s');", pv.getPVTableName(), pv.getContact().getUserName(),dateTime.Now(), "true");
+                    addChat = String.format("insert into \"ChatsTable\" ( \"ChatAddress\" , \"Username\" , \"Date\",\"state\") values ('%s','%s','%s','%s');", pv.getPVTableName(), pv.getContact().getUserName(), dateTime.Now(), "true");
                     createPVTable(pv.getPVTableName());
                     connectionToLocalDataBase.executeUpdate(addChat);
                 }
@@ -196,7 +196,7 @@ public class SyncLocalDataBase {
     }
 
     private void createPVTable(String pvTableName) throws SQLException {
-        String sql = String.format("create table \"%s\"(\"ID\" BIGSERIAL NOT NULL PRIMARY KEY,\"Message\" text,\"Author\" character varying (50), \"ImageAddress\" character varying (200) ,\"Date\" timestamp without time zone,\"state\" character varying (6));",pvTableName);
+        String sql = String.format("create table \"%s\"(\"ID\" BIGSERIAL NOT NULL PRIMARY KEY,\"Message\" text,\"Author\" character varying (50), \"ImageAddress\" character varying (200) ,\"Date\" timestamp without time zone,\"state\" character varying (6));", pvTableName);
         connectionToLocalDataBase.executeUpdate(sql);
 
     }
@@ -207,31 +207,30 @@ public class SyncLocalDataBase {
     }
 
 
-
     private void sendPVQueuedMessages(String PVTableName) throws Throwable {
-        String sql = String.format("select * from \"%s\";",PVTableName);
+        String sql = String.format("select * from \"%s\";", PVTableName);
         ResultSet rs = connectionToLocalDataBase.executeQuery(sql);
         User mainUser = new User();
         ClientUserController clientUserController = new ClientUserController(mainUser);
         clientUserController.setAsMain();
         clientUserController.finalize();
 
-        if(rs != null){
-            while (rs.next()){
-                if(rs.getString(6).equals("unsync")){
+        if (rs != null) {
+            while (rs.next()) {
+                if (rs.getString(6).equals("unsync")) {
                     ClientConnection clientConnection = new ClientConnection();
                     ClientPayLoad clientPayLoad = new ClientPayLoad();
-                    clientPayLoad.getStringStringHashMap().put("PVAddress",PVTableName);
-                    clientPayLoad.getStringStringHashMap().put("username",mainUser.getUserName());
-                    clientPayLoad.getStringStringHashMap().put("text",rs.getString(2));
-                    clientPayLoad.getStringStringHashMap().put("date",rs.getString(5));
-                    if(rs.getString(4) != null){
-                        clientPayLoad.getStringStringHashMap().put("picAddress",rs.getString(4));
+                    clientPayLoad.getStringStringHashMap().put("PVAddress", PVTableName);
+                    clientPayLoad.getStringStringHashMap().put("username", mainUser.getUserName());
+                    clientPayLoad.getStringStringHashMap().put("text", rs.getString(2));
+                    clientPayLoad.getStringStringHashMap().put("date", rs.getString(5));
+                    if (rs.getString(4) != null) {
+                        clientPayLoad.getStringStringHashMap().put("picAddress", rs.getString(4));
                         clientPayLoad.setFile(new File(rs.getString(4)));
                     }
-                    ClientRequest clientRequest = new ClientRequest("PV",clientPayLoad,mainUser.getSession(),"sendMessage",mainUser.getUserName(),mainUser.getPassWord());
+                    ClientRequest clientRequest = new ClientRequest("PV", clientPayLoad, mainUser.getSession(), "sendMessage", mainUser.getUserName(), mainUser.getPassWord());
                     clientConnection.execute(clientRequest);
-                    String updateMessage = String.format("update \"%s\" set state = 'sent' where \"Date\" = '%s' and \"Author\" = '%s';",PVTableName,rs.getString(5),rs.getString(3));
+                    String updateMessage = String.format("update \"%s\" set state = 'sent' where \"Date\" = '%s' and \"Author\" = '%s';", PVTableName, rs.getString(5), rs.getString(3));
                     connectionToLocalDataBase.executeUpdate(updateMessage);
                 }
             }
@@ -247,9 +246,9 @@ public class SyncLocalDataBase {
         clientUserController.finalize();
 
         ClientPayLoad clientPayLoad = new ClientPayLoad();
-        clientPayLoad.getStringStringHashMap().put("PVTableName",PVTableName);
+        clientPayLoad.getStringStringHashMap().put("PVTableName", PVTableName);
 
-        ClientRequest clientRequest = new ClientRequest("pv",clientPayLoad,mainUser.getSession(),"requestPV",mainUser.getUserName(),mainUser.getPassWord());
+        ClientRequest clientRequest = new ClientRequest("pv", clientPayLoad, mainUser.getSession(), "requestPV", mainUser.getUserName(), mainUser.getPassWord());
         clientConnection.execute(clientRequest);
 
         ClientWaitForInput.waitForInput(clientConnection.getSocket());
@@ -263,17 +262,16 @@ public class SyncLocalDataBase {
         sql = String.format("delete from \"%s\";",pv.getPVTableName());
         connectionToLocalDataBase.executeUpdate(sql);
 
-        sql = String.format("ALTER SEQUENCE \"%s_ID_seq\" RESTART WITH 1;",PVTableName);
+        sql = String.format("ALTER SEQUENCE \"%s_ID_seq\" RESTART WITH 1;", PVTableName);
         connectionToLocalDataBase.executeUpdate(sql);
 
-        for(Message message:pv.getMessages()){
-            if(message.getPic() != null){
+        for (Message message : pv.getMessages()) {
+            if (message.getPic() != null) {
                 // TODO pic address
-                sql = String.format("insert into \"%s\" (\"Message\",\"Author\",\"ImageAddress\",\"Date\",\"state\") values ('%s','%s','%s','%s','%s');",pv.getPVTableName(),message.getText(),message.getAuthor().getUserName(),"picaddress",message.getDate(),message.getState());
+                sql = String.format("insert into \"%s\" (\"Message\",\"Author\",\"ImageAddress\",\"Date\",\"state\") values ('%s','%s','%s','%s','%s');", pv.getPVTableName(), message.getText(), message.getAuthor().getUserName(), "picaddress", message.getDate(), message.getState());
                 connectionToLocalDataBase.executeUpdate(sql);
-            }
-            else {
-                sql = String.format("insert into \"%s\" (\"Message\",\"Author\",\"Date\",\"state\") values ('%s','%s','%s','%s');",pv.getPVTableName(),message.getText(),message.getAuthor().getUserName(),message.getDate(),message.getState());
+            } else {
+                sql = String.format("insert into \"%s\" (\"Message\",\"Author\",\"Date\",\"state\") values ('%s','%s','%s','%s');", pv.getPVTableName(), message.getText(), message.getAuthor().getUserName(), message.getDate(), message.getState());
                 connectionToLocalDataBase.executeUpdate(sql);
             }
         }
@@ -304,16 +302,16 @@ public class SyncLocalDataBase {
         boolean isExist = false;
         for (Group group : mainUser.getGroups()) {
             isExist = false;
-            if(rs != null){
-                while (rs.next()){
-                    if(group.getGroupTableAddress().equals(rs.getString(1))){
+            if (rs != null) {
+                while (rs.next()) {
+                    if (group.getGroupTableAddress().equals(rs.getString(1))) {
                         isExist = true;
                         break;
                     }
                 }
-                if(!isExist){
+                if (!isExist) {
                     DateTime dateTime = new DateTime();
-                    addChat = String.format("insert into \"GroupsTable\" ( \"ChatAddress\" , \"GroupName\" , \"Date\",\"state\") values ('%s','%s','%s','%s');", group.getGroupTableAddress(), group.getGroupName(),dateTime.Now(), "true");
+                    addChat = String.format("insert into \"GroupsTable\" ( \"ChatAddress\" , \"GroupName\" , \"Date\",\"state\") values ('%s','%s','%s','%s');", group.getGroupTableAddress(), group.getGroupName(), dateTime.Now(), "true");
                     createGroupTable(group.getGroupTableAddress());
                     connectionToLocalDataBase.executeUpdate(addChat);
                 }
@@ -324,11 +322,11 @@ public class SyncLocalDataBase {
 
     private void createGroupTable(String groupTableAddress) throws SQLException {
         //groupMemmbersTables
-        String sql = String.format("create table \"%s\"(\"ID\" BIGSERIAL NOT NULL PRIMARY KEY,\"Memmbers\" character varying (50),\"state\" character varying (6));",groupTableAddress + "Memmbers");
+        String sql = String.format("create table \"%s\"(\"ID\" BIGSERIAL NOT NULL PRIMARY KEY,\"Memmbers\" character varying (50),\"state\" character varying (6));", groupTableAddress + "Memmbers");
         connectionToLocalDataBase.executeUpdate(sql);
 
         //groupMessagesTable
-        String sql1 = String.format("create table \"%s\"(\"ID\" BIGSERIAL NOT NULL PRIMARY KEY,\"Message\" text,\"Author\" character varying (50), \"ImageAddress\" character varying (200) ,\"Date\" timestamp without time zone,\"state\" character varying (6));",groupTableAddress);
+        String sql1 = String.format("create table \"%s\"(\"ID\" BIGSERIAL NOT NULL PRIMARY KEY,\"Message\" text,\"Author\" character varying (50), \"ImageAddress\" character varying (200) ,\"Date\" timestamp without time zone,\"state\" character varying (6));", groupTableAddress);
         connectionToLocalDataBase.executeUpdate(sql1);
     }
 
@@ -338,27 +336,27 @@ public class SyncLocalDataBase {
     }
 
     private void sendGroupQueuedMessages(String groupTableName) throws Throwable {
-        String sql = String.format("select * from \"%s\";",groupTableName);
+        String sql = String.format("select * from \"%s\";", groupTableName);
         ResultSet rs = connectionToLocalDataBase.executeQuery(sql);
         User mainUser = new User();
         ClientUserController clientUserController = new ClientUserController(mainUser);
         clientUserController.setAsMain();
         clientUserController.finalize();
 
-        if(rs != null){
-            while (rs.next()){
-                if(rs.getString(6).equals("false")){
+        if (rs != null) {
+            while (rs.next()) {
+                if (rs.getString(6).equals("false")) {
                     ClientConnection clientConnection = new ClientConnection();
                     ClientPayLoad clientPayLoad = new ClientPayLoad();
-                    clientPayLoad.getStringStringHashMap().put("PVAddress",groupTableName);
-                    clientPayLoad.getStringStringHashMap().put("username",mainUser.getUserName());
-                    clientPayLoad.getStringStringHashMap().put("text",rs.getString(2));
-                    clientPayLoad.getStringStringHashMap().put("picAddress",rs.getString(4));
-                    clientPayLoad.getStringStringHashMap().put("date",rs.getString(5));
+                    clientPayLoad.getStringStringHashMap().put("PVAddress", groupTableName);
+                    clientPayLoad.getStringStringHashMap().put("username", mainUser.getUserName());
+                    clientPayLoad.getStringStringHashMap().put("text", rs.getString(2));
+                    clientPayLoad.getStringStringHashMap().put("picAddress", rs.getString(4));
+                    clientPayLoad.getStringStringHashMap().put("date", rs.getString(5));
                     clientPayLoad.setFile(new File(rs.getString(4)));
-                    ClientRequest clientRequest = new ClientRequest("PV",clientPayLoad,mainUser.getSession(),"sendMessage",mainUser.getUserName(),mainUser.getPassWord());
+                    ClientRequest clientRequest = new ClientRequest("PV", clientPayLoad, mainUser.getSession(), "sendMessage", mainUser.getUserName(), mainUser.getPassWord());
                     clientConnection.execute(clientRequest);
-                    String updateMessage = String.format("update \"%s\" set sync = true where \"Date\" = '%s' and \"Author\" = '%s';",groupTableName,rs.getString(5),rs.getString(3));
+                    String updateMessage = String.format("update \"%s\" set sync = true where \"Date\" = '%s' and \"Author\" = '%s';", groupTableName, rs.getString(5), rs.getString(3));
                     connectionToLocalDataBase.executeUpdate(updateMessage);
                 }
             }
@@ -374,9 +372,9 @@ public class SyncLocalDataBase {
         clientUserController.finalize();
 
         ClientPayLoad clientPayLoad = new ClientPayLoad();
-        clientPayLoad.getStringStringHashMap().put("PVTableName",groupTableName);
+        clientPayLoad.getStringStringHashMap().put("PVTableName", groupTableName);
 
-        ClientRequest clientRequest = new ClientRequest("pv",clientPayLoad,mainUser.getSession(),"requestPV",mainUser.getUserName(),mainUser.getPassWord());
+        ClientRequest clientRequest = new ClientRequest("pv", clientPayLoad, mainUser.getSession(), "requestPV", mainUser.getUserName(), mainUser.getPassWord());
         clientConnection.execute(clientRequest);
 
         ClientWaitForInput.waitForInput(clientConnection.getSocket());
@@ -390,17 +388,16 @@ public class SyncLocalDataBase {
         sql = String.format("delete from \"%s\";",group.getGroupTableAddress());
         connectionToLocalDataBase.executeUpdate(sql);
 
-        sql = String.format("ALTER SEQUENCE \"%s_ID_seq\" RESTART WITH 1;",groupTableName);
+        sql = String.format("ALTER SEQUENCE \"%s_ID_seq\" RESTART WITH 1;", groupTableName);
         connectionToLocalDataBase.executeUpdate(sql);
 
-        for(Message message:group.getMessages()){
-            if(message.getPic() != null){
+        for (Message message : group.getMessages()) {
+            if (message.getPic() != null) {
                 // TODO pic address
-                sql = String.format("insert into \"%s\" (\"Message\",\"Author\",\"ImageAddress\",\"Date\",\"state\") values ('%s','%s','%s','%s','true');",group.getGroupTableAddress(),message.getText(),message.getAuthor().getUserName(),"picaddress",message.getDate());
+                sql = String.format("insert into \"%s\" (\"Message\",\"Author\",\"ImageAddress\",\"Date\",\"state\") values ('%s','%s','%s','%s','true');", group.getGroupTableAddress(), message.getText(), message.getAuthor().getUserName(), "picaddress", message.getDate());
                 connectionToLocalDataBase.executeUpdate(sql);
-            }
-            else {
-                sql = String.format("insert into \"%s\" (\"Message\",\"Author\",\"Date\",\"state\") values ('%s','%s','%s','true');",group.getGroupTableAddress(),message.getText(),message.getAuthor().getUserName(),message.getDate());
+            } else {
+                sql = String.format("insert into \"%s\" (\"Message\",\"Author\",\"Date\",\"state\") values ('%s','%s','%s','true');", group.getGroupTableAddress(), message.getText(), message.getAuthor().getUserName(), message.getDate());
                 connectionToLocalDataBase.executeUpdate(sql);
             }
         }
@@ -416,9 +413,9 @@ public class SyncLocalDataBase {
         clientUserController.finalize();
 
         ClientPayLoad clientPayLoad = new ClientPayLoad();
-        clientPayLoad.getStringStringHashMap().put("username",mainUser.getUserName());
+        clientPayLoad.getStringStringHashMap().put("username", mainUser.getUserName());
 
-        ClientRequest clientRequest = new ClientRequest("userInfo",clientPayLoad,mainUser.getSession(),"readTwitts",mainUser.getUserName(),mainUser.getPassWord());
+        ClientRequest clientRequest = new ClientRequest("userInfo", clientPayLoad, mainUser.getSession(), "readTwitts", mainUser.getUserName(), mainUser.getPassWord());
         clientConnection.execute(clientRequest);
 
         ClientWaitForInput.waitForInput(clientConnection.getSocket());
@@ -432,7 +429,7 @@ public class SyncLocalDataBase {
         sql = String.format("delete from \"twitts\";");
         connectionToLocalDataBase.executeUpdate(sql);
 
-        for(Twitt twitt:user.getTwitts()){
+        for (Twitt twitt : user.getTwitts()) {
             NewTwittController newTwittController = new NewTwittController(twitt);
             newTwittController.saveToLocalDataBase();
         }
@@ -449,4 +446,23 @@ public class SyncLocalDataBase {
         super.finalize();
     }
 
+    public void syncUser() throws Throwable {
+        ClientConnection clientConnection = new ClientConnection();
+
+        User mainUser = new User();
+        ClientUserController clientUserController = new ClientUserController(mainUser);
+        clientUserController.setAsMain();
+        clientUserController.finalize();
+
+        ClientPayLoad clientPayLoad = new ClientPayLoad();
+        clientPayLoad.setUser(mainUser);
+
+        ClientRequest clientRequest = new ClientRequest("sync", clientPayLoad, mainUser.getSession(), "syncUser", mainUser.getUserName(), mainUser.getPassWord());
+        clientConnection.execute(clientRequest);
+
+        String sql = String.format("update \"UserInfo\" set \"sync\" = 'true';");
+        connectionToLocalDataBase.executeUpdate(sql);
+
+
+    }
 }

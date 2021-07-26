@@ -1,6 +1,7 @@
 package LocalDataBase;
 
 import Config.DataBaseConfig.DataBaseConfig;
+import User.Model.User;
 
 import java.io.IOException;
 import java.sql.Connection;
