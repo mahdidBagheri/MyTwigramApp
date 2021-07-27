@@ -51,7 +51,7 @@ public class GroupPanel extends JPanel implements ActionListener {
 
     String picPath;
 
-    public GroupPanel(Group group, MainPanel mainPanel) throws IOException, SQLException, ClassNotFoundException {
+    public GroupPanel(Group group, MainPanel mainPanel) throws Throwable {
 
         this.group = group;
         this.mainPanel = mainPanel;
@@ -156,6 +156,7 @@ public class GroupPanel extends JPanel implements ActionListener {
         this.upOrDownBtnListener = new UpOrDownBtnListener(this);
 
         this.groupThreadServerListener = new GroupThreadServerListener(this);
+        groupThreadServerListener.start();
     }
 
     private void addAll(){
@@ -179,11 +180,14 @@ public class GroupPanel extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == backBtn){
             mainPanel.back();
+            groupThreadServerListener.setRunning(false);
         }
         else if(e.getSource() == sendMessageBtn){
             SendMessageEvent sendMessageEvent = new SendMessageEvent(messageField.getText());
             try {
                 sendMessageListener.listen(sendMessageEvent);
+                messageField.setText("");
+                JOptionPane.showMessageDialog(this,"message sent");
             } catch (MessageSavedAndNotSent messageSavedAndNotSent) {
                 messageSavedAndNotSent.printStackTrace();
             } catch (SQLException throwables) {
@@ -229,9 +233,10 @@ public class GroupPanel extends JPanel implements ActionListener {
     }
 
     public void setMessage(Message message) throws IOException {
-        this.removeAll();
+        this.remove(messagePanel);
         this.messagePanel = new MessagePanel(message,mainPanel);
-        addAll();
+        add(messagePanel);
+
 
         this.revalidate();
         this.repaint();
@@ -239,5 +244,18 @@ public class GroupPanel extends JPanel implements ActionListener {
 
     public void finalize(){
         groupThreadServerListener.setRunning(false);
+    }
+
+    public void updateGroupPanel() throws IOException {
+        if(group.getMessages().size() > 0) {
+            if(messageNumber > group.getMessages().size() - 1){
+                messageNumber = group.getMessages().size() - 1;
+            }
+            if(messageNumber < 0){
+                messageNumber = 0;
+            }
+            setMessage(group.getMessages().get(messageNumber));
+        }
+        this.repaint();
     }
 }

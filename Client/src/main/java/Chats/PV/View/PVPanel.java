@@ -276,7 +276,6 @@ public class PVPanel extends JPanel implements ActionListener {
 
         this.revalidate();
         this.repaint();
-        messageField.setCaretPosition(messageField.getText().length());
 
     }
 

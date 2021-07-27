@@ -19,6 +19,8 @@ public class ClientGroupController {
     }
 
     public void readMessages() throws SQLException, IOException, ClassNotFoundException {
+        group.getMessages().clear();
+
         String sql = String.format("select * from \"%s\";", group.getGroupTableAddress());
         ResultSet rs = connectionToLocalDataBase.executeQuery(sql);
 

@@ -53,7 +53,7 @@ public class PVThreadServerListener extends Thread {
                 pvController.readMessages();
                 pvPanel.updatePV();
                 pvController.finalize();
-                Thread.sleep(2000);
+                Thread.sleep(1000);
             } catch (InterruptedException interruptedException) {
                 interruptedException.printStackTrace();
             } catch (IOException e) {

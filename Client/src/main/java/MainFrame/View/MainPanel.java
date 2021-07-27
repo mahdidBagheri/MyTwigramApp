@@ -179,7 +179,7 @@ public class MainPanel extends JPanel {
         this.add(new PVPanel(pv, mainPanel));
     }
 
-    public void addGroupPanel(Group group) throws IOException, SQLException, ClassNotFoundException {
+    public void addGroupPanel(Group group) throws Throwable {
         if(panels.size() == 2){
             panelsTrace.add(panels.get(0));
             panelsTrace.add(panels.get(1));
