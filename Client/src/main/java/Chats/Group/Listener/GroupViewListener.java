@@ -21,9 +21,28 @@ public class GroupViewListener {
     public void listen(GroupViewEvent groupViewEvent) throws Throwable {
 
         try {
+            Group group = new Group();
+            group.setGroupName(groupViewEvent.getGroupName());
+            ClientGroupController clientGroupController = new ClientGroupController(group);
+
             SyncLocalDataBase syncLocalDataBase = new SyncLocalDataBase();
             syncLocalDataBase.syncGroups();
+
+            clientGroupController.readGroupAddressByGroupName();
+            syncLocalDataBase.syncGroupMessagesAndMemmbers(group.getGroupTableAddress());
+            clientGroupController.readMessages();
+
             syncLocalDataBase.finalize();
+
+            User mainUser = new User();
+            ClientUserController clientUserController = new ClientUserController(mainUser);
+            clientUserController.setAsMain();
+            clientUserController.finalize();
+
+            group.setMainUser(mainUser);
+
+            mainPanel.addGroupPanel(group);
+
 
         } catch (CouldNotConnectToServerException e) {
             e.printStackTrace();
@@ -31,23 +50,6 @@ public class GroupViewListener {
             throwable.printStackTrace();
         }
 
-        User mainUser = new User();
-        ClientUserController clientUserController = new ClientUserController(mainUser);
-        clientUserController.setAsMain();
-        clientUserController.finalize();
-        Group selectedGroup = null;
-        for (int i = 0; i < mainUser.getGroups().size(); i++) {
-            if(mainUser.getGroups().get(i).getGroupName().equals(groupViewEvent.getGroupName())){
-                ClientGroupController clientGroupController = new ClientGroupController(mainUser.getGroups().get(i));
-                clientGroupController.readMessages();
-                clientGroupController.finalize();
-
-                selectedGroup = mainUser.getGroups().get(i);
-                break;
-            }
-        }
-
-        mainPanel.addGroupPanel(selectedGroup);
 
     }
 }

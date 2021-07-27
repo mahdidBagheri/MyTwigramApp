@@ -37,19 +37,17 @@ public class SendMessageListener {
         clientPayLoad.getStringStringHashMap().put("text",sendMessageEvent.getMsg());
         clientPayLoad.getStringStringHashMap().put("imageAddress",sendMessageEvent.getImageAddress());
         clientPayLoad.getStringStringHashMap().put("date",date);
+        clientPayLoad.getStringStringHashMap().put("state","seen");
 
         ClientConnection clientConnection = null;
         try {
             clientConnection = new ClientConnection();
-            clientPayLoad.getStringStringHashMap().put("sync","sent");
+            clientPayLoad.getStringStringHashMap().put("state","seen");
             saveToLocalDataBase(clientPayLoad);
 
         } catch (CouldNotConnectToServerException e) {
-            clientPayLoad.getStringStringHashMap().put("sync","unsync");
-            System.out.println("message saved to send later");
-            saveToLocalDataBase(clientPayLoad);
-            e.printStackTrace();
-            throw new MessageSavedAndNotSent("saved but not sent");
+
+            throw new MessageSavedAndNotSent("not connected");
         }
 
         User mainUser = new User();

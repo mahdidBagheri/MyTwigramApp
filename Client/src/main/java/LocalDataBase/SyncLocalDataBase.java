@@ -330,9 +330,9 @@ public class SyncLocalDataBase {
         connectionToLocalDataBase.executeUpdate(sql1);
     }
 
-    public void syncGroupMessagesAndMemmbers(String groupTableName) throws Throwable {
-        sendGroupQueuedMessages(groupTableName);
-        requestGroupFromServer(groupTableName);
+    public void syncGroupMessagesAndMemmbers(String groupTableAddress) throws Throwable {
+        //sendGroupQueuedMessages(groupTableAddress);
+        requestGroupFromServer(groupTableAddress);
     }
 
     private void sendGroupQueuedMessages(String groupTableName) throws Throwable {
@@ -354,7 +354,7 @@ public class SyncLocalDataBase {
                     clientPayLoad.getStringStringHashMap().put("picAddress", rs.getString(4));
                     clientPayLoad.getStringStringHashMap().put("date", rs.getString(5));
                     clientPayLoad.setFile(new File(rs.getString(4)));
-                    ClientRequest clientRequest = new ClientRequest("PV", clientPayLoad, mainUser.getSession(), "sendMessage", mainUser.getUserName(), mainUser.getPassWord());
+                    ClientRequest clientRequest = new ClientRequest("Group", clientPayLoad, mainUser.getSession(), "sendMessage", mainUser.getUserName(), mainUser.getPassWord());
                     clientConnection.execute(clientRequest);
                     String updateMessage = String.format("update \"%s\" set sync = true where \"Date\" = '%s' and \"Author\" = '%s';", groupTableName, rs.getString(5), rs.getString(3));
                     connectionToLocalDataBase.executeUpdate(updateMessage);
@@ -363,7 +363,7 @@ public class SyncLocalDataBase {
         }
     }
 
-    private void requestGroupFromServer(String groupTableName) throws Throwable {
+    private void requestGroupFromServer(String groupTableAddress) throws Throwable {
         ClientConnection clientConnection = new ClientConnection();
 
         User mainUser = new User();
@@ -372,9 +372,9 @@ public class SyncLocalDataBase {
         clientUserController.finalize();
 
         ClientPayLoad clientPayLoad = new ClientPayLoad();
-        clientPayLoad.getStringStringHashMap().put("PVTableName", groupTableName);
+        clientPayLoad.getStringStringHashMap().put("groupTableAddress", groupTableAddress);
 
-        ClientRequest clientRequest = new ClientRequest("pv", clientPayLoad, mainUser.getSession(), "requestPV", mainUser.getUserName(), mainUser.getPassWord());
+        ClientRequest clientRequest = new ClientRequest("group", clientPayLoad, mainUser.getSession(), "requestGroup", mainUser.getUserName(), mainUser.getPassWord());
         clientConnection.execute(clientRequest);
 
         ClientWaitForInput.waitForInput(clientConnection.getSocket());
@@ -388,7 +388,7 @@ public class SyncLocalDataBase {
         sql = String.format("delete from \"%s\";",group.getGroupTableAddress());
         connectionToLocalDataBase.executeUpdate(sql);
 
-        sql = String.format("ALTER SEQUENCE \"%s_ID_seq\" RESTART WITH 1;", groupTableName);
+        sql = String.format("ALTER SEQUENCE \"%s_ID_seq\" RESTART WITH 1;", groupTableAddress);
         connectionToLocalDataBase.executeUpdate(sql);
 
         for (Message message : group.getMessages()) {

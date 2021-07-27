@@ -1,5 +1,7 @@
 package Chats.Group.Controller;
 
+import Chats.Common.Message.Model.Message;
+import Chats.Group.Model.Group;
 import Connection.Client.ClientRequest;
 import Connection.DataBaseConnection.ConnectionToDataBase;
 import Connection.Server.ServerConnection;
@@ -8,15 +10,21 @@ import User.Exceptions.unsuccessfullReadDataFromDatabase;
 import User.Model.User;
 import Utils.DateTime;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.UUID;
 
 public class GroupController {
     ServerConnection serverConnection;
+    Group group;
 
     public GroupController(ServerConnection serverConnection) {
         this.serverConnection = serverConnection;
+    }
+
+    public GroupController(Group group) {
+        this.group = group;
     }
 
     public void createNewGroup(LinkedList<User> memmbers, String groupName) throws SQLException, unsuccessfullReadDataFromDatabase {
@@ -71,5 +79,56 @@ public class GroupController {
         }
         connectionToDataBase.executeUpdate(sql);
         connectionToDataBase.Disconect();
+    }
+
+    public void readMessages() throws SQLException {
+        group.getMessages().clear();
+
+        ConnectionToDataBase connectionToDataBase = new ConnectionToDataBase();
+        String sql = String.format("select * from \"%s\" ORDER BY \"Date\" ASC;",group.getGroupTableAddress() + "Messages");
+        ResultSet rs = connectionToDataBase.executeQuery(sql);
+
+        if(rs != null){
+            while (rs.next()){
+                String text = rs.getString(2);
+                String date = rs.getString(5);
+
+                User author = new User();
+                author.setUserName(rs.getString(3));
+
+                String picAddress ;
+
+                Message message;
+                if(rs.getString(4) != null){
+                    picAddress = rs.getString(4);
+                    message = new Message(author,text,date,picAddress);
+                }
+                else {
+                    message = new Message(author,text,date);
+                }
+
+                group.getMessages().add(message);
+
+            }
+        }
+    }
+
+    public void readMemmbers() throws SQLException, unsuccessfullReadDataFromDatabase {
+        group.getMemmbers().clear();
+
+        ConnectionToDataBase connectionToDataBase = new ConnectionToDataBase();
+        String sql = String.format("select * from \"%s\";",group.getGroupTableAddress() + "Memmbers");
+        ResultSet rs = connectionToDataBase.executeQuery(sql);
+        if(rs != null) {
+            while (rs.next()) {
+                User memmber = new User();
+                memmber.setUserName(rs.getString(2));
+                ServerUserController serverUserController = new ServerUserController(memmber);
+                serverUserController.readUserUUIDbyUsername(memmber.getUserName());
+
+                group.getMemmbers().add(memmber);
+            }
+        }
+
     }
 }

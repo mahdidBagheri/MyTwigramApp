@@ -1,6 +1,7 @@
 package Chats.Group.Listeners;
 
 import Chats.Group.Controller.GroupController;
+import Chats.Group.Model.Group;
 import Connection.Client.ClientPayLoad;
 import Connection.Client.ClientRequest;
 import Connection.DataBaseConnection.ConnectionToDataBase;
@@ -37,6 +38,20 @@ public class ServerGroupListener {
 
             ServerRequest serverRequest = new ServerRequest(clientRequest.getUsername(),"readGroups",serverPayLoad);
             serverConnection.execute(serverRequest);
+        }
+        else if(clientRequest.getCommand().equals("requestGroup")){
+            Group group = new Group();
+            group.setGroupTableAddress(clientRequest.getClientPayLoad().getStringStringHashMap().get("groupTableAddress"));
+            GroupController groupController = new GroupController(group);
+            groupController.readMessages();
+            groupController.readMemmbers();
+
+            ServerPayLoad serverPayLoad = new ServerPayLoad();
+            serverPayLoad.setGroup(group);
+
+            ServerRequest serverRequest = new ServerRequest(clientRequest.getUsername(),"readGroups",serverPayLoad);
+            serverConnection.execute(serverRequest);
+
         }
         else if(clientRequest.getCommand().equals("sendMessage")){
             GroupController groupController = new GroupController(serverConnection);
